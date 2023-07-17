@@ -1,9 +1,9 @@
 import { UserRepoImpl } from "@frameworks/database/mongoDb/repositories/userRepoImpl"
-import { CreateUserInterface } from "@interfaces/userInterfaces"
+import { UserRegisterType } from "@validation/authValidation"
 
 export const userRepoInterface =(repository:ReturnType<UserRepoImpl>) =>{
 
-    const registerUser = async(user:CreateUserInterface) => await repository.registerUser(user)
+    const registerUser = async(user:UserRegisterType) => await repository.registerUser(user)
 
     const getUserByEmail = async (email : string) => await repository.getUserByEmail(email)
 

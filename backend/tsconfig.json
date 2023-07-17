@@ -13,6 +13,8 @@
       "@frameworks/*": ["frameworks/*"],
       "@interfaces/*": ["interfaces/*"],
       "@utils/*": ["utils/*"],
+      "@validation/*": ["validation/*"],
+
     },                                                
            
     "esModuleInterop": true,

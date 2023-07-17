@@ -3,9 +3,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userRepoMongoDB = void 0;
+exports.userRepoImpl = void 0;
 const userModel_1 = __importDefault(require("../models/userModel"));
-const userRepoMongoDB = () => {
+const userRepoImpl = () => {
     const registerUser = async (user) => await userModel_1.default.create(user);
     const getUserByEmail = async (email) => {
         const user = await userModel_1.default.findOne({ email });
@@ -21,4 +21,4 @@ const userRepoMongoDB = () => {
         getUserByUserName
     };
 };
-exports.userRepoMongoDB = userRepoMongoDB;
+exports.userRepoImpl = userRepoImpl;

@@ -1,4 +1,4 @@
-import { CreateUserInterface } from "@interfaces/userInterfaces"
+import { UserRegisterType } from "@validation/authValidation";
 import { UserRepoInterface } from "@application/repositories/userRepoInterface"
 import { AuthServicesInterface } from "@application/services/authServiceInterface"
 import AppError from "@utils/appError";
@@ -6,7 +6,7 @@ import { HttpStatus } from "@interfaces/httpStatus";
 
 
 export const userRegister = async (
-    user: CreateUserInterface,
+    user: UserRegisterType,
     userRepository:ReturnType <UserRepoInterface>,
     authServices:ReturnType <AuthServicesInterface>
 )=> {

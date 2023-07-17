@@ -4,7 +4,7 @@ import { UserRepoInterface } from "@application/repositories/userRepoInterface"
 import { AuthServices } from "@frameworks/services/authServices"
 import { AuthServicesInterface } from "@application/services/authServiceInterface"
 import asyncHandler from "express-async-handler"
-import { CreateUserInterface } from "@interfaces/userInterfaces"
+import { UserRegisterType,UserLoginType,AdminLoginType} from "@validation/authValidation"
 import { userRegister ,userLogin} from "@application/useCases/auth/userAuth"
 import { adminLogin } from "@application/useCases/auth/adminAuth"
 import { AdminRepoImpl } from "@frameworks/database/mongoDb/repositories/adminRepoImpl"
@@ -26,7 +26,7 @@ export  const authController = (
 
 
     const registerUser = asyncHandler(async(req :Request,res :Response) =>{
-        const user : CreateUserInterface = req.body
+        const user : UserRegisterType = req.body
         const token = await userRegister(user,userRepository,authServices)
         res.json({
             status:"success",
@@ -36,7 +36,7 @@ export  const authController = (
     })
 
     const loginUser = asyncHandler(async(req :Request,res :Response) =>{
-        const {userName,password} : {userName : string,password : string} = req.body  
+        const {userName,password} :UserLoginType = req.body  
         const token = await userLogin(userName,password,userRepository,authServices)
         res.json({
             status:"success",
@@ -46,7 +46,7 @@ export  const authController = (
     })
 
     const loginAdmin = asyncHandler(async(req : Request,res :Response)=>{
-        const {email,password} : {email : string,password : string} = req.body
+        const {email,password} : AdminLoginType = req.body
         const token = await adminLogin(email,password,adminRepository,authServices)
         res.json({
             status:"success",
@@ -54,7 +54,6 @@ export  const authController = (
             token
         })
         
-
     })
 
 
@@ -62,10 +61,8 @@ export  const authController = (
         registerUser,
         loginUser,
         loginAdmin
-
     }
   
-
 }
 
 export default authController
