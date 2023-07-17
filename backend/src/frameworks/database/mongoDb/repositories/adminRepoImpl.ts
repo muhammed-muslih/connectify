@@ -1,7 +1,7 @@
 import Admin from "../models/adminModel";
 import { AdminInterface } from "@interfaces/adminInterface";
 
-export const adminRepoMongoDB = ()=>{
+export const adminRepoImpl = ()=>{
     
     const getAdminByEmail = async(email : string) =>{
         const admin : AdminInterface | null = await Admin.findOne({email})
@@ -13,4 +13,4 @@ export const adminRepoMongoDB = ()=>{
     }
 }
 
-export  type AdminRepoMongoDB = typeof adminRepoMongoDB 
+export  type AdminRepoImpl = typeof adminRepoImpl

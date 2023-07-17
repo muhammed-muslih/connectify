@@ -1,7 +1,7 @@
 import User from "../models/userModel";
 import { CreateUserInterface,UserInterface } from "@interfaces/userInterfaces";
 
-export const userRepoMongoDB = () =>{
+export const userRepoImpl = () =>{
 
     const registerUser = async(user:CreateUserInterface) => await User.create(user)
 
@@ -22,5 +22,5 @@ export const userRepoMongoDB = () =>{
     }
 }
 
-export type UserRepoMongoDB  = typeof userRepoMongoDB
+export type UserRepoImpl  = typeof userRepoImpl
 

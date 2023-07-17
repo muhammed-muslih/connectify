@@ -1,21 +1,21 @@
 import express from 'express'
 import authController from '@adapters/controllers/authControllers'
-import { userRepoMongoDB } from '@frameworks/database/mongoDb/repositories/userRepoMongoDB'
+import { userRepoImpl } from '@frameworks/database/mongoDb/repositories/userRepoImpl'
 import { userRepoInterface } from '@application/repositories/userRepoInterface'
 import { authServices } from '@frameworks/services/authServices'
 import { authServiceInterface } from '@application/services/authServiceInterface'
 import { adminRepoInterface } from '@application/repositories/adminRepoInterface'
-import { adminRepoMongoDB } from '@frameworks/database/mongoDb/repositories/adminRepoMongoDB'
+import { adminRepoImpl} from '@frameworks/database/mongoDb/repositories/adminRepoImpl'
 
 
 const authRouter = ()=>{
     const router = express.Router()
     const controller = authController(
-        userRepoMongoDB,
+        userRepoImpl,
         userRepoInterface,
         authServices,
         authServiceInterface,
-        adminRepoMongoDB,
+        adminRepoImpl,
         adminRepoInterface
     )
 

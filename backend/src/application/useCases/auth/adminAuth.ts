@@ -1,6 +1,5 @@
 import { AdminRepoInterface } from "@application/repositories/adminRepoInterface";
 import { AuthServicesInterface } from "@application/services/authServiceInterface";
-import { AdminInterface } from "@interfaces/adminInterface";
 import { HttpStatus } from "@interfaces/httpStatus";
 import AppError from "@utils/appError";
 
