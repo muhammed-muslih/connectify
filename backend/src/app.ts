@@ -18,11 +18,12 @@ connectDB()
 //express configuration
 expressConfig(app)
 
-//routes setup
-routes(app)
 
 //error handling middleware
 app.use(errorHandler)
+
+//routes setup
+routes(app)
 
 // catch not founded routes and forwards to error handler (404)
 app.all('*',(req,res,next : NextFunction)=>{

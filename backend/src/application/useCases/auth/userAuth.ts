@@ -3,6 +3,7 @@ import { UserRepoInterface } from "@application/repositories/userRepoInterface"
 import { AuthServicesInterface } from "@application/services/authServiceInterface"
 import AppError from "@utils/appError";
 import { HttpStatus } from "@interfaces/httpStatus";
+import { GoogleAuthServiceInterface } from "@application/services/googleAuthServiceInterface";
 
 
 export const userRegister = async (
@@ -43,4 +44,29 @@ export const userLogin = async(
     }
     const token = authServices.generateToken(user._id)
     return token
+}
+
+
+export const loginWithGoogle = async(
+    credential : string,
+    googleAuthService : ReturnType <GoogleAuthServiceInterface>,
+    userRepository : ReturnType <UserRepoInterface>,
+    authServices : ReturnType <AuthServicesInterface>
+) => {
+    const user = await googleAuthService.verifyUser(credential.toString())
+    const isUserExist = await userRepository.getUserByEmail(user.email)
+    if(isUserExist) {
+        const token = authServices.generateToken(isUserExist._id)
+        return {
+            token,
+            userName:isUserExist.userName
+        }
+    }else{
+        const {_id:userId} = await userRepository.registerUser(user)
+        const token = authServices.generateToken(userId.toString()) 
+        return {
+            token,
+            userName:user.userName
+        }
+    }
 }

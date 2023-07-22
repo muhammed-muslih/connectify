@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userLogin = exports.userRegister = void 0;
+exports.loginWithGoogle = exports.userLogin = exports.userRegister = void 0;
 const appError_1 = __importDefault(require("@utils/appError"));
 const httpStatus_1 = require("@interfaces/httpStatus");
 const userRegister = async (user, userRepository, authServices) => {
@@ -37,3 +37,23 @@ const userLogin = async (userName, password, userRepository, authServices) => {
     return token;
 };
 exports.userLogin = userLogin;
+const loginWithGoogle = async (credential, googleAuthService, userRepository, authServices) => {
+    const user = await googleAuthService.verifyUser(credential.toString());
+    const isUserExist = await userRepository.getUserByEmail(user.email);
+    if (isUserExist) {
+        const token = authServices.generateToken(isUserExist._id);
+        return {
+            token,
+            userName: isUserExist.userName
+        };
+    }
+    else {
+        const { _id: userId } = await userRepository.registerUser(user);
+        const token = authServices.generateToken(userId.toString());
+        return {
+            token,
+            userName: user.userName
+        };
+    }
+};
+exports.loginWithGoogle = loginWithGoogle;

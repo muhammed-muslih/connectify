@@ -5,24 +5,29 @@ import { AuthServices } from "@frameworks/services/authServices"
 import { AuthServicesInterface } from "@application/services/authServiceInterface"
 import asyncHandler from "express-async-handler"
 import { UserRegisterType,UserLoginType,AdminLoginType} from "@validation/authValidation"
-import { userRegister ,userLogin} from "@application/useCases/auth/userAuth"
+import { userRegister ,userLogin,loginWithGoogle} from "@application/useCases/auth/userAuth"
 import { adminLogin } from "@application/useCases/auth/adminAuth"
 import { AdminRepoImpl } from "@frameworks/database/mongoDb/repositories/adminRepoImpl"
 import { AdminRepoInterface } from "@application/repositories/adminRepoInterface"
+import { GoogleAuthService } from "@frameworks/services/googleAuthService"
+import { GoogleAuthServiceInterface } from "@application/services/googleAuthServiceInterface"
 
 export  const authController = (
      userDbRepoImpl: UserRepoImpl,
-     userDbRepo: UserRepoInterface,
+     userDbRepoInt: UserRepoInterface,
      authServiceImpl : AuthServices,
-     authService :AuthServicesInterface,
+     authServiceInt :AuthServicesInterface,
      adminDbImpl : AdminRepoImpl,
-     adminDbRepo : AdminRepoInterface
+     adminDbRepoInt : AdminRepoInterface,
+     googleAuthServiceImpl : GoogleAuthService,
+     googleAuthServiceInt:GoogleAuthServiceInterface
 
 ) =>{
 
-    const userRepository = userDbRepo(userDbRepoImpl())
-    const authServices = authService(authServiceImpl())
-    const adminRepository = adminDbRepo(adminDbImpl())
+    const userRepository = userDbRepoInt(userDbRepoImpl())
+    const authServices = authServiceInt(authServiceImpl())
+    const adminRepository = adminDbRepoInt(adminDbImpl())
+    const googleAuthService = googleAuthServiceInt(googleAuthServiceImpl())
 
 
     const registerUser = asyncHandler(async(req :Request,res :Response) =>{
@@ -56,11 +61,26 @@ export  const authController = (
         
     })
 
+    const googleLogin = async (req:Request,res : Response) => {
+        const {credential} :{credential : string} = req.body
+        console.log(req.body,"req.body");
+        
+        const userData = await loginWithGoogle(credential,googleAuthService,userRepository,authServices)
+        res.json({
+            status:"success",
+            message:'user verified',
+            token:userData.token,
+            userName:userData.userName
+        })
+        
+    }
+
 
     return {
         registerUser,
         loginUser,
-        loginAdmin
+        loginAdmin,
+        googleLogin
     }
   
 }

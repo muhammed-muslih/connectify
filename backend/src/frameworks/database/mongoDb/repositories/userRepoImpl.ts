@@ -1,10 +1,10 @@
 import User from "../models/userModel";
 import {UserInterface } from "@interfaces/userInterfaces";
-import { UserRegisterType } from "@validation/authValidation";
+import { UserRegisterInterface } from "@interfaces/userInterfaces";
 
 export const userRepoImpl = () =>{
 
-    const registerUser = async(user:UserRegisterType) => await User.create(user)
+    const registerUser = async(user:UserRegisterInterface) => await User.create(user)
 
     const getUserByEmail = async(email : string) => {
       const user : UserInterface |null =   await User.findOne({email})

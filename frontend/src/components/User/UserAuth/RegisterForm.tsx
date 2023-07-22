@@ -1,11 +1,80 @@
-import {Stack,Box,Divider,Typography,TextField,Button} from '@mui/material'
-import { blueGrey } from '@mui/material/colors';
-const color = blueGrey[500];
-const color1 = blueGrey[600];
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+import {useState,useRef,useEffect} from 'react'
+import {Stack,Box,Divider,Typography,TextField,Button,InputAdornment,IconButton} from '@mui/material'
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { useFormik ,FormikHelpers} from 'formik';
+import { UserRegisterInterface } from '../../../types/UserAuthInterface';
+import * as yup from 'yup'
+import { Link } from 'react-router-dom';
+import Diversity2Icon from '@mui/icons-material/Diversity2';
+import { useUserRegisterMutation } from '../../../redux/Features/api/authApiSlice';
+import { setUserCredentials } from '../../../redux/Features/reducers/userAuthSlice';
+import { useDispatch } from 'react-redux';
+import { useTheme } from '@mui/material/styles';
+
+
+
+
+const schema = yup.object().shape({
+    name:yup.string().required('please enter your name')
+    .min(3,'name must be atleast 3 characters')
+    .matches(/^[a-zA-Z][a-zA-Z ]+[a-zA-Z]*$/,"enter a valid name"),
+    userName:yup.string().required('please enter user name ')
+    .min(3,'user name must be atleast 3 characters')
+    .matches(/^[a-zA-Z][a-zA-Z ]+[a-zA-Z]*$/,"enter a valid name"),
+    email:yup.string().required('please enter email ')
+    .email('plase enter valid email'),
+    password:yup.string().required('please enter password ')
+    .min(5,"Password must be atleast 5 characters")
+    .max(15,'Password must be less than 15 characters')
+})
 
 
 
 const RegisterForm = () => {
+
+    const theme = useTheme();
+    const [registerError ,setRegisterError] =useState('')
+    const [registerUser,{isLoading}] = useUserRegisterMutation()
+    const dispatch = useDispatch()
+    const submitHandler = async(values : UserRegisterInterface,actions : FormikHelpers<UserRegisterInterface>) =>{
+        if(!isLoading){
+            try {
+                const res = await registerUser(values).unwrap()
+                if(res.status === 'success'){
+                    dispatch(setUserCredentials({ userName: values.userName, userToken: res.token }))
+                    actions.resetForm()
+                } 
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            }  catch (error : any) {
+                setRegisterError(error?.data?.message)
+            }
+        }
+    }
+
+    const   initialValues : UserRegisterInterface= {
+             name : '',
+             userName : '',
+             email : '',
+             password : '',
+            }
+
+    const {values,errors,handleBlur,handleChange,handleSubmit,touched} = useFormik({
+        initialValues,
+        onSubmit:submitHandler ,
+        validationSchema:schema,
+    })
+    
+    const inputRef = useRef<HTMLInputElement | null>(null);
+    useEffect(() => {
+        inputRef.current?.focus();
+    }, []);
+    const [showPassword,setShowPassword] =useState(false)
+    const handleClickShowPassword = () => {
+        setShowPassword(!showPassword)
+    }
 
     return(
         <Stack sx={{alignItems:'center',
@@ -14,7 +83,7 @@ const RegisterForm = () => {
             sm:8,
             md:10,
             lg:12,
-            xl:16,
+            xl:14,
 
         }}} >
             <Stack display={'flex'} 
@@ -33,23 +102,18 @@ const RegisterForm = () => {
              }}}
              direction={'column'}
              >
-                <Box borderBottom={2} borderColor={color1}>
+                <Box borderBottom={2} borderColor={theme.palette.primary.main} my={2}>
                 <Typography variant='h3' sx={{
                 fontWeight: 'bold',
-                color:color,
+                color:theme.palette.primary.light,
                 mx:6,
                 paddingBottom:2,
                }}> 
-               <span style={{ fontWeight: 'bolder',
-               fontFamily: 'revert-layer',
-               fontSize: 90,
-               color:color1
-               }}>C</span>onnectify</Typography>
+               <IconButton size="large"><Diversity2Icon sx={{fontSize:60,fontWeight:'bolder',color:theme.palette.primary.main}}/></IconButton>
+               Connectify</Typography>
              </Box>
 
             <Box 
-            //  height={'500px'}
-            //  display="flex"
              flexDirection="column"
              alignItems="center"
              p={8}
@@ -65,21 +129,64 @@ const RegisterForm = () => {
 
                 <Typography variant='h4' sx={{
                     fontWeight: 'bold',
-                    color:color1,
+                    color:theme.palette.primary.main,
                 }}>Sign Up</Typography>
-            <form>  
+            <form onSubmit={handleSubmit}>  
                <Stack direction={'column'} spacing={4} sx={{my:5}}>
-                  <TextField sx={{color:color}} label='name' size='medium' variant='filled' fullWidth />
-                  <TextField sx={{color:color}} label='userName' size='medium' variant='filled' fullWidth />
-                  <TextField  sx={{color:color}}label='email' type='email' size='medium' variant='filled' fullWidth />
-                  <TextField  sx={{color:color}}label='password' type='password' size='medium' variant='filled' fullWidth />
+                  <TextField sx={{color:theme.palette.primary.light}}
+                  value={values.name}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  inputRef={inputRef}
+                  error={errors.name && touched.name? true:false}
+                  helperText={errors.name&&touched.name?errors.name:''}
+                  name="name"  label='name' size='medium' variant='filled' fullWidth required/>
 
-                  <Button variant='contained'  size='large' sx={{
-                    backgroundColor:color,
+                  <TextField sx={{color:theme.palette.primary.light}} 
+                  value={values.userName}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={errors.userName&&touched.userName? true:false}
+                  helperText={errors.userName&&touched.userName?errors.userName:''}
+                  name='userName' label='userName' size='medium' variant='filled' fullWidth required/>
+
+                  <TextField  sx={{color:theme.palette.primary.light}}
+                   value={values.email}
+                   onChange={handleChange}
+                   onBlur={handleBlur}
+                   error={errors.email&&touched.email? true:false}
+                   helperText={errors.email&&touched.email?errors.email:''}
+                   name='email'   label='email' type='email' size='medium' variant='filled' fullWidth required/>
+
+                  <TextField  sx={{color:theme.palette.primary.light}}  
+                    value={values.password}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={errors.password&&touched.password? true:false}
+                    helperText={errors.password&&touched.password?errors.password:''}
+                    name='password' label='password' type={showPassword?'text':'password'} size='medium' variant='filled' fullWidth required
+                    InputProps={{endAdornment :
+                    <InputAdornment position='end'>
+                    <IconButton
+                     aria-label="toggle password visibility"
+                     onClick={handleClickShowPassword}
+                     >
+                     {showPassword ? <VisibilityOff /> : <Visibility />}
+                   </IconButton>
+                   </InputAdornment>}} />
+
+                  <Button variant='contained' type='submit'  size='large' sx={{
+                    backgroundColor:theme.palette.primary.light,
                     '&:hover':{
-                        backgroundColor:color1
+                        backgroundColor:theme.palette.primary.main
                     }
                   }} disableRipple disableElevation>sign up</Button>
+
+                  <Typography variant='body1' color={theme.palette.primary.light}>Already have an account? 
+                  <Link to='/login' style={{textDecoration:'none'}}>Login</Link>
+                  </Typography>
+                
+                <Typography variant='body1' color={'error'}> {registerError} </Typography>
                </Stack>
            </form> 
             </Box>

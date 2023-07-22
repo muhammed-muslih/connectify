@@ -3,7 +3,7 @@ import { z} from "zod"
 export const userRegisterSchema = z.object({
 
     name:z.string({required_error:"please enter name"})
-    .min(3,{message:"First name must be atleast 3 characters"})
+    .min(3,{message:"name must be atleast 3 characters"})
     .trim(),
 
     userName:z.string({required_error:"please enter user name"})

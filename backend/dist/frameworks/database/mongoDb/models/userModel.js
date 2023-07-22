@@ -18,7 +18,6 @@ const userSchema = new mongoose_1.Schema({
     },
     password: {
         type: String,
-        required: [true, "please add password"],
     },
 }, {
     // automatically includes  created and updated time fields

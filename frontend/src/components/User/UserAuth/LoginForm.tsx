@@ -1,9 +1,72 @@
-import {Stack,Box,Divider,Typography,TextField,Button} from '@mui/material'
-import { blueGrey } from '@mui/material/colors';
-const color = blueGrey[500];
-const color1 = blueGrey[600];
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+import React from 'react';
+import {Stack,Box,Divider,Typography,TextField,Button,InputAdornment,IconButton} from '@mui/material'
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useFormik ,FormikHelpers} from 'formik';
+import *as yup from 'yup'
+import { UserLoginInterface } from '../../../types/UserAuthInterface';
+import Diversity2Icon from '@mui/icons-material/Diversity2';
+import { useUserLoginMutation } from '../../../redux/Features/api/authApiSlice';
+import { useDispatch } from 'react-redux';
+import { setUserCredentials } from '../../../redux/Features/reducers/userAuthSlice';
+import { useTheme } from '@mui/material/styles';
 
-const LoginForm = () =>{
+import GoogleAuth from './GoogleAuth';
+
+
+const schema = yup.object().shape({
+    userName:yup.string().required('please enter user name ')
+    .min(3,'user name must be atleast 3 characters')
+    .matches(/^[a-zA-Z][a-zA-Z ]+[a-zA-Z]*$/,"enter a valid name"),
+    password:yup.string().required('please enter password ')
+    .min(5,"Password must be atleast 5 characters")
+    .max(15,'Password must be less than 15 characters')
+})
+
+
+
+const LoginForm : React.FC = () =>{
+
+    const theme = useTheme();
+    const [loginError,setLoginError] =useState('')
+    const [loginUser,{isLoading}] = useUserLoginMutation()
+    const dispatch = useDispatch()
+    const submitHandler = async(values : UserLoginInterface,actions : FormikHelpers<UserLoginInterface>) =>{
+        if(!isLoading){
+            try {
+                const res = await loginUser(values).unwrap()
+                if(res.status === 'success'){
+                    dispatch(setUserCredentials({ userName: values.userName, userToken: res.token }))
+                    actions.resetForm()
+                } 
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            } catch (error :any) {
+                setLoginError(error.data.message)
+            }
+        }
+    }
+  
+    const   initialValues : UserLoginInterface= {
+             userName : '',
+             password : '',
+            }
+
+    const {values,errors,handleBlur,handleChange,handleSubmit,touched} = useFormik({
+        initialValues,
+        onSubmit:submitHandler ,
+        validationSchema:schema,
+    })
+
+    const[showPassword,setShowPassword] = useState(false)
+    const handleClickShowPassword = () =>{
+        setShowPassword(!showPassword)
+    }
+
+    
     return(
         <Stack sx={{alignItems:'center',
         my:{
@@ -30,27 +93,22 @@ const LoginForm = () =>{
              }}}
              direction={'column'}
              >
-                <Box borderBottom={2} borderColor={color1}>
+                 <Box borderBottom={2} borderColor={theme.palette.primary.main} my={2}>
                 <Typography variant='h3' sx={{
                 fontWeight: 'bold',
-                color:color,
+                color:theme.palette.primary.light,
                 mx:6,
                 paddingBottom:2,
-               }}> 
-               <span style={{ fontWeight: 'bolder',
-               fontFamily: 'revert-layer',
-               fontSize: 90,
-               color:color1
-               }}>C</span>onnectify</Typography>
+               }}
+               > 
+               <IconButton size="large"><Diversity2Icon sx={{fontSize:60,fontWeight:'bolder',color:theme.palette.primary.main}}/></IconButton>
+               Connectify</Typography>
              </Box>
 
             <Box 
-            //  height={'500px'}
-            //  display="flex"
              flexDirection="column"
              alignItems="center"
              p={8}
-             
              sx={{
                 px:{
                   lg:16,
@@ -61,24 +119,55 @@ const LoginForm = () =>{
             >
                 <Typography variant='h4' sx={{
                     fontWeight: 'bold',
-                    color:color1,
-                }}>Log in</Typography>
-            <form>  
+                    color:theme.palette.primary.main,
+                }}>Log In</Typography>
+            <form onSubmit={handleSubmit}>  
                <Stack direction={'column'} spacing={4} sx={{my:5}}>
-                  <TextField sx={{color:color}} label='userName' size='medium' variant='filled' fullWidth />
-                  <TextField  sx={{color:color}}label='password' type='password' size='medium' variant='filled' fullWidth />
+                  <TextField sx={{color:theme.palette.primary.light}}
+                  value={values.userName}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={errors.userName&&touched.userName? true:false}
+                  helperText={errors.userName&&touched.userName?errors.userName:''}
+                   name='userName' label='userName' size='medium' variant='filled' fullWidth />
 
-                  <Button variant='contained'  size='large' sx={{
-                    backgroundColor:color,
+                  <TextField  sx={{color:theme.palette.primary.light}}
+                   value={values.password}
+                   onChange={handleChange}
+                   onBlur={handleBlur}
+                   error={errors.password&&touched.password? true:false}
+                   helperText={errors.password&&touched.password?errors.password:''}
+                   name='password' label='password' type={showPassword?'text' : 'password'} size='medium' variant='filled' fullWidth 
+                  InputProps={{endAdornment:
+                  <InputAdornment position='end'>
+                    <IconButton
+                     aria-label="toggle password visibility"
+                     onClick={handleClickShowPassword}
+                     >
+                     {showPassword ? <VisibilityOff /> : <Visibility />}
+                   </IconButton>
+                  </InputAdornment>
+
+                }}
+                  />
+
+                  <Button variant='contained' type='submit' size='large' sx={{
+                    backgroundColor:theme.palette.primary.light,
                     '&:hover':{
-                        backgroundColor:color1
+                        backgroundColor:theme.palette.primary.main
                     }
-                  }} disableRipple disableElevation>Log in</Button>
+                  }} disableRipple disableElevation>Log In</Button>
+
+                  <Typography variant='body1' color={theme.palette.primary.light}> Don't have an account? 
+                  <Link to='/register' style={{textDecoration:'none'}}>Sign Up</Link>
+                  </Typography>
+                  <Typography variant='body1' color={'error'}> {loginError} </Typography>
+                 <GoogleAuth/>
                </Stack>
-           </form> 
+            </form> 
             </Box>
             </Stack>
-             
+           
         </Stack> 
     )
 }

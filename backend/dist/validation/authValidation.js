@@ -4,7 +4,7 @@ exports.adminLoginSchema = exports.userLoginSchema = exports.userRegisterSchema 
 const zod_1 = require("zod");
 exports.userRegisterSchema = zod_1.z.object({
     name: zod_1.z.string({ required_error: "please enter name" })
-        .min(3, { message: "First name must be atleast 3 characters" })
+        .min(3, { message: "name must be atleast 3 characters" })
         .trim(),
     userName: zod_1.z.string({ required_error: "please enter user name" })
         .min(3, { message: "user name must be atleast 3 characters" })

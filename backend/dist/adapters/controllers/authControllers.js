@@ -7,10 +7,11 @@ exports.authController = void 0;
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const userAuth_1 = require("@application/useCases/auth/userAuth");
 const adminAuth_1 = require("@application/useCases/auth/adminAuth");
-const authController = (userDbRepoImpl, userDbRepo, authServiceImpl, authService, adminDbImpl, adminDbRepo) => {
-    const userRepository = userDbRepo(userDbRepoImpl());
-    const authServices = authService(authServiceImpl());
-    const adminRepository = adminDbRepo(adminDbImpl());
+const authController = (userDbRepoImpl, userDbRepoInt, authServiceImpl, authServiceInt, adminDbImpl, adminDbRepoInt, googleAuthServiceImpl, googleAuthServiceInt) => {
+    const userRepository = userDbRepoInt(userDbRepoImpl());
+    const authServices = authServiceInt(authServiceImpl());
+    const adminRepository = adminDbRepoInt(adminDbImpl());
+    const googleAuthService = googleAuthServiceInt(googleAuthServiceImpl());
     const registerUser = (0, express_async_handler_1.default)(async (req, res) => {
         const user = req.body;
         const token = await (0, userAuth_1.userRegister)(user, userRepository, authServices);
@@ -38,10 +39,22 @@ const authController = (userDbRepoImpl, userDbRepo, authServiceImpl, authService
             token
         });
     });
+    const googleLogin = async (req, res) => {
+        const { credential } = req.body;
+        console.log(req.body, "req.body");
+        const userData = await (0, userAuth_1.loginWithGoogle)(credential, googleAuthService, userRepository, authServices);
+        res.json({
+            status: "success",
+            message: 'user verified',
+            token: userData.token,
+            userName: userData.userName
+        });
+    };
     return {
         registerUser,
         loginUser,
-        loginAdmin
+        loginAdmin,
+        googleLogin
     };
 };
 exports.authController = authController;

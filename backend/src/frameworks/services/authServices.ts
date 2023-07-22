@@ -25,11 +25,18 @@ export const authServices = () =>{
         return jwt.verify(token,configKeys.JWT_SECRET)
     }
 
+    const generateRandomNumber = () => {
+        // Generate a random number between 0 and 9999
+        const randomNumber: number = Math.floor(Math.random() * 10000);
+        return randomNumber
+    }
+
     return{
         encryptPassword,
         comparePassword,
         generateToken,
-        verifyToken
+        verifyToken,
+        generateRandomNumber
     }
 }
 

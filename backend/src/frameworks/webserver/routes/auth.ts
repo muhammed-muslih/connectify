@@ -8,6 +8,8 @@ import { adminRepoInterface } from '@application/repositories/adminRepoInterface
 import { adminRepoImpl} from '@frameworks/database/mongoDb/repositories/adminRepoImpl'
 import { validationMiddleware } from '../middlewares/validationMiddleware'
 import { userRegisterSchema ,userLoginSchema,adminLoginSchema} from '@validation/authValidation'
+import { googleAuthService } from '@frameworks/services/googleAuthService'
+import { googleAuthServiceInterface } from '@application/services/googleAuthServiceInterface'
 
 const authRouter = ()=>{
     const router = express.Router()
@@ -17,12 +19,19 @@ const authRouter = ()=>{
         authServices,
         authServiceInterface,
         adminRepoImpl,
-        adminRepoInterface
+        adminRepoInterface,
+        googleAuthService,
+        googleAuthServiceInterface,
     )
 
     router.post('/register',validationMiddleware(userRegisterSchema),controller.registerUser)
+
     router.post('/user-login',validationMiddleware(userLoginSchema),controller.loginUser)
+
     router.post('/admin-login',validationMiddleware(adminLoginSchema),controller.loginAdmin)
+
+    router.post('/google-login',controller.googleLogin)
+
     return router
 }
 

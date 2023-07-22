@@ -25,11 +25,17 @@ const authServices = () => {
     const verifyToken = (token) => {
         return jsonwebtoken_1.default.verify(token, config_1.default.JWT_SECRET);
     };
+    const generateRandomNumber = () => {
+        // Generate a random number between 0 and 9999
+        const randomNumber = Math.floor(Math.random() * 10000);
+        return randomNumber;
+    };
     return {
         encryptPassword,
         comparePassword,
         generateToken,
-        verifyToken
+        verifyToken,
+        generateRandomNumber
     };
 };
 exports.authServices = authServices;

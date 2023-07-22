@@ -18,8 +18,11 @@ const userSchema = new Schema(
         },
         password :{
             type: String,
-            required : [true,"please add password"],
         },
+        isGoogleUser :{
+            type: Boolean,
+            default: false,
+        }
     },
     {
          // automatically includes  created and updated time fields
