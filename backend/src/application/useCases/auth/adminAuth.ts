@@ -19,6 +19,6 @@ export const adminLogin = async(
     if(!isPasswordCorrect){
         throw new AppError("invalid credential",HttpStatus.UNAUTHORIZED)  
     }
-    const token = authServices.generateToken(admin._id)
+    const token = authServices.generateToken({adminId:admin._id,role:'admin'})
     return token
 }

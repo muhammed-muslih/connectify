@@ -1,3 +1,5 @@
+import { ObjectId } from "mongoose";
+
 export interface UserInterface {
     _id: string;
     userName: string;
@@ -11,3 +13,18 @@ export interface UserRegisterInterface {
     email: string;
     password?: string;
 } 
+
+export interface UserResInerface {
+    _id: string,
+    name?: string,
+    userName: string,
+    email: string,
+    isGoogleUser?: false,
+    profilePicture?: string
+    followers?: [],
+    followings?: [],
+    saved?: [],
+  }
+
+
+

@@ -19,6 +19,32 @@ const userSchema = new mongoose_1.Schema({
     password: {
         type: String,
     },
+    isGoogleUser: {
+        type: Boolean,
+        default: false,
+    },
+    profilePicture: {
+        type: String,
+        default: "",
+    },
+    bio: {
+        type: String
+    },
+    followers: {
+        type: [mongoose_1.Schema.Types.ObjectId],
+        ref: 'User',
+        default: []
+    },
+    followings: {
+        type: [mongoose_1.Schema.Types.ObjectId],
+        ref: 'User',
+        default: []
+    },
+    saved: {
+        type: [mongoose_1.Schema.Types.ObjectId],
+        ref: 'Posts',
+        default: []
+    }
 }, {
     // automatically includes  created and updated time fields
     timestamps: true

@@ -22,8 +22,7 @@ const schema = yup.object().shape({
     .min(3,'name must be atleast 3 characters')
     .matches(/^[a-zA-Z][a-zA-Z ]+[a-zA-Z]*$/,"enter a valid name"),
     userName:yup.string().required('please enter user name ')
-    .min(3,'user name must be atleast 3 characters')
-    .matches(/^[a-zA-Z][a-zA-Z ]+[a-zA-Z]*$/,"enter a valid name"),
+    .min(3,'user name must be atleast 3 characters'),
     email:yup.string().required('please enter email ')
     .email('plase enter valid email'),
     password:yup.string().required('please enter password ')
@@ -44,12 +43,14 @@ const RegisterForm = () => {
             try {
                 const res = await registerUser(values).unwrap()
                 if(res.status === 'success'){
-                    dispatch(setUserCredentials({ userName: values.userName, userToken: res.token }))
+                    dispatch(setUserCredentials({ userName: values.userName, userToken: res.token,id:res._id}))
                     actions.resetForm()
                 } 
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             }  catch (error : any) {
                 setRegisterError(error?.data?.message)
+                console.log(registerError,"error");
+                
             }
         }
     }
@@ -185,7 +186,6 @@ const RegisterForm = () => {
                   <Typography variant='body1' color={theme.palette.primary.light}>Already have an account? 
                   <Link to='/login' style={{textDecoration:'none'}}>Login</Link>
                   </Typography>
-                
                 <Typography variant='body1' color={'error'}> {registerError} </Typography>
                </Stack>
            </form> 

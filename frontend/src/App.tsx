@@ -7,7 +7,7 @@ import './App.css'
 const App = ()=>{
   return(
    <BrowserRouter>
-   <Routes>
+    <Routes>
     <Route path='/*' element={<UserRouter/>}/>
     <Route path='/admin/*' element={<AdminRouter/>}/>
    </Routes>

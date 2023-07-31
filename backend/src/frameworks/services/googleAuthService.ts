@@ -19,26 +19,16 @@ export  const googleAuthService = () =>{
                 idToken:token,
                 audience:configKeys.GOOGLE_AUTH_CLIENT_ID
             })
-
-            console.log(ticket,'googleAuthTicket');
         
             const payload = ticket.getPayload()
-            console.log(payload , 'google auth payload');
-            
-            console.log(payload);
             user.name = payload?.name ?? ""
-            user.userName = payload?.given_name?? ""
+            user.userName = payload?.given_name ?? ""
             user.email = payload?.email ?? ""
-            
         } catch (error) {
-
             console.log(error); 
-            
         }
-        
         return user
     }
-
     return {
         verifyUser
     }

@@ -1,17 +1,26 @@
-import { Card,CardActionArea,CardMedia ,Theme,CardContent, Stack,Box,Avatar,Typography,Divider} from "@mui/material"
+import { Card,CardActionArea,CardMedia ,Theme,CardContent, Stack,Box,Avatar,Typography,
+Divider,TextField, InputAdornment,IconButton} from "@mui/material"
 import { makeStyles} from '@mui/styles';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import TurnedInNotRoundedIcon from '@mui/icons-material/TurnedInNotRounded';
 import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded';
 import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
-
-
+import SendIcon from '@mui/icons-material/Send';
+import React, { useState,useRef, useEffect} from "react";
+import { PostPropsInterface } from "../../../types/PropsInterfaces";
+import { useLikeorDislikeMutation } from "../../../redux/Features/api/postApiSlice";
+import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
+import { useSelector } from "react-redux";
+import {selectUserId } from "../../../redux/Features/reducers/userAuthSlice";
+import Comment from "./comment";
+import { useAddCommentMutation } from "../../../redux/Features/api/postApiSlice";
+import toast, { Toaster } from "react-hot-toast";
 
 
 const useStyles = makeStyles((theme: Theme) =>({
     media : {
-        height :700,
+        height :750,    
         width:600,
         [theme.breakpoints.down('sm')]:{
             width:'100%'
@@ -20,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>({
     card :{
         marginBottom :theme.spacing(3),
         width:600,
-        height :700,
+        height :750,
         [theme.breakpoints.down('sm')]:{
             width:'100%'
          },
@@ -41,10 +50,85 @@ const useStyles = makeStyles((theme: Theme) =>({
 
 
 
-const Posts = () =>{
+
+
+const Posts:React.FC<PostPropsInterface> = ({_id,userName,imageName,imageUrl,description,profilePicture,likes,date,comments}) =>{
     const classes = useStyles()
+    const [isLiked,setisLiked] = useState<boolean>(false)
+    const [isCommentVisible ,setCommentVisible] = useState<boolean>(false)
+    const [likeOrDislike,{isLoading}] = useLikeorDislikeMutation()
+    const userId = useSelector(selectUserId)
+    const [numberOfLikes,setnumberOfLikes] = useState<number>(likes?.length??0)
+    const commentRef = useRef<HTMLInputElement | null>(null)
+    const [postedTime,setPostedTime] = useState<string>('')
+    const [isCommentOpen,setCommentOpen] = useState<boolean>(false)
+    const [commentText,setCommentText] = useState<string>('')
+    const commentHandler = () =>{
+        commentRef.current?.focus()
+        setCommentVisible(!isCommentVisible)
+    }   
+    const likeHandler = async () => {
+        if(!isLoading){
+            try {
+                const res = await likeOrDislike({postId:_id}).unwrap()
+            } catch (error) {
+                console.log(error); 
+            } 
+        }
+    }
+
+    useEffect(()=>{
+        const userLiked = likes?.find((id) => (id as any).toString() === userId);
+        if(userLiked){
+            setisLiked(true)
+        }    
+    },[])
+
+    useEffect(()=>{
+        if(date){
+        const targetDateTime = new Date(date);
+        const currentDateTime = new Date();
+        const timeDifferenceMs : number =  currentDateTime.getTime()-targetDateTime.getTime()
+        const seconds:number = Math.floor(timeDifferenceMs / 1000);
+        const minutes:number = Math.floor(seconds / 60);
+        const hours:number = Math.floor(minutes / 60);
+
+        if(seconds < 60){
+            setPostedTime('just now');
+
+        }else if(minutes < 60){
+            setPostedTime(`${minutes} minutes ago`)
+        }else {
+            setPostedTime(`${hours} hours ago`)
+        }
+
+        }
+        
+    },[])
+
+    const commentContainerHandler = () => {
+        setCommentOpen(!isCommentOpen)
+    }
+
+    const [addComment,{isLoading:isCommentAddLoading}] = useAddCommentMutation()
+    const handleAddComment = async() => {
+        if(commentText){
+            if(!isCommentAddLoading){
+                console.log(commentText);
+                const res = await addComment({postId:_id,text:commentText}).unwrap()
+                if(res.status === 'success'){
+                    toast.success("comment added successfully");
+                    setCommentVisible(false)
+                }
+                console.log(res,"addedd response");
+            }
+
+        }
+    }
+   
     return(
         <Stack 
+
         sx={{
             px :{
                 md:0,
@@ -53,6 +137,8 @@ const Posts = () =>{
         }} 
         mb={3}
         >
+      <Toaster position="top-right"/>
+
         <Box>
             <Stack className="icon" spacing={2} direction={'row'} pb={1} ml={1} sx={{
                 width:{
@@ -63,22 +149,41 @@ const Posts = () =>{
 
             }} justifyContent={'space-between'}>
                 <Stack direction={'row'} alignItems={'center'}>
-                <Avatar alt='profilePic' sx={{
-                    width:{
-                        lg:60,
-                    },
-                    height:{
-                        lg:60,
+
+                    {
+                        profilePicture?
+                        <Avatar alt='profilePic' sx={{
+                            width:{
+                                lg:60,
+                            },
+                            height:{
+                                lg:60,
+                            }
+                            }} 
+                            src= {profilePicture}/>
+                            :
+                            <Avatar alt='profilePic' sx={{
+                                width:{
+                                    lg:60,
+                                },
+                                height:{
+                                    lg:60,
+                                }
+                                }}>{userName?.split('')[0]} </Avatar>
+                            
                     }
-                    }} 
-                    src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60"/>
+                
+                <Stack>
                 <Typography sx={{
                     fontWeight:'bold',
                     pl:2,
                     fontSize:{
                         lg:16,
                     }
-                    }} className={classes.color}> userName</Typography>
+                    }} className={classes.color}>{userName}</Typography>
+                  <Typography variant="body2" sx={{pl:2}} className={classes.color} >{postedTime}</Typography>
+                  </Stack>
+
                 </Stack>
                 <Stack sx={{cursor:'pointer'}}>
                 <MoreHorizIcon sx={{marginRight:2}}  className={classes.color}/>
@@ -88,10 +193,9 @@ const Posts = () =>{
             <CardActionArea>
                 <CardMedia
                 className={classes.media}
-                image="https://images.unsplash.com/photo-1546961329-78bef0414d7c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80"
+                image={imageUrl}
                 />
             </CardActionArea>
-            <CardContent>Lorem ipsum dolor sit amet consectetur adipisicing elit. Veritatis, quam consequatur eligendi sit incidunt neque itaque minus libero consequuntur vitae aperiam assumenda delectus tempore corrupti! Illo harum enim amet deserunt!</CardContent>
         </Card>
 
 
@@ -105,8 +209,29 @@ const Posts = () =>{
 
             }} justifyContent={'space-between'}>
                 <Stack direction={'row'}>
-                    <FavoriteBorderRoundedIcon className={classes.bottomIcon} sx={{fontSize:28}}/>
-                    <ChatBubbleOutlineOutlinedIcon className={classes.bottomIcon} sx={{fontSize:28}} />
+
+                    {isLiked? 
+                         <FavoriteRoundedIcon color={'info'} className={classes.bottomIcon} sx={{fontSize:28}}
+                         onClick={()=>{
+                            likeHandler()
+                            setisLiked(false)
+                            setnumberOfLikes(numberOfLikes-1)
+
+                         }}
+                         />
+                         :
+                        <FavoriteBorderRoundedIcon className={classes.bottomIcon} sx={{fontSize:28}}
+                        onClick={()=>{
+                            likeHandler()
+                            setisLiked(true)
+                            setnumberOfLikes(numberOfLikes+1)
+
+                        }}
+                        />
+                    }
+                    <ChatBubbleOutlineOutlinedIcon className={classes.bottomIcon} sx={{fontSize:28}} 
+                    onClick={commentHandler}
+                    />
                     <SendOutlinedIcon  className={classes.bottomIcon} sx={{fontSize:28}} />
                 </Stack>
                 <Stack sx={{cursor:'pointer'}}>
@@ -116,11 +241,34 @@ const Posts = () =>{
 
            <Stack p={2} pl={3}>
             <Box pr={10}>
-                   <Typography variant="body1">5,421 likes</Typography>
-                    <Typography variant="body2">
-                     <span style={{fontWeight:'bolder',paddingRight:10}}>UserName</span> Lorem ipsum dolor sit amet consectetur adipisicing elit.🍃❤️
+                   <Typography variant="body1"> {numberOfLikes}   likes</Typography>
+                    <Typography variant="body1">
+                     <span style={{fontWeight:'bolder',paddingRight:10,fontSize:16}} className={classes.color}>{userName}</span> {description}
                     </Typography >
-                    <Typography variant='body2'>View all comments.....</Typography>
+                    <Typography variant='body2' sx={{fontWeight:'medium',cursor:'pointer'}}>{comments?.length !=0?<span
+                    onClick={commentContainerHandler}
+                    >view {comments?.length} comments....</span>:<span>no comments....</span>}</Typography>
+                    <Stack>
+                        {
+                            isCommentOpen&&<Comment comments={comments} postId={_id}/>
+                        }
+                    </Stack>
+                    <Stack>
+                   {
+                    isCommentVisible&&
+                    <TextField id="standard-basic" placeholder="add comment..." variant="standard"
+                    onChange={(e)=> setCommentText(e.target.value)}
+                    inputRef={commentRef}
+                    InputProps={{endAdornment:
+                     <InputAdornment position="end">
+                     <IconButton aria-label="comment send icon" onClick={handleAddComment}>
+                     <SendIcon />
+                     </IconButton>
+                     </InputAdornment>
+                    }}
+                    />
+                   }
+                   </Stack>
             </Box>
            </Stack>
         </Box>

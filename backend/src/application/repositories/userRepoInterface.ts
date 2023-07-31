@@ -9,11 +9,34 @@ export const userRepoInterface =(repository:ReturnType<UserRepoImpl>) =>{
 
     const getUserByUserName = async (userName : string) => await repository.getUserByUserName(userName)
 
+    const getUserById = async (id: string) => await repository.getUserById(id)
+
+    const searchUser = async(query : string) => await repository.searchUser(query)
+
+    const addUserInFollowingList = async(userId:string,followedUserId:string) => 
+    await repository.addUserInFollowingList(userId,followedUserId)
+
+    const addUserInFollowersList = async(userId : string,followedUserId:string) =>
+    await repository.addUserInFollowersList(userId,followedUserId)
+
+    const removeUserFromFollowingList = async(userId : string,unFollowedUserId:string) =>
+    await repository.removeUserFromFollowingList(userId,unFollowedUserId)
+
+    const removeUserFromFollowersList = async(userId : string,unFollowedUserId:string) =>
+    await repository.removeUserFromFollowersList(userId,unFollowedUserId)
+        
+
 
     return {
         registerUser,
         getUserByEmail,
-        getUserByUserName
+        getUserByUserName,
+        getUserById,
+        searchUser,
+        addUserInFollowingList,
+        addUserInFollowersList,
+        removeUserFromFollowingList,
+        removeUserFromFollowersList
     }
 
 }

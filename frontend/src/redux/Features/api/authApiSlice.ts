@@ -10,8 +10,9 @@ export const authApiSlice = apiSlice.injectEndpoints({
             query : data =>({
                 url :'auth/register',
                 method:'POST',
-                body :data
-            })
+                body :data,
+            }),
+            invalidatesTags:['user']
         }),
 
         userLogin : builder.mutation<RegisterResponseInt,UserLoginInterface>({
@@ -19,8 +20,8 @@ export const authApiSlice = apiSlice.injectEndpoints({
                 url :'auth/user-login',
                 method:'POST',
                 body :data
-            })
-
+            }),
+            invalidatesTags : ['user']
         }),
 
         adminLogin : builder.mutation<RegisterResponseInt,AdminLoginInterface>({
@@ -28,7 +29,8 @@ export const authApiSlice = apiSlice.injectEndpoints({
                 url:'auth/admin-login',
                 method:'POST',
                 body :data,
-            })
+            }),
+            invalidatesTags : ['admin']
         }),
         
         googleLogin : builder.mutation<GoogleResponseInt,{credential: string}>({

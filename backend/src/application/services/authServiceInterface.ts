@@ -1,4 +1,5 @@
 import { AuthServices } from "@frameworks/services/authServices"
+import { TokenGenerateInt } from "@interfaces/tokenInterface"
 
 export const authServiceInterface = (service:ReturnType <AuthServices>) => {
 
@@ -6,15 +7,18 @@ export const authServiceInterface = (service:ReturnType <AuthServices>) => {
 
     const comparePassword = (password:string,hashedpassword : string) => service.comparePassword(password,hashedpassword)
 
-    const generateToken = (payload:string) => service.generateToken(payload)
+    const generateToken = (payload:TokenGenerateInt) => service.generateToken(payload)
 
     const verifyToken = (token : string) => service.verifyToken(token)
+
+    const generateRandomNumber = () =>service.generateRandomNumber()
 
     return {
         encryptPassword,
         comparePassword,
         generateToken,
-        verifyToken
+        verifyToken,
+        generateRandomNumber
     }
 
 }

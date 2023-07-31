@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import React from 'react';
 import {Stack,Box,Divider,Typography,TextField,Button,InputAdornment,IconButton} from '@mui/material'
 import Visibility from '@mui/icons-material/Visibility';
@@ -20,8 +18,7 @@ import GoogleAuth from './GoogleAuth';
 
 const schema = yup.object().shape({
     userName:yup.string().required('please enter user name ')
-    .min(3,'user name must be atleast 3 characters')
-    .matches(/^[a-zA-Z][a-zA-Z ]+[a-zA-Z]*$/,"enter a valid name"),
+    .min(3,'user name must be atleast 3 characters'),
     password:yup.string().required('please enter password ')
     .min(5,"Password must be atleast 5 characters")
     .max(15,'Password must be less than 15 characters')
@@ -40,7 +37,7 @@ const LoginForm : React.FC = () =>{
             try {
                 const res = await loginUser(values).unwrap()
                 if(res.status === 'success'){
-                    dispatch(setUserCredentials({ userName: values.userName, userToken: res.token }))
+                    dispatch(setUserCredentials({ userName: values.userName, userToken: res.token,id:res._id}))
                     actions.resetForm()
                 } 
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -162,7 +159,8 @@ const LoginForm : React.FC = () =>{
                   <Link to='/register' style={{textDecoration:'none'}}>Sign Up</Link>
                   </Typography>
                   <Typography variant='body1' color={'error'}> {loginError} </Typography>
-                 <GoogleAuth/>
+                 
+                  <GoogleAuth/>
                </Stack>
             </form> 
             </Box>

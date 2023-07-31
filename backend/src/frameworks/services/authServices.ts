@@ -1,6 +1,9 @@
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import configKeys from '../../config'
+import { TokenGenerateInt } from '@interfaces/tokenInterface'
+
+
 export const authServices = () =>{
 
     const encryptPassword = async (password : string) =>{
@@ -13,7 +16,7 @@ export const authServices = () =>{
         return bcrypt.compare(password,hashedPassword)
     }
 
-    const generateToken = (payload : string) =>{
+    const generateToken = (payload : TokenGenerateInt) =>{
         const token = jwt.sign({payload},configKeys.JWT_SECRET,{
             expiresIn:'3d'
         })

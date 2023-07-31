@@ -6,11 +6,13 @@ const authServiceInterface = (service) => {
     const comparePassword = (password, hashedpassword) => service.comparePassword(password, hashedpassword);
     const generateToken = (payload) => service.generateToken(payload);
     const verifyToken = (token) => service.verifyToken(token);
+    const generateRandomNumber = () => service.generateRandomNumber();
     return {
         encryptPassword,
         comparePassword,
         generateToken,
-        verifyToken
+        verifyToken,
+        generateRandomNumber
     };
 };
 exports.authServiceInterface = authServiceInterface;

@@ -25,11 +25,8 @@ const authRouter = ()=>{
     )
 
     router.post('/register',validationMiddleware(userRegisterSchema),controller.registerUser)
-
     router.post('/user-login',validationMiddleware(userLoginSchema),controller.loginUser)
-
     router.post('/admin-login',validationMiddleware(adminLoginSchema),controller.loginAdmin)
-
     router.post('/google-login',controller.googleLogin)
 
     return router

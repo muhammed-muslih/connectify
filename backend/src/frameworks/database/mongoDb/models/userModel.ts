@@ -1,4 +1,4 @@
-import mongoose ,{Schema, model} from 'mongoose';
+import mongoose ,{Mongoose, Schema, model} from 'mongoose';
 
 const userSchema = new Schema(
     {
@@ -22,6 +22,28 @@ const userSchema = new Schema(
         isGoogleUser :{
             type: Boolean,
             default: false,
+        },
+        profilePicture: {
+            type: String,
+            default: "",
+        },
+        bio :{
+            type: String
+        },
+        followers: {
+            type:[Schema.Types.ObjectId],
+            ref:'User',
+            default:[]
+        },
+        followings: {
+            type:[Schema.Types.ObjectId],
+            ref:'User',
+            default:[]
+        },
+        saved :{
+            type:[Schema.Types.ObjectId],
+            ref:'Posts',
+            default:[]
         }
     },
     {

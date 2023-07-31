@@ -10,5 +10,9 @@ const configKeys = {
     MONGO_DB_URL: process.env.MONGO_DB_URL,
     JWT_SECRET: process.env.JWT_SECRET,
     GOOGLE_AUTH_CLIENT_ID: process.env.GOOGLE_AUTH_CLIENT_ID,
+    S3_ACCESS_KEY: process.env.S3_ACCESS_KEY,
+    S3_SECRET_ACCESS_KEY: process.env.S3_SECRET_ACCESS_KEY,
+    S3_BUCKET_NAME: process.env.S3_BUCKET_NAME,
+    S3_BUCKET_REGION: process.env.S3_BUCKET_REGION
 };
 exports.default = configKeys;

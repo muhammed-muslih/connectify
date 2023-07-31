@@ -11,9 +11,8 @@ module.exports = {
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    ecmaVersion: 'latest',
+    ecmaVersion: 2020, // Use a specific ECMAScript version like 6, 2015, 2017, or 2020
     sourceType: 'module',
-    project: true,
     tsconfigRootDir: __dirname,
   },
   plugins: ['react-refresh'],
@@ -22,10 +21,8 @@ module.exports = {
       'warn',
       { allowConstantExport: true },
     ],
-    '@typescript-eslint/no-non-null-assertion': 'off'
-    
+    '@typescript-eslint/no-non-null-assertion': 'off',
   },
-}
-
+};
 
 

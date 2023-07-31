@@ -1,11 +1,14 @@
-import { AppBar, Toolbar ,Typography,IconButton,Avatar,Stack }from "@mui/material"
+import { AppBar, Toolbar ,Typography,IconButton,Avatar,Stack,TextField}from "@mui/material"
 import Diversity2Icon from '@mui/icons-material/Diversity2';
 import './NavBar.css'
+import { useSelector } from "react-redux";
+import { selectUserName } from "../../../redux/Features/reducers/userAuthSlice";
 
+ 
 
 
 const NavBar = () => {
-    
+ const userName = useSelector(selectUserName) 
     return (
         <AppBar position="fixed">
             <Toolbar className='nav'>
@@ -38,11 +41,40 @@ const NavBar = () => {
                }}
               
                > 
+              
                <IconButton size="medium"><Diversity2Icon sx={{fontSize:{xs:32,sm:36,md:40},
-                fontWeight:'bolder',color:'white'}}/></IconButton>
+                fontWeight:'bolder',color:'white',
+                display:{
+                    xs:'none',
+                    sm:'none',
+                    md:'block',
+                    lg:'none'
+                }
+                }}/></IconButton>
                Connectify</Typography>
 
-               <Stack className="icon" spacing={2} direction={'row'}>
+               <Stack>
+               <TextField id="outlined-search" variant="standard"
+                sx={{borderColor:'white',
+                bgcolor:'white',
+                borderRadius:1,
+                width:{
+                    xs:'90%',
+                    sm:'90%',
+                    md:'1000',
+                    lg:'100%'
+                },
+                display:{
+                    xl:'none'
+                }
+                }} type="search" />
+               </Stack>
+               <Stack className="icon" marginRight={{
+                xs:1,
+                sm:2,
+                md:6,
+                lg:8
+               }} spacing={2} direction={'row'}>
                 <Avatar alt='profilePic' sx={{
                     width:{
                         lg:60,
@@ -66,7 +98,7 @@ const NavBar = () => {
                         sm:14,
                         xs:12
                     }
-                    }}> userName</Typography>
+                    }}>{userName?userName : 'username'} </Typography>
                </Stack>
             </Toolbar>
         </AppBar>

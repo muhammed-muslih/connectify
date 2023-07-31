@@ -3,11 +3,25 @@ import { BASE_URL } from '../../../url'
 
 
 const baseQuery = fetchBaseQuery({
-    baseUrl:BASE_URL
+    baseUrl:BASE_URL,
+    prepareHeaders : (headers, {getState}:{getState:any}) => {
+        const userToken = getState()?.userAuth.token
+        const adminToken = getState()?.adminAuth.token
+        
+        if(window.location.href.includes('amdmin')) {
+            headers.set('authorization',`Bearer ${adminToken}`)
+        }else {
+            headers.set('authorization',`Bearer ${userToken}`)
+        }
+        return headers
+    }
 }) 
 
 export const apiSlice = createApi({
     baseQuery,
     reducerPath:'api',
+    tagTypes : ['user','admin','search','post'],
     endpoints : builder => ({})                 
 })
+
+export type ApiState = ReturnType<typeof apiSlice.reducer>;

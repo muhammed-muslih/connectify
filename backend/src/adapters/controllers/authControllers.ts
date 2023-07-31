@@ -32,21 +32,23 @@ export  const authController = (
 
     const registerUser = asyncHandler(async(req :Request,res :Response) =>{
         const user : UserRegisterType = req.body
-        const token = await userRegister(user,userRepository,authServices)
+        const result= await userRegister(user,userRepository,authServices)
         res.json({
             status:"success",
             message:"new user registered",
-            token
+            token:result.token,
+            _id:result.userId 
         })
     })
 
     const loginUser = asyncHandler(async(req :Request,res :Response) =>{
         const {userName,password} :UserLoginType = req.body  
-        const token = await userLogin(userName,password,userRepository,authServices)
+        const result = await userLogin(userName,password,userRepository,authServices)
         res.json({
             status:"success",
             message:"user verified",
-            token
+            token:result.token,
+            _id:result.userId
         })
     })
 
@@ -63,14 +65,13 @@ export  const authController = (
 
     const googleLogin = async (req:Request,res : Response) => {
         const {credential} :{credential : string} = req.body
-        console.log(req.body,"req.body");
-        
         const userData = await loginWithGoogle(credential,googleAuthService,userRepository,authServices)
         res.json({
             status:"success",
             message:'user verified',
             token:userData.token,
-            userName:userData.userName
+            userName:userData.userName,
+            _id:userData.userId
         })
         
     }

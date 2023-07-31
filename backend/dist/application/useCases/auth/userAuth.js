@@ -19,8 +19,11 @@ const userRegister = async (user, userRepository, authServices) => {
     }
     user.password = await authServices.encryptPassword(user.password);
     const { _id: userId } = await userRepository.registerUser(user);
-    const token = authServices.generateToken(userId.toString());
-    return token;
+    const token = authServices.generateToken({ userId: userId.toString(), role: 'user' });
+    return {
+        token,
+        userId
+    };
 };
 exports.userRegister = userRegister;
 const userLogin = async (userName, password, userRepository, authServices) => {
@@ -33,26 +36,36 @@ const userLogin = async (userName, password, userRepository, authServices) => {
     if (!isPasswordCorrect) {
         throw new appError_1.default('Sorry, your password was incorrect. Please double-check your password', httpStatus_1.HttpStatus.UNAUTHORIZED);
     }
-    const token = authServices.generateToken(user._id);
-    return token;
+    const token = authServices.generateToken({ userId: user._id, role: 'user' });
+    return {
+        token,
+        userId: user._id
+    };
 };
 exports.userLogin = userLogin;
 const loginWithGoogle = async (credential, googleAuthService, userRepository, authServices) => {
     const user = await googleAuthService.verifyUser(credential.toString());
     const isUserExist = await userRepository.getUserByEmail(user.email);
     if (isUserExist) {
-        const token = authServices.generateToken(isUserExist._id);
+        const token = authServices.generateToken({ userId: isUserExist._id, role: 'user' });
         return {
             token,
-            userName: isUserExist.userName
+            userName: isUserExist.userName,
+            userId: isUserExist._id
         };
     }
     else {
+        const isUserNameExist = await userRepository.getUserByUserName(user.userName);
+        if (isUserNameExist) {
+            const randomeNumber = authServices.generateRandomNumber();
+            user.userName = user.userName + randomeNumber;
+        }
         const { _id: userId } = await userRepository.registerUser(user);
-        const token = authServices.generateToken(userId.toString());
+        const token = authServices.generateToken({ userId: userId.toString(), role: 'user' });
         return {
             token,
-            userName: user.userName
+            userName: user.userName,
+            userId: userId
         };
     }
 };

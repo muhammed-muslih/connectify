@@ -31,5 +31,6 @@ const adminAuthSlice = createSlice({
 })
 
 export default adminAuthSlice.reducer
+export type AdminAuthState = typeof adminAuthSlice.reducer
 export const {setAdminCredentials,logoutAdmin} = adminAuthSlice.actions
 export const selectAdminToken = (state:RootState) =>state.adminAuth.token
