@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme : Theme) => ({
     }
 })) 
 
-const ProfileSection :React.FC<ProfileProps>  = ({isUserPost,setUserPost,setCurrentUser,isCurrentUser}) => {
+const ProfileSection :React.FC<ProfileProps>  = ({isUserPost,setUserPost,setCurrentUser,isCurrentUser,noOfPosts}) => {
     const classes = useStyles()
     const currentUserId = useSelector(selectUserId)
     const [isFollow,setIsFollow] = useState<boolean | undefined>(false)
@@ -89,8 +89,14 @@ const ProfileSection :React.FC<ProfileProps>  = ({isUserPost,setUserPost,setCurr
 
     const [followAndUnfollow,{isLoading:Followloading}] = useFollowAndUnFollowMutation()
     const followHandler = async () => {
-        const res = await followAndUnfollow({followedUserId:userId}).unwrap()
-        console.log(res);
+        try {
+            const res = await followAndUnfollow({followedUserId:userId}).unwrap()
+            console.log(res);
+            
+        } catch (error) {
+            console.log(error);   
+        }
+       
     }
     return (
         <Box ml={{  
@@ -180,7 +186,7 @@ const ProfileSection :React.FC<ProfileProps>  = ({isUserPost,setUserPost,setCurr
                 
                <Box className = {classes.displayCls}>
                 <Stack  className={classes.profileContentBoxs} direction={'row'} spacing={6}>
-                    <Typography variant="h6" sx={{fontWeight:'bolder'}} className={classes.text}>2 posts</Typography>
+                    <Typography variant="h6" sx={{fontWeight:'bolder'}} className={classes.text}>{noOfPosts} posts</Typography>
                     <Typography variant="h6" sx={{fontWeight:'bolder'}} className={classes.text}>{followers?.length} followers</Typography>
                     <Typography variant="h6" sx={{fontWeight:'bolder'}} className={classes.text}>{followings?.length}following</Typography>
                 </Stack>
@@ -236,7 +242,7 @@ const ProfileSection :React.FC<ProfileProps>  = ({isUserPost,setUserPost,setCurr
                 
                <Box className = {classes.displayCls1}>
                 <Stack  className={classes.profileContentBoxs} direction={'row'} spacing={2}>
-                    <Typography variant="body1" sx={{fontWeight:'bolder'}} className={classes.text}>2 posts</Typography>
+                    <Typography variant="body1" sx={{fontWeight:'bolder'}} className={classes.text}>{noOfPosts} posts</Typography>
                     <Typography variant="body1" sx={{fontWeight:'bolder'}} className={classes.text}>{followers?.length} followers</Typography>
                     <Typography variant="body1" sx={{fontWeight:'bolder'}} className={classes.text}>{followings?.length} following</Typography>
                 </Stack>

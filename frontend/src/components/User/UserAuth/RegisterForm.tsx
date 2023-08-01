@@ -80,11 +80,11 @@ const RegisterForm = () => {
     return(
         <Stack sx={{alignItems:'center',
         my:{
-            xs:3,
-            sm:8,
-            md:10,
-            lg:12,
-            xl:14,
+            xs:0,
+            sm:1,
+            md:2,
+            lg:4,
+            xl:6,
 
         }}} >
             <Stack display={'flex'} 
@@ -117,14 +117,14 @@ const RegisterForm = () => {
             <Box 
              flexDirection="column"
              alignItems="center"
-             p={8}
+             p={6}
              
              sx={{
                 px:{
-                  lg:16,
-                  md:12,
-                  sm:8,
-                  xs:4
+                  lg:14,
+                  md:10,
+                  sm:6,
+                  xs:2
              }}}
             >
 

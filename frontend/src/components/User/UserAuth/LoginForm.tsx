@@ -67,11 +67,11 @@ const LoginForm : React.FC = () =>{
     return(
         <Stack sx={{alignItems:'center',
         my:{
-            xs:5,
-            sm:10,
-            md:12,
-            lg:14,
-            xl:18,
+            xs:2,
+            sm:4,
+            md:6,
+            lg:8,
+            xl:12,
 
         }}} >
             <Stack display={'flex'} 
@@ -105,13 +105,13 @@ const LoginForm : React.FC = () =>{
             <Box 
              flexDirection="column"
              alignItems="center"
-             p={8}
+             p={6}
              sx={{
                 px:{
-                  lg:16,
-                  md:12,
-                  sm:8,
-                  xs:4
+                  lg:12,
+                  md:10,
+                  sm:6,
+                  xs:2
              }}}
             >
                 <Typography variant='h4' sx={{

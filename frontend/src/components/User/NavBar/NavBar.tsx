@@ -4,10 +4,11 @@ import './NavBar.css'
 import { useSelector } from "react-redux";
 import { selectUserName } from "../../../redux/Features/reducers/userAuthSlice";
 
+
  
 
 
-const NavBar = () => {
+const NavBar = ({user,admin}:{user?:any,admin?:any}) => {
  const userName = useSelector(selectUserName) 
     return (
         <AppBar position="fixed">
@@ -52,8 +53,10 @@ const NavBar = () => {
                 }
                 }}/></IconButton>
                Connectify</Typography>
-
-               <Stack>
+              
+              {
+                user&&
+                <Stack>
                <TextField id="outlined-search" variant="standard"
                 sx={{borderColor:'white',
                 bgcolor:'white',
@@ -69,6 +72,8 @@ const NavBar = () => {
                 }
                 }} type="search" />
                </Stack>
+              }
+              
                <Stack className="icon" marginRight={{
                 xs:1,
                 sm:2,
@@ -89,7 +94,7 @@ const NavBar = () => {
                         xs:30
                     }
                     }} 
-                    src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60"/>
+                    src={user?"https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60":''}/>
                 <Typography sx={{
                     fontWeight:'bold',
                     fontSize:{
@@ -98,7 +103,7 @@ const NavBar = () => {
                         sm:14,
                         xs:12
                     }
-                    }}>{userName?userName : 'username'} </Typography>
+                    }}>{user&&userName?userName : 'Admin'} </Typography>
                </Stack>
             </Toolbar>
         </AppBar>

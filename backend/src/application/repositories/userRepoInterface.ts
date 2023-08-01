@@ -24,9 +24,17 @@ export const userRepoInterface =(repository:ReturnType<UserRepoImpl>) =>{
 
     const removeUserFromFollowersList = async(userId : string,unFollowedUserId:string) =>
     await repository.removeUserFromFollowersList(userId,unFollowedUserId)
+
+    const SavePosts = async(userId : string,postId : string) => await repository.SavePosts(userId,postId)
+
+    const removeSavedPost =  async(userId:string,postId:string) => await repository.removeSavedPost(userId,postId)
+
+    const getSavedPost = async(userId:string) => await repository.getSavedPost(userId)
+
+    const getAllUsers = async() => await repository.getAllUsers()
+
+    const blockAndUnblock = async(userId:string,status:boolean) => await repository.blockAndUnblock(userId,status)
         
-
-
     return {
         registerUser,
         getUserByEmail,
@@ -36,7 +44,12 @@ export const userRepoInterface =(repository:ReturnType<UserRepoImpl>) =>{
         addUserInFollowingList,
         addUserInFollowersList,
         removeUserFromFollowingList,
-        removeUserFromFollowersList
+        removeUserFromFollowersList,
+        SavePosts,
+        removeSavedPost,
+        getSavedPost,
+        getAllUsers,
+        blockAndUnblock
     }
 
 }

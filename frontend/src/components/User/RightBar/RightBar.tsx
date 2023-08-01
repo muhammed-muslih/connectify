@@ -43,7 +43,7 @@ const RightBar = () =>{
     try {
         const result =await search({searchValue}).unwrap()
         if(result.status === 'success'){
-            setUsers(result.user)
+            setUsers(result.users)
         }
     } catch (error) {
         console.log(error);  

@@ -19,6 +19,12 @@ export interface RegisterResponseInt{
    readonly message:string,
  }
 
+ export interface SavedPostResInt {
+   readonly status:string,
+   saved:[string]
+
+ }
+
 
 
  

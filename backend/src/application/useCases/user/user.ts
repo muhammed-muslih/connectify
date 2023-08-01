@@ -1,7 +1,7 @@
 import { UserRepoInterface } from "@application/repositories/userRepoInterface"
 import { HttpStatus } from "@interfaces/httpStatus";
 import AppError from "@utils/appError";
-import mongoose from "mongoose";
+import mongoose, { Mongoose } from "mongoose";
 
 
 
@@ -61,4 +61,68 @@ export const unFollowUser = async(
     return {
         message : 'unfollowed successfully'
     }
+}
+
+export const saveUnSavePosts = async (
+    userId: string , 
+    postId: string, 
+    userRepository : ReturnType<UserRepoInterface>
+    ) => {
+        const user = await userRepository.getUserById(userId);
+        if(!user) {
+            throw new AppError('User not found',HttpStatus.BAD_REQUEST)
+        }
+        const validPostId = new mongoose.Types.ObjectId(postId)
+        const isSaved = user.saved.includes(validPostId)
+        let message;
+        if(isSaved){
+            await userRepository.removeSavedPost(userId,postId)
+            message = 'post unsaved successfully'
+        }else {
+            await userRepository.SavePosts(userId,postId)
+            message = 'post saved successfully'
+        }
+
+        return message
+
+}
+
+
+export const getUserSavedPosts = async (
+    userId:string,
+    userRepository : ReturnType<UserRepoInterface>
+) => {
+        const saved = await userRepository.getSavedPost(userId)
+        if(!saved) {
+            throw new AppError ('Could not find saved post' ,HttpStatus.BAD_REQUEST)
+        }
+        return saved
+}
+
+
+export const allUsers  = async(
+    userRepository : ReturnType<UserRepoInterface>
+) => {
+    const users =  await userRepository.getAllUsers()
+    return users
+}  
+
+export const changeUserStatus = async(
+    userId : string,
+    userRepository : ReturnType<UserRepoInterface>
+) => {
+    const user = await userRepository.getUserById(userId)
+    if(!user) {
+        throw new AppError('user not found',HttpStatus.BAD_REQUEST)
+    }
+    const status = !user.isBlocked
+    let message
+    if(status) {
+        message = 'user blocked successfully'
+    }else {
+        message = 'user unblocked successfully'
+    }
+    
+    await userRepository.blockAndUnblock(userId,status)
+    return message
 }

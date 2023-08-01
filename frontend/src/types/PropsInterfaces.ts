@@ -4,21 +4,10 @@ export interface ProfileProps {
     isCurrentUser:boolean;
     setCurrentUser:React.Dispatch<React.SetStateAction<boolean>>
     userId?:string|undefined
+    noOfPosts? : number
   }
 
-  // export interface ProfileProps {
-  //   isUserPost: boolean;
-  //   setUserPost: React.Dispatch<React.SetStateAction<boolean>>;
-  //   isCurrentUser:boolean;
-  //   setCurrentUser:React.Dispatch<React.SetStateAction<boolean>>
-  //   profileName:string|undefined
-  //   followers:string[]|undefined
-  //   followings:string[]|undefined
-  //   bio : string
-  //   profilePicture : string|undefined
-  //   userId?:string|undefined
-  // }
-
+  
 
   export interface PostPropsInterface {
     _id?:string
@@ -29,7 +18,8 @@ export interface ProfileProps {
     profilePicture?: string | undefined,
     likes?:[],
     date?:Date | string|undefined
-    comments?:[]
+    comments?:[],
+    saved?:string[]
    }
 
     interface PostInterface {
@@ -44,6 +34,19 @@ export interface ProfileProps {
     posts : PostInterface[] | undefined
 
   }
+
+export interface UserTableProps {
+  tableRow : {
+    UserName: string,
+    name: string,
+    email: string,
+    status: string,
+    isBlocked?: boolean | undefined,
+    joiningDate: string | undefined
+    id: string
+  }[] 
+  tableHead : string[] 
+} 
 
   
   

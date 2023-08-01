@@ -9,14 +9,15 @@ export interface UserInerface {
     followings?: [],
     saved?: [],
     bio?: string,
-    createdAt: string
+    createdAt: Date,
+    isBlocked?:boolean
   }
 
 
   export interface UsersResInterface {
     readonly status:string,
-    readonly message:string,
-    readonly user:UserInerface[]
+    readonly message?:string,
+    readonly users:UserInerface[]
   }
  
   

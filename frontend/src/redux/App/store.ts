@@ -27,3 +27,4 @@ export const persistor: Persistor = persistStore(store);
 export type State = typeof store
 export type RootState = ReturnType<typeof store.getState>
 export type AppDispatch = typeof store.dispatch
+

@@ -16,11 +16,13 @@ import {selectUserId } from "../../../redux/Features/reducers/userAuthSlice";
 import Comment from "./comment";
 import { useAddCommentMutation } from "../../../redux/Features/api/postApiSlice";
 import toast, { Toaster } from "react-hot-toast";
+import BookmarkIcon from '@mui/icons-material/Bookmark';
+import { useSaveAndUnSavePostMutation } from "../../../redux/Features/api/userApiSlice";
 
 
 const useStyles = makeStyles((theme: Theme) =>({
     media : {
-        height :750,    
+        height :730,    
         width:600,
         [theme.breakpoints.down('sm')]:{
             width:'100%'
@@ -29,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>({
     card :{
         marginBottom :theme.spacing(3),
         width:600,
-        height :750,
+        height :730,
         [theme.breakpoints.down('sm')]:{
             width:'100%'
          },
@@ -48,11 +50,7 @@ const useStyles = makeStyles((theme: Theme) =>({
 }))
 
 
-
-
-
-
-const Posts:React.FC<PostPropsInterface> = ({_id,userName,imageName,imageUrl,description,profilePicture,likes,date,comments}) =>{
+const Posts:React.FC<PostPropsInterface> = ({_id,userName,imageName,imageUrl,description,profilePicture,likes,date,comments,saved}) =>{
     const classes = useStyles()
     const [isLiked,setisLiked] = useState<boolean>(false)
     const [isCommentVisible ,setCommentVisible] = useState<boolean>(false)
@@ -63,10 +61,14 @@ const Posts:React.FC<PostPropsInterface> = ({_id,userName,imageName,imageUrl,des
     const [postedTime,setPostedTime] = useState<string>('')
     const [isCommentOpen,setCommentOpen] = useState<boolean>(false)
     const [commentText,setCommentText] = useState<string>('')
+    const [isSaved,setIsSaved] = useState<boolean>(false)
+
+
     const commentHandler = () =>{
         commentRef.current?.focus()
         setCommentVisible(!isCommentVisible)
     }   
+
     const likeHandler = async () => {
         if(!isLoading){
             try {
@@ -79,8 +81,13 @@ const Posts:React.FC<PostPropsInterface> = ({_id,userName,imageName,imageUrl,des
 
     useEffect(()=>{
         const userLiked = likes?.find((id) => (id as any).toString() === userId);
+        const userSaved = saved?.find((id) => (id as any).toString() === _id);
+
         if(userLiked){
             setisLiked(true)
+        }
+        if(userSaved){
+            setIsSaved(true)
         }    
     },[])
 
@@ -92,18 +99,19 @@ const Posts:React.FC<PostPropsInterface> = ({_id,userName,imageName,imageUrl,des
         const seconds:number = Math.floor(timeDifferenceMs / 1000);
         const minutes:number = Math.floor(seconds / 60);
         const hours:number = Math.floor(minutes / 60);
+        const days : number = Math.floor(hours /24)
 
-        if(seconds < 60){
+        if(seconds <= 60){
             setPostedTime('just now');
-
-        }else if(minutes < 60){
+        }else if(minutes <= 60){
             setPostedTime(`${minutes} minutes ago`)
-        }else {
+        }else if(hours<=24){
             setPostedTime(`${hours} hours ago`)
-        }
+        }else {
+            setPostedTime(`${days} days ago`)
 
         }
-        
+      }
     },[])
 
     const commentContainerHandler = () => {
@@ -114,15 +122,34 @@ const Posts:React.FC<PostPropsInterface> = ({_id,userName,imageName,imageUrl,des
     const handleAddComment = async() => {
         if(commentText){
             if(!isCommentAddLoading){
-                console.log(commentText);
-                const res = await addComment({postId:_id,text:commentText}).unwrap()
-                if(res.status === 'success'){
-                    toast.success("comment added successfully");
-                    setCommentVisible(false)
+                try {
+
+                    const res = await addComment({postId:_id,text:commentText}).unwrap()
+                    if(res.status === 'success'){
+                        toast.success("comment added successfully");
+                        setCommentVisible(false)
+                    }
+                    
+                } catch (error) {
+                    console.log(error);
                 }
-                console.log(res,"addedd response");
             }
 
+        }
+    }
+    
+    const [saveAndUnsave,{isLoading:savePostLoading}] = useSaveAndUnSavePostMutation()
+    const handlePostSave = async () => {
+        if(!savePostLoading) {
+            try {
+                const res = await saveAndUnsave({postId:_id}).unwrap()
+                if(res.status === 'success') {
+                    toast.success(res.message)
+                    setIsSaved(!isSaved)
+                }  
+            } catch (error) {
+                console.log(error); 
+            } 
         }
     }
    
@@ -140,7 +167,7 @@ const Posts:React.FC<PostPropsInterface> = ({_id,userName,imageName,imageUrl,des
       <Toaster position="top-right"/>
 
         <Box>
-            <Stack className="icon" spacing={2} direction={'row'} pb={1} ml={1} sx={{
+            <Stack  spacing={2} direction={'row'} pb={1} ml={1} sx={{
                 width:{
                     sm:'100%',
                     md:600
@@ -200,7 +227,7 @@ const Posts:React.FC<PostPropsInterface> = ({_id,userName,imageName,imageUrl,des
 
 
 
-        <Stack className="icon" spacing={2} direction={'row'} ml={1} sx={{
+        <Stack className="icon" spacing={2} direction={'row'} ml={0} sx={{
                 width:{
                     sm:'100%',
                     md:600
@@ -235,7 +262,12 @@ const Posts:React.FC<PostPropsInterface> = ({_id,userName,imageName,imageUrl,des
                     <SendOutlinedIcon  className={classes.bottomIcon} sx={{fontSize:28}} />
                 </Stack>
                 <Stack sx={{cursor:'pointer'}}>
-                <TurnedInNotRoundedIcon sx={{marginRight:2,fontSize:28}}  className={classes.color}/>
+                    {
+                        isSaved?
+                        <BookmarkIcon sx={{marginRight:2,fontSize:28}}  className={classes.color} onClick={handlePostSave}/>
+                        :
+                        <TurnedInNotRoundedIcon sx={{marginRight:2,fontSize:28}}  className={classes.color} onClick={handlePostSave}/>
+                    }
                 </Stack>
            </Stack>
 

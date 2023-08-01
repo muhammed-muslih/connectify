@@ -5,6 +5,7 @@ import { HttpStatus } from "@interfaces/httpStatus";
 import mongoose from "mongoose";
 import { CommentInterface } from "@interfaces/postInterface";
 
+
 export const postRepoImpl  = () =>{
   
     const createPost = async(userId:string,newPost:NewPostInterface) =>{
@@ -69,6 +70,9 @@ export const postRepoImpl  = () =>{
         return result 
     }
 
+    
+
+   
    
 
     return {

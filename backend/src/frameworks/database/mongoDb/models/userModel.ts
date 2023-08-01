@@ -1,5 +1,6 @@
 import mongoose ,{Mongoose, Schema, model} from 'mongoose';
 
+
 const userSchema = new Schema(
     {
         name :{
@@ -44,6 +45,10 @@ const userSchema = new Schema(
             type:[Schema.Types.ObjectId],
             ref:'Posts',
             default:[]
+        },
+        isBlocked:{
+            type:Boolean,
+            default:false
         }
     },
     {

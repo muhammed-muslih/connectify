@@ -5,6 +5,8 @@ import { selectAdminToken } from "../../redux/Features/reducers/adminAuthSlice"
 import { Navigate } from "react-router-dom"
 import { makeStyles} from '@mui/styles';
 import NavBar from "../../components/User/NavBar/NavBar"
+import UserTable from "../../components/Admin/Tables/UserTable"
+import { useGetAllUsersQuery } from "../../redux/Features/api/adminApiSlice"
 
 
 const useStyles = makeStyles((theme: Theme) =>({
@@ -27,9 +29,31 @@ const useStyles = makeStyles((theme: Theme) =>({
 }))
 
 
-const DashBoard = () =>{
+
+
+const Users = () =>{
     const classes = useStyles()
     const token = useSelector(selectAdminToken)
+    const {data:users,isLoading} =useGetAllUsersQuery()
+   
+    function createData(
+        UserName: string,
+        name: string,
+        email: string,
+        joiningDate: string,
+        status: string,
+        isBlocked: boolean | undefined,
+        id: string
+      ) {
+        return {UserName,name,email,joiningDate,status,isBlocked,id};
+      }
+
+      const userDetals = users?.users.map((user)=>(
+            createData(user.userName,user.name,user.email,user.createdAt.toString(),user.isBlocked?"blocked":"active",user.isBlocked,user._id)
+        )) || []
+
+      const tableHead = ['userName' , 'name', 'email', 'joiningDate','staus','block/unblock']
+    
 
     if(token) {
         return (
@@ -37,7 +61,7 @@ const DashBoard = () =>{
             <NavBar admin/>
             <Grid container>
                 <Grid item md={3}  className={classes.displayManager}><LeftBar/></Grid>
-                <Grid item md={9} xs={12}></Grid>
+                <Grid item md={9} xs={12}><UserTable tableRow={userDetals} tableHead={tableHead}/></Grid>
             </Grid>
             <Box className={classes.bottomDisplay}>
             </Box>
@@ -53,4 +77,4 @@ const DashBoard = () =>{
    
 }
 
-export default DashBoard
+export default Users

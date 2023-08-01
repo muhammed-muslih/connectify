@@ -9,6 +9,7 @@ import { useSelector } from "react-redux"
 import { selectUserToken } from "../../redux/Features/reducers/userAuthSlice"
 import { Navigate } from "react-router-dom"
 import { useState } from "react"
+import { selectUserName } from "../../redux/Features/reducers/userAuthSlice"
 
 const useStyles = makeStyles((theme: Theme) =>({
     displayManager : {
@@ -35,13 +36,14 @@ const useStyles = makeStyles((theme: Theme) =>({
 const Home = () => {
  const token = useSelector(selectUserToken)
  const classes = useStyles()
+ const userName = useSelector(selectUserName) 
  
 
 
  if(token){
     return (
         <Box>
-            <NavBar/>
+            <NavBar user/>
             <Grid container>
                 <Grid item md={3}  className={classes.displayManager}><LeftBar/></Grid>
                 <Grid item md={6} xs={12}><Feed/></Grid>

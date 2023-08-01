@@ -31,15 +31,15 @@ const useStyles = makeStyles((theme : Theme) =>({
          top:0,
          [theme.breakpoints.up('lg')]:{
             BorderColor:theme.palette.primary.dark,
-            border:'2px groove ',
+            borderRight:'2px groove '
         },
-        overflowY: 'scroll',
+        overFlow:'hidden'
         },
         item : {
             display : 'flex',
             alignItems : 'center',
-            marginBottom :theme.spacing(6),
-            marginLeft:theme.spacing(10),
+            marginBottom :theme.spacing(5.5),
+            marginLeft:theme.spacing(8),
             cursor: 'pointer',
             [theme.breakpoints.down('md')]:{
                 display:'none',
@@ -141,7 +141,7 @@ const LeftBar = () =>{
                     xs:1,
                     md:2,
                     lg:3
-                }}} className={classes.text}>Notification</Typography>
+                }}} className={classes.text}>Notifications</Typography>
             </Box>
             <Box className={classes.item}>
                 <Box onClick={handleModalOpen} display={'flex'}>

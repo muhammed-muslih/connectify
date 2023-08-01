@@ -44,6 +44,10 @@ const userSchema = new mongoose_1.Schema({
         type: [mongoose_1.Schema.Types.ObjectId],
         ref: 'Posts',
         default: []
+    },
+    isBlocked: {
+        type: Boolean,
+        default: false
     }
 }, {
     // automatically includes  created and updated time fields

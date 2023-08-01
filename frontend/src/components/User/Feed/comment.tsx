@@ -32,14 +32,16 @@ const Comment: React.FC<commentProps> = ({comments,postId}) => {
 
     const handleAddReplyComment = async (commentId:string) => {
         if(replyComment){
-            console.log(replyComment);
+           try {
             const res = await addReplyComment({postId,text:replyComment,commentId}).unwrap()
             console.log(res);
             if(res.status === 'success'){
                 setReplyFieldOpen(false)
                 toast.success("reply comment added successfully");
             }
-            
+           } catch (error) {
+            console.log(error);
+           }
         }
     }
 

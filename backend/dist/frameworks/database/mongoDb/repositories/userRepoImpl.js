@@ -17,7 +17,7 @@ const userRepoImpl = () => {
     };
     const getUserById = async (id) => await userModel_1.default.findById(id);
     const searchUser = async (query) => {
-        const regexPattern = new RegExp(`^${query}`, 'i');
+        const regexPattern = new RegExp(`${query}`, 'i');
         return await userModel_1.default.find({ userName: regexPattern });
     };
     const addUserInFollowingList = async (userId, followedUserId) => {
@@ -32,6 +32,15 @@ const userRepoImpl = () => {
     const removeUserFromFollowersList = async (userId, unFollowedUserId) => {
         return await userModel_1.default.findByIdAndUpdate(unFollowedUserId, { $pull: { followers: userId } });
     };
+    const SavePosts = async (userId, postId) => {
+        await userModel_1.default.findByIdAndUpdate(userId, { $addToSet: { saved: postId } });
+    };
+    const removeSavedPost = async (userId, postId) => {
+        await userModel_1.default.findByIdAndUpdate(userId, { $pull: { saved: postId } });
+    };
+    const getSavedPost = async (userId) => await userModel_1.default.findOne({ _id: userId }).select('saved');
+    const getAllUsers = async () => await userModel_1.default.find({}).sort({ createdAt: -1 });
+    const blockAndUnblock = async (userId, status) => await userModel_1.default.findByIdAndUpdate(userId, { isBlocked: status });
     return {
         registerUser,
         getUserByEmail,
@@ -41,7 +50,12 @@ const userRepoImpl = () => {
         addUserInFollowersList,
         addUserInFollowingList,
         removeUserFromFollowersList,
-        removeUserFromFollowingList
+        removeUserFromFollowingList,
+        SavePosts,
+        removeSavedPost,
+        getSavedPost,
+        getAllUsers,
+        blockAndUnblock
     };
 };
 exports.userRepoImpl = userRepoImpl;

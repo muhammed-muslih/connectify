@@ -2,8 +2,8 @@ import { UserRepoImpl } from "@frameworks/database/mongoDb/repositories/userRepo
 import { UserRepoInterface } from "@application/repositories/userRepoInterface"
 import asyncHandler from "express-async-handler"
 import { CustomRequest } from "@interfaces/customRequestInterface"
-import { Response } from "express"
-import { userSearch ,findUser,followAndUnfollowUser} from "@application/useCases/user/user"
+import { Request, Response } from "express"
+import { userSearch ,findUser,followAndUnfollowUser,saveUnSavePosts,getUserSavedPosts,allUsers} from "@application/useCases/user/user"
 
 
 
@@ -20,15 +20,15 @@ export const userController = (
         res.json({
           status:'success',
           message:'no user found',
-          user:[]
+          users:[]
 
         })
       }else{
-        const user = await userSearch(searchValue,userRepository)
+        const users = await userSearch(searchValue,userRepository)
         res.json({
             status : 'success',
             message :'user fetched successfully',
-            user
+            users
         })
       }
     })
@@ -55,12 +55,39 @@ export const userController = (
     
     })
 
+    const saveAndUnSavePosts =  asyncHandler(async(req:CustomRequest,res:Response,) => {
+      const userId = req.userId as string
+      const {postId} = req.body
+      console.log(postId,"postId");
+      
+      const result = await saveUnSavePosts(userId,postId,userRepository)
+      res.json({
+        status: 'success',
+        message : result
+      })
+
+    }) 
+
+    const getSavedPosts = asyncHandler(async(req:CustomRequest, res:Response) =>{
+      const userId = req.userId as string
+      const posts = await getUserSavedPosts(userId,userRepository)
+     res.json({
+      status: 'success',
+      saved : posts.saved
+     })
+
+    })
+
+    
     
 
    return {
     searchUser,
     getUser,
-    followAndUnfollow
+    followAndUnfollow,
+    saveAndUnSavePosts,
+    getSavedPosts,
+
    }
 
 }

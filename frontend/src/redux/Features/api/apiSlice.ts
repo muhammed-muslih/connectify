@@ -8,7 +8,7 @@ const baseQuery = fetchBaseQuery({
         const userToken = getState()?.userAuth.token
         const adminToken = getState()?.adminAuth.token
         
-        if(window.location.href.includes('amdmin')) {
+        if(window.location.href.includes('admin')) {
             headers.set('authorization',`Bearer ${adminToken}`)
         }else {
             headers.set('authorization',`Bearer ${userToken}`)
@@ -20,7 +20,7 @@ const baseQuery = fetchBaseQuery({
 export const apiSlice = createApi({
     baseQuery,
     reducerPath:'api',
-    tagTypes : ['user','admin','search','post'],
+    tagTypes : ['user','admin','search','post','saved'],
     endpoints : builder => ({})                 
 })
 

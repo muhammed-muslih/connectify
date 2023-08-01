@@ -34,7 +34,7 @@ const Profile = () => {
   
     return (
        <Container className={classes.container}>
-        <ProfileSection isUserPost={isUserPost} setUserPost={setUserPost} userId={id} isCurrentUser={isCurrentUser} setCurrentUser={setCurrentUser}/>
+        <ProfileSection isUserPost={isUserPost} setUserPost={setUserPost} userId={id} isCurrentUser={isCurrentUser} setCurrentUser={setCurrentUser} noOfPosts={posts?.posts.length}/>
         {
             isUserPost ? <Posts  posts={posts?.posts} />:isCurrentUser&&<Posts  posts={posts?.posts}/>
         }

@@ -33,7 +33,7 @@ const UserProfile = () => {
     if(token){
         return (
             <Box>
-            <NavBar/>
+            <NavBar user/>
             <Grid container>
                 <Grid item md={3}  className={classes.displayManager}><LeftBar/></Grid>
                 <Grid item md={9}><Profile/></Grid>
