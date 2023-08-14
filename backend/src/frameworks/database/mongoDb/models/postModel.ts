@@ -40,7 +40,15 @@ const postSchema = new Schema (
       delete:{
         type:Boolean,
         default: false,
-      }
+      },
+      
+      report:[
+        {
+          text: String,
+          reportedBy:{type: Schema.Types.ObjectId,ref:'User'},
+          created : {type : Date, default: Date.now},
+        }
+      ]
     }
 )
 

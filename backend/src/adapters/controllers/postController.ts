@@ -2,7 +2,8 @@ import { Request,Response } from "express"
 import asyncHandler from 'express-async-handler'
 import { S3ServiceImpl } from "@frameworks/services/s3BucketServie"
 import { S3ServiceInterface } from "@application/services/s3ServiceInterface"
-import { addPostAndGetUrl,getAllPosts,userPosts,postLikeOrDislike,createComment,setReplayComment} from "@application/useCases/post/userPost"
+import { addPostAndGetUrl,getAllPosts,userPosts,postLikeOrDislike,editPost,
+createComment,setReplayComment,reportPost,deletePost} from "@application/useCases/post/userPost"
 import { CustomRequest } from "@interfaces/customRequestInterface"
 import { PostRepoImp } from "@frameworks/database/mongoDb/repositories/postRepoImpl"
 import { PostRepoInterface } from "@application/repositories/postRepoInterface"
@@ -53,10 +54,6 @@ export const postController = (
     const postLikeAndDislike = asyncHandler(async(req:CustomRequest,res:Response)=>{
         const {postId} = req.body
         const userId = req.userId as string
-        console.log("postId",postId);
-        console.log(userId);
-        
-        
         const result = await postLikeOrDislike(userId,postId,postRepo)
         res.json({
             status:'success',
@@ -68,8 +65,6 @@ export const postController = (
         const userId = req.userId as string
         const {postId} = req.params
         const {text} = req.body
-        console.log(text,'text');
-        
         await createComment(userId,postId,text,postRepo)
         res.json({
             status:'success',
@@ -88,12 +83,49 @@ export const postController = (
         })
     })
 
+    const postReport = asyncHandler(async(req:CustomRequest,res:Response)=>{
+        const userId = req.userId as string
+        const {postId} = req.params
+        const {text} = req.body
+        const result = await reportPost(userId,postId,text,postRepo)
+        res.json({
+            status : 'success',
+            ...result
+        })
+    })
+
+    const postEdit = asyncHandler(async(req:CustomRequest,res:Response)=>{
+        const userId = req.userId as string
+        const {postId} = req.params
+        const{description} = req.body
+        await editPost(userId,postId,description,postRepo)
+        res.json({
+            status : 'success',
+            message:"post edited successfully"
+        })
+    })
+    
+    const postDelete = asyncHandler(async(req:CustomRequest,res:Response) =>{
+        const userId = req.userId as string
+        const {postId} = req.params
+        await deletePost(userId,postId,postRepo,s3Service)
+        res.json({
+            status:"success",
+            message:'post deleted successfully'
+        })
+        
+
+    })
+
     return {
         uploadPostAndGetUrl,
         findAllPosts,
         getUserPost,
         postLikeAndDislike,
         createRootComment,
-        replayComment
+        replayComment,
+        postReport,
+        postEdit,
+        postDelete
     }
 }

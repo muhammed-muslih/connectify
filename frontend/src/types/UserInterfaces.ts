@@ -27,3 +27,24 @@ export interface UserInerface {
     user:UserInerface
  
   }
+
+  export interface UpdateUserInterface {
+    userName?:string,
+    bio?:string,
+    name?:string,
+    profilePiture?:string
+  }
+
+  export interface ListInterface {
+    _id?:string,
+    userName?:string,
+    profilePicture?:string
+  }
+
+  export interface FollowersAndFollowingsListInterface  {
+    status:string,
+    message:string,
+    followers?:ListInterface[],
+    followings?:ListInterface[]
+
+  }

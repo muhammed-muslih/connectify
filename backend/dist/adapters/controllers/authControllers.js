@@ -19,7 +19,8 @@ const authController = (userDbRepoImpl, userDbRepoInt, authServiceImpl, authServ
             status: "success",
             message: "new user registered",
             token: result.token,
-            _id: result.userId
+            _id: result.userId,
+            profilePicture: result.profilePicture
         });
     });
     const loginUser = (0, express_async_handler_1.default)(async (req, res) => {
@@ -29,7 +30,8 @@ const authController = (userDbRepoImpl, userDbRepoInt, authServiceImpl, authServ
             status: "success",
             message: "user verified",
             token: result.token,
-            _id: result.userId
+            _id: result.userId,
+            profilePicture: result.profilePicture
         });
     });
     const loginAdmin = (0, express_async_handler_1.default)(async (req, res) => {
@@ -49,7 +51,8 @@ const authController = (userDbRepoImpl, userDbRepoInt, authServiceImpl, authServ
             message: 'user verified',
             token: userData.token,
             userName: userData.userName,
-            _id: userData.userId
+            _id: userData.userId,
+            profilePicture: userData.profilePicture
         });
     };
     return {

@@ -1,5 +1,6 @@
 import { UserRepoImpl } from "@frameworks/database/mongoDb/repositories/userRepoImpl"
 import { UserRegisterInterface } from "@interfaces/userInterfaces"
+import { UpdateUserInterface } from "@interfaces/userInterfaces"
 
 export const userRepoInterface =(repository:ReturnType<UserRepoImpl>) =>{
 
@@ -34,6 +35,16 @@ export const userRepoInterface =(repository:ReturnType<UserRepoImpl>) =>{
     const getAllUsers = async() => await repository.getAllUsers()
 
     const blockAndUnblock = async(userId:string,status:boolean) => await repository.blockAndUnblock(userId,status)
+
+    const getSavedPostDetails = async(userId:string) => await repository.getSavedPostDetails(userId)
+
+    const editUserProfile = async(userId:string,updateFields:UpdateUserInterface) =>
+    await repository.editUserProfile(userId,updateFields)
+
+    const removeUserProfilePic = async(userId:string) => 
+    await repository.removeUserProfilePic(userId)
+
+    const getFollowLists = async(userId:string) => await repository.getFollowLists(userId)
         
     return {
         registerUser,
@@ -49,7 +60,11 @@ export const userRepoInterface =(repository:ReturnType<UserRepoImpl>) =>{
         removeSavedPost,
         getSavedPost,
         getAllUsers,
-        blockAndUnblock
+        blockAndUnblock,
+        getSavedPostDetails,
+        editUserProfile,
+        removeUserProfilePic,
+        getFollowLists
     }
 
 }

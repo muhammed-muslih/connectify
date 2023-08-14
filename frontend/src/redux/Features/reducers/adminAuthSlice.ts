@@ -1,36 +1,34 @@
-import { createSlice,PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../App/store";
 
-const data = localStorage.getItem('adminToken') 
+const data = localStorage.getItem("adminToken");
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-const parsedToken :string  = data? JSON.parse(data) : ''
-
-
+const parsedToken: string = data ? JSON.parse(data) : "";
 
 const initialState = {
-    token : parsedToken,
-}
-
+  token: parsedToken,
+};
 
 const adminAuthSlice = createSlice({
-    name : 'adminAuth',
-    initialState,
-    reducers : {
-        setAdminCredentials : (state ,action :PayloadAction<{adminToken : string}>) => {
+  name: "adminAuth",
+  initialState,
+  reducers: {
+    setAdminCredentials: (
+      state,
+      action: PayloadAction<{ adminToken: string }>
+    ) => {
+      const adminToken = action.payload.adminToken;
+      localStorage.setItem("adminToken", JSON.stringify(adminToken));
+      state.token = adminToken;
+    },
+    logoutAdmin: (state) => {
+      state.token = "";
+      localStorage.removeItem("adminToken");
+    },
+  },
+});
 
-            const adminToken = action.payload.adminToken
-            localStorage.setItem('adminToken', JSON.stringify(adminToken))
-            state.token = adminToken
-
-        },
-        logoutAdmin : (state) => {
-            state.token  = ''
-            localStorage.removeItem('adminToken')
-        }
-    }
-})
-
-export default adminAuthSlice.reducer
-export type AdminAuthState = typeof adminAuthSlice.reducer
-export const {setAdminCredentials,logoutAdmin} = adminAuthSlice.actions
-export const selectAdminToken = (state:RootState) =>state.adminAuth.token
+export default adminAuthSlice.reducer;
+export type AdminAuthState = typeof adminAuthSlice.reducer;
+export const { setAdminCredentials, logoutAdmin } = adminAuthSlice.actions;
+export const selectAdminToken = (state: RootState) => state.adminAuth.token;

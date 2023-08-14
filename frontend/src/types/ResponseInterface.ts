@@ -3,6 +3,8 @@ export interface RegisterResponseInt{
     readonly message:string,
     readonly token:string
     readonly _id:string
+    readonly profilePicture :string|undefined
+    
  }
 
  export interface GoogleResponseInt {
@@ -23,6 +25,12 @@ export interface RegisterResponseInt{
    readonly status:string,
    saved:[string]
 
+ }
+
+ export interface UpdateProfileInterface {
+  readonly status:string,
+  readonly message:string,
+  readonly profilePiture?:string
  }
 
 

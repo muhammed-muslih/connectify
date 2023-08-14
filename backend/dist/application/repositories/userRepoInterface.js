@@ -16,6 +16,10 @@ const userRepoInterface = (repository) => {
     const getSavedPost = async (userId) => await repository.getSavedPost(userId);
     const getAllUsers = async () => await repository.getAllUsers();
     const blockAndUnblock = async (userId, status) => await repository.blockAndUnblock(userId, status);
+    const getSavedPostDetails = async (userId) => await repository.getSavedPostDetails(userId);
+    const editUserProfile = async (userId, updateFields) => await repository.editUserProfile(userId, updateFields);
+    const removeUserProfilePic = async (userId) => await repository.removeUserProfilePic(userId);
+    const getFollowLists = async (userId) => await repository.getFollowLists(userId);
     return {
         registerUser,
         getUserByEmail,
@@ -30,7 +34,11 @@ const userRepoInterface = (repository) => {
         removeSavedPost,
         getSavedPost,
         getAllUsers,
-        blockAndUnblock
+        blockAndUnblock,
+        getSavedPostDetails,
+        editUserProfile,
+        removeUserProfilePic,
+        getFollowLists
     };
 };
 exports.userRepoInterface = userRepoInterface;

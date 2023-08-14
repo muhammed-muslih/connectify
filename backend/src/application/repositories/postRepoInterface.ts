@@ -1,6 +1,6 @@
 import { PostRepoImp } from "@frameworks/database/mongoDb/repositories/postRepoImpl"
 import { NewPostInterface } from "@interfaces/postInterface"
-import { CommentInterface } from "@interfaces/postInterface"
+import { CommentInterface,ReportPostInterface } from "@interfaces/postInterface"
 
 export const postRepoInterface = (repository : ReturnType <PostRepoImp>) =>{
 
@@ -18,6 +18,12 @@ export const postRepoInterface = (repository : ReturnType <PostRepoImp>) =>{
 
     const replayComment = async(replay:CommentInterface,postId:string,commentId : string) => 
     await repository.replayComment(replay,postId,commentId)
+    
+    const reportPost = async(postId:string,report:ReportPostInterface) => await repository.reportPost(postId,report)
+
+    const editPost = async(postId:string,description:string) => await repository.editPost(postId,description)
+
+    const deletePost = async (postId:string) => await repository.deletePost(postId)
 
     return {
         createPost,
@@ -26,7 +32,10 @@ export const postRepoInterface = (repository : ReturnType <PostRepoImp>) =>{
         getSinglePost,
         likeOrDislike,
         createRootComment,
-        replayComment 
+        replayComment ,
+        reportPost,
+        editPost,
+        deletePost
     }
 
 }

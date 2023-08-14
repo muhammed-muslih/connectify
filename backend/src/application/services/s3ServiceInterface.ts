@@ -9,14 +9,17 @@ export const s3serviceInterface = (service : ReturnType<S3ServiceImpl>)=>{
 
     const getMultipleFiles = async (posts:PostArrRespInterface[]) => await service.getMultipleFiles(posts)
 
-    const uploadAndGetUrl = async (file:Express.Multer.File) => await service.uploadAndGetUrl(file)
+    const uploadAndGetUrl = async (file:Express.Multer.File,postPic:boolean) => await service.uploadAndGetUrl(file,postPic)
+
+    const removeFile = async (fileName : string) => await service.removeFile(fileName)
 
 
     return {
         uploadFile,
         getSingleFile,
         getMultipleFiles,
-        uploadAndGetUrl
+        uploadAndGetUrl,
+        removeFile
     }
     
 }

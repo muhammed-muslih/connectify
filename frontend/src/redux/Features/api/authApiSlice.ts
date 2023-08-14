@@ -12,7 +12,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
                 method:'POST',
                 body :data,
             }),
-            invalidatesTags:['user','post']
+            invalidatesTags:['user','post','chat','message']
         }),
 
         userLogin : builder.mutation<RegisterResponseInt,UserLoginInterface>({
@@ -21,7 +21,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
                 method:'POST',
                 body :data
             }),
-            invalidatesTags : ['user','post']
+            invalidatesTags : ['user','post','chat','message']
         }),
 
         adminLogin : builder.mutation<RegisterResponseInt,AdminLoginInterface>({
@@ -39,7 +39,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
                 method:'POST',
                 body :data,
             }),
-            invalidatesTags : ['user','post']
+            invalidatesTags : ['user','post','chat','message']
         })
     })
 })

@@ -22,7 +22,8 @@ const userRegister = async (user, userRepository, authServices) => {
     const token = authServices.generateToken({ userId: userId.toString(), role: 'user' });
     return {
         token,
-        userId
+        userId,
+        profilePicture: ''
     };
 };
 exports.userRegister = userRegister;
@@ -32,6 +33,9 @@ const userLogin = async (userName, password, userRepository, authServices) => {
     if (!user) {
         throw new appError_1.default('user not found', httpStatus_1.HttpStatus.UNAUTHORIZED);
     }
+    if (user.isBlocked) {
+        throw new appError_1.default('user is blocked', httpStatus_1.HttpStatus.UNAUTHORIZED);
+    }
     const isPasswordCorrect = await authServices.comparePassword(password, user.password);
     if (!isPasswordCorrect) {
         throw new appError_1.default('Sorry, your password was incorrect. Please double-check your password', httpStatus_1.HttpStatus.UNAUTHORIZED);
@@ -39,7 +43,8 @@ const userLogin = async (userName, password, userRepository, authServices) => {
     const token = authServices.generateToken({ userId: user._id, role: 'user' });
     return {
         token,
-        userId: user._id
+        userId: user._id,
+        profilePicture: user.profilePicture
     };
 };
 exports.userLogin = userLogin;
@@ -51,7 +56,8 @@ const loginWithGoogle = async (credential, googleAuthService, userRepository, au
         return {
             token,
             userName: isUserExist.userName,
-            userId: isUserExist._id
+            userId: isUserExist._id,
+            profilePicture: isUserExist.profilePicture
         };
     }
     else {
@@ -65,7 +71,8 @@ const loginWithGoogle = async (credential, googleAuthService, userRepository, au
         return {
             token,
             userName: user.userName,
-            userId: userId
+            userId: userId,
+            profilePicture: ''
         };
     }
 };

@@ -1,6 +1,7 @@
 import { apiSlice } from "./apiSlice";
-import { UsersResInterface,GetUserInterface } from "../../../types/UserInterfaces";
-import { BasicReponse,SavedPostResInt } from "../../../types/ResponseInterface";
+import { UsersResInterface,GetUserInterface,FollowersAndFollowingsListInterface } from "../../../types/UserInterfaces";
+import { BasicReponse,SavedPostResInt,UpdateProfileInterface } from "../../../types/ResponseInterface";
+import { GetAllSavedPostInterface } from "../../../types/PostInterfaces";
 
 
 export const userApiSlice = apiSlice.injectEndpoints({
@@ -40,6 +41,33 @@ export const userApiSlice = apiSlice.injectEndpoints({
                 body: postId 
             }),
             invalidatesTags:['saved','post']
+        }),
+
+        getSavedPostDetails : builder.query<GetAllSavedPostInterface,void>({
+            query : () => '/user/saved-post-details',
+            providesTags:['post','user','saved']
+        }),
+
+        updateUserProfile : builder.mutation<UpdateProfileInterface,any>({
+            query : ({updateData}) => ({
+                url: '/user/update-profile',
+                method:'PATCH',
+                body : updateData
+            }),
+            invalidatesTags:['user','post']
+        }),
+
+        removeProfilePic : builder.mutation<BasicReponse,void>({
+            query : () =>({
+                url:'/user/remove-profile-pic',
+                method:'PATCH',
+            }),
+            invalidatesTags:['user','post']
+        }),
+
+        getFollowersAndFollowingsList : builder.query<FollowersAndFollowingsListInterface,void>({
+            query : () =>'/user/followers-followings-list',
+            providesTags:['user']
         })
 
     })
@@ -50,5 +78,9 @@ export const {
     useGetUserQuery,
     useFollowAndUnFollowMutation,
     useGetSavedPostsQuery,
-    useSaveAndUnSavePostMutation
+    useSaveAndUnSavePostMutation,
+    useGetSavedPostDetailsQuery,
+    useUpdateUserProfileMutation,
+    useRemoveProfilePicMutation,
+    useGetFollowersAndFollowingsListQuery
 } = userApiSlice

@@ -37,7 +37,8 @@ export  const authController = (
             status:"success",
             message:"new user registered",
             token:result.token,
-            _id:result.userId 
+            _id:result.userId ,
+            profilePicture:result.profilePicture
         })
     })
 
@@ -48,7 +49,8 @@ export  const authController = (
             status:"success",
             message:"user verified",
             token:result.token,
-            _id:result.userId
+            _id:result.userId,
+            profilePicture:result.profilePicture
         })
     })
 
@@ -71,7 +73,8 @@ export  const authController = (
             message:'user verified',
             token:userData.token,
             userName:userData.userName,
-            _id:userData.userId
+            _id:userData.userId,
+            profilePicture:userData.profilePicture
         })
         
     }

@@ -27,3 +27,7 @@ export interface CommentInterface {
     postedBy : string
 }
 
+export interface ReportPostInterface {
+    text: string
+    reportedBy : string
+}

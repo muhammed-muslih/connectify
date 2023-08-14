@@ -1,6 +1,6 @@
 import User from "../models/userModel";
 import {UserInterface } from "@interfaces/userInterfaces";
-import { UserRegisterInterface } from "@interfaces/userInterfaces";
+import { UserRegisterInterface ,UpdateUserInterface} from "@interfaces/userInterfaces";
 
 export const userRepoImpl = () =>{
 
@@ -49,10 +49,41 @@ export const userRepoImpl = () =>{
     
     const getSavedPost = async(userId:string) => await User.findOne({_id:userId}).select('saved')
 
+    const getSavedPostDetails = async(userId:string) => await User.findOne({_id:userId})
+    .populate({path:'saved'}).select('saved')
+
     const getAllUsers = async() => await User.find({}).sort({createdAt:-1})
 
     const blockAndUnblock = async(userId : string,status:boolean) =>
-     await User.findByIdAndUpdate(userId,{isBlocked:status})
+    await User.findByIdAndUpdate(userId,{isBlocked:status})
+
+    const editUserProfile = async(userId:string,updateFields:UpdateUserInterface) => {
+       return await User.findByIdAndUpdate(
+            userId,
+            {$set:updateFields}
+        )
+    }
+
+    const removeUserProfilePic = async(userId:string) => 
+    await User.findByIdAndUpdate(userId,{$set:{profilePicture:'',profilePicName:''}})
+
+    const getFollowLists = async (userId : string) => {
+        const user =await User.findById(userId).populate({
+            path:'followers',
+            select:'userName profilePicture'
+        })
+        .populate({
+            path:'followings',
+            select:'userName profilePicture'
+        })
+
+        return {
+            followers:user?.followers,
+            followings:user?.followings
+        }
+        
+
+    }
 
     return{
         registerUser,
@@ -68,7 +99,11 @@ export const userRepoImpl = () =>{
         removeSavedPost,
         getSavedPost,
         getAllUsers,
-        blockAndUnblock
+        blockAndUnblock,
+        getSavedPostDetails,
+        editUserProfile,
+        removeUserProfilePic,
+        getFollowLists
     }
 }
 

@@ -39,8 +39,28 @@ const userRepoImpl = () => {
         await userModel_1.default.findByIdAndUpdate(userId, { $pull: { saved: postId } });
     };
     const getSavedPost = async (userId) => await userModel_1.default.findOne({ _id: userId }).select('saved');
+    const getSavedPostDetails = async (userId) => await userModel_1.default.findOne({ _id: userId })
+        .populate({ path: 'saved' }).select('saved');
     const getAllUsers = async () => await userModel_1.default.find({}).sort({ createdAt: -1 });
     const blockAndUnblock = async (userId, status) => await userModel_1.default.findByIdAndUpdate(userId, { isBlocked: status });
+    const editUserProfile = async (userId, updateFields) => {
+        return await userModel_1.default.findByIdAndUpdate(userId, { $set: updateFields });
+    };
+    const removeUserProfilePic = async (userId) => await userModel_1.default.findByIdAndUpdate(userId, { $set: { profilePicture: '', profilePicName: '' } });
+    const getFollowLists = async (userId) => {
+        const user = await userModel_1.default.findById(userId).populate({
+            path: 'followers',
+            select: 'userName profilePicture'
+        })
+            .populate({
+            path: 'followings',
+            select: 'userName profilePicture'
+        });
+        return {
+            followers: user?.followers,
+            followings: user?.followings
+        };
+    };
     return {
         registerUser,
         getUserByEmail,
@@ -55,7 +75,11 @@ const userRepoImpl = () => {
         removeSavedPost,
         getSavedPost,
         getAllUsers,
-        blockAndUnblock
+        blockAndUnblock,
+        getSavedPostDetails,
+        editUserProfile,
+        removeUserProfilePic,
+        getFollowLists
     };
 };
 exports.userRepoImpl = userRepoImpl;

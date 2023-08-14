@@ -3,7 +3,7 @@ import {NewPostInterface} from "@interfaces/postInterface";
 import AppError from "@utils/appError";
 import { HttpStatus } from "@interfaces/httpStatus";
 import mongoose from "mongoose";
-import { CommentInterface } from "@interfaces/postInterface";
+import { CommentInterface ,ReportPostInterface} from "@interfaces/postInterface";
 
 
 export const postRepoImpl  = () =>{
@@ -70,10 +70,20 @@ export const postRepoImpl  = () =>{
         return result 
     }
 
-    
+    const reportPost = async(postId:string,report:ReportPostInterface) => {
+        return await Posts.findByIdAndUpdate(postId,{$addToSet:{report:report}})
+    }
 
-   
-   
+    const editPost = async(postId:string,description:string) => {
+        return await Posts.updateOne(
+            {_id:postId},
+            {$set: {description:description}}
+            )
+    }
+
+    const deletePost = async(postId:string) => await Posts.findByIdAndDelete(postId)
+
+    
 
     return {
         createPost,
@@ -82,7 +92,10 @@ export const postRepoImpl  = () =>{
         getSinglePost,
         likeOrDislike,
         createRootComment,
-        replayComment
+        replayComment,
+        reportPost,
+        editPost,
+        deletePost
     }
 }
 

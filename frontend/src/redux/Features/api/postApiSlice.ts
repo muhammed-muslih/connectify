@@ -1,5 +1,6 @@
 import { apiSlice } from "./apiSlice";
 import { AllPostResInterface,PostAddResInterface ,GetPostInterface,CommetAddInterface} from "../../../types/PostInterfaces";
+import { BasicReponse } from "../../../types/ResponseInterface";
 
 
 export const postSlice = apiSlice.injectEndpoints({
@@ -49,8 +50,36 @@ export const postSlice = apiSlice.injectEndpoints({
                 body:{text}
             }),
             invalidatesTags:['post','user']
-        })
-           
+        }),
+
+        reportPost : builder.mutation<BasicReponse,{postId:string|undefined,text:string}>({
+            query : ({postId,text}) => ({
+                url:`/post/report/${postId}`,
+                method:'PATCH',
+                body:{text}
+            }),
+            invalidatesTags:['post']
+          
+        }),
+
+        editPost : builder.mutation<BasicReponse,{postId:string|undefined,description:string|undefined}>({
+            query : ({postId,description}) => ({
+                url:`/post/edit/${postId}`,
+                method:'PATCH',
+                body:{description}
+
+            }),
+            invalidatesTags:['post']
+        }),
+        
+        deletePost : builder.mutation<BasicReponse,{postId:string|undefined}>({
+            query : ({postId}) => ({
+                url:`/post/delete/${postId}`,
+                method:'DELETE'
+            }),
+            invalidatesTags:['post']
+        }),
+        
     })
 })
 
@@ -60,5 +89,8 @@ export const {
     useGetUserPostsQuery,
     useLikeorDislikeMutation,
     useAddCommentMutation,
-    useAddReplyCommentMutation
+    useAddReplyCommentMutation,
+    useReportPostMutation,
+    useEditPostMutation,
+    useDeletePostMutation,
 } = postSlice

@@ -5,6 +5,8 @@ export interface UserInterface {
     userName: string;
     email: string;
     password: string;
+    isBlocked?: boolean;
+    profilePicture?: string|undefined;
 }
 
 export interface UserRegisterInterface {
@@ -24,6 +26,14 @@ export interface UserResInerface {
     followers?: [],
     followings?: [],
     saved?: [],
+  }
+
+  export interface UpdateUserInterface {
+    userName?:string,
+    bio?:string,
+    profilePicture?:string,
+    profilePicName?: string
+    name?:string
   }
 
 

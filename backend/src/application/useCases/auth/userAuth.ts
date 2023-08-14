@@ -26,7 +26,8 @@ export const userRegister = async (
     const token = authServices.generateToken({userId :userId.toString(),role:'user'})
     return {
         token,
-        userId
+        userId,
+        profilePicture:''
     }
         
 }
@@ -42,6 +43,11 @@ export const userLogin = async(
     if(!user){
         throw new AppError('user not found',HttpStatus.UNAUTHORIZED)
     }
+
+    if(user.isBlocked){
+        throw new AppError('user is blocked',HttpStatus.UNAUTHORIZED)
+    }
+    
     const isPasswordCorrect = await authServices.comparePassword(password,user.password)
     if(!isPasswordCorrect){
         throw new AppError('Sorry, your password was incorrect. Please double-check your password',HttpStatus.UNAUTHORIZED)
@@ -49,7 +55,8 @@ export const userLogin = async(
     const token = authServices.generateToken({userId:user._id,role:'user'})
     return {
         token,
-        userId:user._id
+        userId:user._id,
+        profilePicture:user.profilePicture
     }
 }
 
@@ -67,7 +74,8 @@ export const loginWithGoogle = async(
         return {
             token,
             userName:isUserExist.userName,
-            userId:isUserExist._id
+            userId:isUserExist._id,
+            profilePicture:isUserExist.profilePicture
         }
     }else{
         const isUserNameExist = await userRepository.getUserByUserName(user.userName)
@@ -80,7 +88,8 @@ export const loginWithGoogle = async(
         return {
             token,
             userName:user.userName,
-            userId:userId
+            userId:userId,
+            profilePicture:''
         }
     }
 }

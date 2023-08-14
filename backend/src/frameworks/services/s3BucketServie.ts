@@ -35,9 +35,13 @@ export const s3ServiceImpl = () =>{
 
     }
 
-
-    const uploadAndGetUrl = async (file: Express.Multer.File) => {
-        const buffer = await sharp(file.buffer).resize({width:600,height:750,fit:'fill'}).toBuffer()
+    const uploadAndGetUrl = async (file: Express.Multer.File,postPic:boolean) => {
+        let buffer
+        if(postPic){
+            buffer = await sharp(file.buffer).resize({width:600,height:750,fit:'fill'}).toBuffer()
+        }else{
+            buffer = await sharp(file.buffer).resize({width:250,height:300}).toBuffer()
+        }
         const imageName = randomImageName();
         const params = {
           Bucket: configKeys.S3_BUCKET_NAME,
@@ -45,27 +49,22 @@ export const s3ServiceImpl = () =>{
           Body:buffer,
           ContentType: file.mimetype,
           ACL: 'public-read', 
-        };
-    
+        }
         const command = new PutObjectCommand(params);
         await s3.send(command);
-    
         const url = `https://${configKeys.S3_BUCKET_NAME}.s3.amazonaws.com/${imageName}`;
-    
         return {
-          imageName ,
+          imageName,
           url,
         }
       }
     
 
     const getSingleFile = async (imageName : string) => {
-
         const getObjectParams = {
             Bucket : configKeys.S3_BUCKET_NAME,
             Key : imageName
         }
-
         const command = new GetObjectCommand(getObjectParams);
         return await getSignedUrl(s3,command,{expiresIn:6000000})
     }
@@ -78,14 +77,11 @@ export const s3ServiceImpl = () =>{
                 Bucket : configKeys.S3_BUCKET_NAME,
                 Key :post.imageName
             }
-
              const command = new GetObjectCommand(getObjectParams);
              const url = await getSignedUrl(s3,command,{expiresIn:6000000})
              postsWithUrl.push({url,postName :post.imageName,description:post.description})
         }
-
         return postsWithUrl
-
     }
 
     const removeFile = async (fileName : string) => {

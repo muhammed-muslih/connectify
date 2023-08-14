@@ -3,10 +3,7 @@ import { S3ServiceInterface } from "@application/services/s3ServiceInterface"
 import { NewPostInterface } from "@interfaces/postInterface"
 import AppError from "@utils/appError"
 import { HttpStatus } from "@interfaces/httpStatus"
-import mongoose from "mongoose"
 import { CommentInterface } from "@interfaces/postInterface"
-
-
 
 export const addPostAndGetUrl = async(
     userId: string,
@@ -15,7 +12,8 @@ export const addPostAndGetUrl = async(
     postRepository :ReturnType<PostRepoInterface>,
     s3Service : ReturnType<S3ServiceInterface>
 )=>{
-    const result = await s3Service.uploadAndGetUrl(file)
+    const postPic = true
+    const result = await s3Service.uploadAndGetUrl(file,postPic)
     const post : NewPostInterface = {description,imageName:result?.imageName,imageUrl:result?.url}
     const addPost = await postRepository.createPost(userId,post)
     if (!addPost) {
@@ -34,7 +32,6 @@ export const getAllPosts = (
     return allPosts
 
 }
-
 
 export const userPosts = (
     userId:string,
@@ -82,4 +79,69 @@ export const setReplayComment = async(
     }
     const result = await postRepository.replayComment(replay,postId,commentId)
     return result 
+}
+
+export const reportPost = async(
+    userId:string,
+    postId : string,
+    text:string,
+    postRepository:ReturnType<PostRepoInterface>
+) => {
+    const post = await postRepository.getSinglePost(postId)
+    if(!post){
+        throw new AppError('post not found',HttpStatus.BAD_REQUEST)
+    }
+    if(post.userId.toString() === userId) {
+        throw new AppError("you can't report this post",HttpStatus.UNAUTHORIZED)
+    }
+    const isReportedUser = post.report.find((post)=>post.reportedBy?.toString() === userId)
+    if(isReportedUser){
+        return{
+            message:'you already reported this post'
+        }
+    }else{
+        const report = {text,reportedBy:userId}
+        await postRepository.reportPost(postId,report)
+        return {
+            message:'post reported'
+        }
+    }
+}
+
+
+export const editPost = async(
+    userId:string,
+    postId:string,
+    description:string,
+    postRepository:ReturnType<PostRepoInterface>    
+) => {
+    const post = await postRepository.getSinglePost(postId)
+    if(!post){
+        throw new AppError('post not found',HttpStatus.BAD_REQUEST)
+    }
+    if(post.userId.toString() !== userId){
+       throw new AppError("you can't edit this post",HttpStatus.UNAUTHORIZED)
+    }
+   
+    return await postRepository.editPost(postId,description)
+}
+
+export const deletePost = async(
+    userId:string,
+    postId:string,
+    postRepository:ReturnType<PostRepoInterface> ,
+    s3Service : ReturnType<S3ServiceInterface>
+) => {
+    const post = await postRepository.getSinglePost(postId)
+    if(!post){
+        throw new AppError('post not found',HttpStatus.BAD_REQUEST)
+    }
+    if(post.userId.toString() !== userId){
+        throw new AppError("you can't delete this post",HttpStatus.UNAUTHORIZED)
+    }
+    const fileName = post.imageName
+    if(fileName){
+    await s3Service.removeFile(fileName)
+    }
+    return await postRepository.deletePost(postId)
 }

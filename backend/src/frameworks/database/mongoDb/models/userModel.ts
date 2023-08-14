@@ -1,4 +1,4 @@
-import mongoose ,{Mongoose, Schema, model} from 'mongoose';
+import mongoose ,{Schema, model} from 'mongoose';
 
 
 const userSchema = new Schema(
@@ -28,6 +28,9 @@ const userSchema = new Schema(
             type: String,
             default: "",
         },
+        profilePicName : {
+            type : String,
+        },
         bio :{
             type: String
         },
@@ -52,7 +55,7 @@ const userSchema = new Schema(
         }
     },
     {
-         // automatically includes  created and updated time fields
+    
         timestamps:true
 
     }

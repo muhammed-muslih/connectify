@@ -8,7 +8,7 @@ export interface GetAllPostInterface {
     delete: boolean,
     _id:string,
     date:string,
-    userId:UserInerface
+    userId?:UserInerface
     comments?:[]
    }
   
@@ -61,3 +61,16 @@ export interface GetAllPostInterface {
     readonly status:string,
     readonly message:string,
   }
+
+  export interface GetAllSavedPostInterface {
+    imageName:string,
+    imageUrl:string,
+    description?:string,
+    likes?:[],
+    delete: boolean,
+    _id:string,
+    date:string,
+    userId?:string
+    comments?:[],
+    posts:UserInerface[]
+   }

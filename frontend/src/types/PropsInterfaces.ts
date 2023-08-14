@@ -19,7 +19,8 @@ export interface ProfileProps {
     likes?:[],
     date?:Date | string|undefined
     comments?:[],
-    saved?:string[]
+    saved?:string[],
+    postUserId:string |undefined
    }
 
     interface PostInterface {
@@ -31,7 +32,7 @@ export interface ProfileProps {
   }
 
   export interface PostCardInterface {
-    posts : PostInterface[] | undefined
+    posts? : PostInterface[] | undefined
 
   }
 
