@@ -4,14 +4,14 @@ import { RootState } from "../../App/store";
 const data = localStorage.getItem("userToken");
 const parsedToken: string = data ? JSON.parse(data) : "";
 const userProfilePic = localStorage.getItem('userProfilePic')
-const parsedUserProfilePic: string = userProfilePic ? JSON.parse(userProfilePic) : "";
+const parsedUserProfilePic: string = userProfilePic? JSON.parse(userProfilePic) : "";
 
 
 const initialState = {
   token: parsedToken,
   userName: "",
   id: "",
-  userProfilePic: parsedUserProfilePic,
+  userProfilePic: parsedUserProfilePic??'',
   chatId:''
   
 };
@@ -43,6 +43,9 @@ const userAuthSlice = createSlice({
       const { chatId } = action.payload;
       state.chatId = chatId;
     },
+    deleteSelectedChatId:(state) =>{
+      state.chatId ='';
+    },
     logoutUser: (state) => {
       state.token = "";
       state.userName = "";
@@ -55,7 +58,7 @@ const userAuthSlice = createSlice({
 
 export default userAuthSlice.reducer;
 export type UserAuthState = typeof userAuthSlice.reducer;
-export const { setUserCredentials, logoutUser,removeProfilePicture,setProfilePicture,setSelectedChatId} = userAuthSlice.actions;
+export const { setUserCredentials, logoutUser,removeProfilePicture,setProfilePicture,setSelectedChatId,deleteSelectedChatId} = userAuthSlice.actions;
 export const selectUserToken = (state: RootState) => state.userAuth.token;
 export const selectUserName = (state: RootState) => state.userAuth.userName;
 export const selectUserId = (state: RootState) => state.userAuth.id;

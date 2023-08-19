@@ -2,8 +2,10 @@ import { Stack, Button, Box, Typography, Modal } from "@mui/material";
 import CancelIcon from "@mui/icons-material/Cancel";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useTheme } from "@mui/material/styles";
-import { useDeletePostMutation } from "../../../redux/Features/api/postApiSlice";
+import { useDeletePostMutation} from "../../../redux/Features/api/postApiSlice";
 import { toast, Toaster } from "react-hot-toast";
+import { useNavigate } from "react-router";
+
 
 const style = {
   position: "absolute" as "absolute",
@@ -24,19 +26,25 @@ export default function DeletModal({
   open,
   handleClose,
   postId,
+  setDelete,
+  setDeletedId
 }: {
   open: boolean;
   handleClose: () => void;
   postId: string | undefined;
+  setDelete: React.Dispatch<React.SetStateAction<boolean>>,
+  setDeletedId: React.Dispatch<React.SetStateAction<string | undefined>>
 }) {
   const theme = useTheme();
   const [deletePost, { isLoading }] = useDeletePostMutation();
-
+ const navigate = useNavigate()
   const handlePostDelete = async () => {
     if (!isLoading) {
       try {
         const res = await deletePost({ postId }).unwrap();
         if (res.status === "success") {
+          setDeletedId(postId)
+          setDelete(true)
           toast.success(res.message);
           handleClose();
         }

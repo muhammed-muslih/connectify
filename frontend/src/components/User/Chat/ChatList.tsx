@@ -87,14 +87,14 @@ const UserListBar = ({
   setUsers,
   onlineUsers,
   setOnline,
-  isMessageReceived
+  isMessageReceived,
 }: {
   setSelectedUserName: React.Dispatch<React.SetStateAction<string>>;
   setSelectedUserPic: React.Dispatch<React.SetStateAction<string | undefined>>;
   setUsers: React.Dispatch<React.SetStateAction<Users[] | undefined>>;
   onlineUsers: { userId: string; socketId: string }[];
   setOnline: React.Dispatch<React.SetStateAction<boolean | undefined>>;
-  isMessageReceived: string
+  isMessageReceived: string;
 }) => {
   const classes = useStyles();
   const scrollableRef = useRef<HTMLDivElement | null>(null);
@@ -190,27 +190,30 @@ const UserListBar = ({
           </Box>
         </Stack>
         <Box>
-          {
-            (isLoading || isFetching &&
-              [1, 2, 3, 4, 5].map((item) => (
-                <Stack
-                  direction={"row"}
-                  spacing={2}
-                  mt={2}
-                  px={2}
-                  py={1.5}
-                  className={classes.boxStyle}
-                  key={item}
-                >
-                  <Skeleton variant="circular" width={50} height={48} />
-                  <Skeleton
-                    animation="wave"
-                    variant="rounded"
-                    width={"100%"}
-                    height={75}
-                  />
-                </Stack>
-              )))}
+          {isLoading || isFetching ? (
+            <>
+              {[1, 2, 3, 4, 5].map((item) => (
+                <div key={item}>
+                  <Stack
+                    direction="row"
+                    spacing={2}
+                    mt={2}
+                    px={2}
+                    py={1.5}
+                    className={classes.boxStyle}
+                  >
+                    <Skeleton variant="circular" width={50} height={48} />
+                    <Skeleton
+                      animation="wave"
+                      variant="rounded"
+                      width="100%"
+                      height={75}
+                    />
+                  </Stack>
+                </div>
+              ))}
+            </>
+          ) : null}
         </Box>
 
         <Box>
@@ -276,7 +279,9 @@ const UserListBar = ({
                         chat?._id.toString() === selectedChatId ? "white" : "",
                     }}
                   >
-                    {isMessageReceived?isMessageReceived:chat?.latestMessage?.content || "No messages yet"}
+                    {isMessageReceived
+                      ? isMessageReceived
+                      : chat?.latestMessage?.content || "No messages yet"}
                   </Typography>
                 </Box>
               </Stack>

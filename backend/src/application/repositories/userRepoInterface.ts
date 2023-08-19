@@ -45,6 +45,8 @@ export const userRepoInterface =(repository:ReturnType<UserRepoImpl>) =>{
     await repository.removeUserProfilePic(userId)
 
     const getFollowLists = async(userId:string) => await repository.getFollowLists(userId)
+
+    const changePassword = async(userId:string,password:string) => await repository.changePassword(userId,password)
         
     return {
         registerUser,
@@ -64,7 +66,8 @@ export const userRepoInterface =(repository:ReturnType<UserRepoImpl>) =>{
         getSavedPostDetails,
         editUserProfile,
         removeUserProfilePic,
-        getFollowLists
+        getFollowLists,
+        changePassword
     }
 
 }

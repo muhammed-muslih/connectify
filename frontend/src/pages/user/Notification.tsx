@@ -2,7 +2,7 @@ import { Box, Grid, Theme } from "@mui/material";
 import NavBar from "../../components/User/NavBar/NavBar";
 import LeftBar from "../../components/User/LeftBar/LeftBar";
 import RightBar from "../../components/User/RightBar/RightBar";
-import Feed from "../../components/User/Feed/Feed";
+import UserNotification from "../../components/User/Notification/Notification";
 import { makeStyles } from "@mui/styles";
 import BottomNav from "../../components/User/BottomNav/BottomNav";
 import { useSelector } from "react-redux";
@@ -29,22 +29,21 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const Home = () => {
+const Notification = () => {
   const token = useSelector(selectUserToken);
   const classes = useStyles();
   const userName = useSelector(selectUserName);
-  const [isNewPostAdded,setNewPostAdded] = useState(false)
-
+  
   if (token) {
     return (
       <Box>
         <NavBar user />
         <Grid container>
           <Grid item md={3} className={classes.displayManager}>
-            <LeftBar setNewPostAdded={setNewPostAdded}/>
+            <LeftBar />
           </Grid>
           <Grid item md={6} xs={12}>
-            <Feed isNewPostAdded={isNewPostAdded} setNewPostAdded={setNewPostAdded} />
+            <UserNotification  />
           </Grid>
           <Grid item md={3} className={classes.displayManager2}>
             <RightBar />
@@ -60,4 +59,4 @@ const Home = () => {
   }
 };
 
-export default Home;
+export default Notification;

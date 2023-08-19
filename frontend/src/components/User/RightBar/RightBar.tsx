@@ -70,7 +70,7 @@ const RightBar = () => {
 
   return (
     <Box className={classess.container} sx={{ borderLeft: "3px groove" }}>
-      <Box px={8}>
+      <Box px={10} sx={{position:"fixed"}}>
         <TextField
           id="outlined-search"
           label="find friends..."
@@ -78,13 +78,13 @@ const RightBar = () => {
           fullWidth
           autoComplete="off"
           value={searchValue}
-          sx={{ borderColor: theme.palette.primary.light }}
+          sx={{ borderColor: theme.palette.primary.light,}}
           onChange={(e) => {
             setSearchValue(e.target.value);
           }}
         />
       </Box>
-      <Box p={5} ml={5}>
+      <Box p={5} ml={5} mt={2}>
         {users.map((user) => (
           <Stack
             direction={"row"}

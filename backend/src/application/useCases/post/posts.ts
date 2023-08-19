@@ -23,9 +23,12 @@ export const addPostAndGetUrl = async(
 }
 
 export const getAllPosts = (
+    page:number,
+    limit:number,
     postRepository:ReturnType<PostRepoInterface>,
 ) =>{
-    const allPosts = postRepository.getAllPosts()
+    let skip = (page - 1)*limit
+    const allPosts = postRepository.getAllPosts(skip,limit)
     if(!allPosts){
         throw new AppError("posts are not available", HttpStatus.BAD_REQUEST)
     }
@@ -64,6 +67,18 @@ export const createComment = async(
     }
     const result = await postRepository.createRootComment(comment, postId)
     return result
+}
+
+export const deleteComment = async(
+    postId : string,
+    commentId : string,
+    postRepository:ReturnType<PostRepoInterface>,
+) => {
+
+    if(!postId || !commentId) {
+        throw new AppError('credentials not found',HttpStatus.BAD_REQUEST)
+    }
+    return await postRepository.deleteRootComment(postId,commentId)
 }
 
 export const setReplayComment = async(
@@ -144,4 +159,21 @@ export const deletePost = async(
     await s3Service.removeFile(fileName)
     }
     return await postRepository.deletePost(postId)
+}
+
+export const getSinglePost = async(
+    postId:string,
+    postRepository:ReturnType<PostRepoInterface> ,
+)=>{
+    if(!postId){
+        throw new AppError('postId not found',HttpStatus.BAD_REQUEST)
+    }
+    return await postRepository.getSinglePostDetails(postId)
+}
+
+
+export const getPosts = async(
+    postRepository:ReturnType<PostRepoInterface> ,
+) =>{
+    return await postRepository.getPosts()
 }

@@ -35,6 +35,9 @@ import Modal from "../Modal/modal";
 import ReportModal from "../Modal/ReportModal";
 import DeletModal from "../Modal/DeleteModal";
 import EditModal from "../Modal/EditModal";
+import { selectUserName } from "../../../redux/Features/reducers/userAuthSlice";
+import { selectUserProfilePic } from "../../../redux/Features/reducers/userAuthSlice";
+
 
 const useStyles = makeStyles((theme: Theme) => ({
   media: {
@@ -63,6 +66,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   color: {
     color: theme.palette.primary.dark,
   },
+  iconColor: {
+    color: theme.palette.primary.light,
+  },
 }));
 
 const Posts: React.FC<PostPropsInterface> = ({
@@ -77,12 +83,21 @@ const Posts: React.FC<PostPropsInterface> = ({
   comments,
   saved,
   postUserId,
+  singlePost,
+  setDelete,
+  setDeletedId,
+  setIsEdited,
+  setEditedId,
+  setEditedText
 }) => {
   const classes = useStyles();
+  const [comment, setComment] = useState(comments ?? []);
   const [isLiked, setisLiked] = useState<boolean>(false);
   const [isCommentVisible, setCommentVisible] = useState<boolean>(false);
   const [likeOrDislike, { isLoading }] = useLikeorDislikeMutation();
   const userId = useSelector(selectUserId);
+  const currentUserName = useSelector(selectUserName);
+  const currentUserProfile = useSelector(selectUserProfilePic);
   const [numberOfLikes, setnumberOfLikes] = useState<number>(
     likes?.length ?? 0
   );
@@ -96,6 +111,9 @@ const Posts: React.FC<PostPropsInterface> = ({
   const [isCurrentUserPost, setCurrentUserPost] = useState<boolean>(
     postUserId === userId ? true : false
   );
+  const [isDelete,setIsDelete] = useState(false)
+  const [isCommentUpdated,setCommentUpdated] = useState(false)
+  const [deleteCmntId,setDeleteCmntId] = useState<string>()
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
 
@@ -164,7 +182,24 @@ const Posts: React.FC<PostPropsInterface> = ({
             text: commentText,
           }).unwrap();
           if (res.status === "success") {
-            toast.success("comment added successfully");
+            if (res?.result && res.result?.length > 0) {
+              const lastComment = res.result[res.result.length - 1];
+
+              const newPostedBy = {
+                ...lastComment.postedBy,
+                _id: userId,
+                userName: currentUserName,
+                profilePicture: currentUserProfile ?? "",
+              };
+
+              const updatedComment = {
+                ...lastComment,
+                postedBy: newPostedBy,
+              };
+              setComment((prev) => [...prev, updatedComment]);
+              setCommentUpdated(!isCommentUpdated)
+            }
+            // toast.success("comment added successfully");
             setCommentVisible(false);
           }
         } catch (error) {
@@ -173,6 +208,19 @@ const Posts: React.FC<PostPropsInterface> = ({
       }
     }
   };
+
+  useEffect(()=>{
+    if(isDelete){
+      setComment((prevComments) =>
+      prevComments.filter((comment) => comment._id !== deleteCmntId)
+    )}
+    setIsDelete(false)
+    if(comment?.length===0){
+      setCommentOpen(false)
+    }
+  },[isDelete])
+
+  
 
   const [saveAndUnsave, { isLoading: savePostLoading }] =
     useSaveAndUnSavePostMutation();
@@ -197,8 +245,8 @@ const Posts: React.FC<PostPropsInterface> = ({
   const handleOpenEditModal = () => setOpenEditModal(true);
   const handleCloseEditModal = () => setOpenEditModal(false);
   return (
-    <Stack sx={{ px: { md: 0, lg: 20 }, position: "relative" }} mb={3}>
-      <Toaster position="top-right" />
+    <Stack sx={{ px: { md: 0, lg: 20 }, position: "relative" }} mb={2}>
+      <Toaster position="top-right"/>
       <Box>
         <Stack
           spacing={2}
@@ -252,11 +300,13 @@ const Posts: React.FC<PostPropsInterface> = ({
             </Stack>
           </Stack>
           <Stack sx={{ cursor: "pointer" }}>
-            <MoreHorizIcon
-              sx={{ marginRight: 2 }}
-              className={classes.color}
-              onClick={handleModal}
-            />
+            {!singlePost && (
+              <MoreHorizIcon
+                sx={{ marginRight: 2 }}
+                className={classes.color}
+                onClick={handleModal}
+              />
+            )}
           </Stack>
 
           <Stack
@@ -291,6 +341,8 @@ const Posts: React.FC<PostPropsInterface> = ({
             open={openDeleteModal}
             handleClose={handleCloseDeleteModal}
             postId={_id}
+            setDelete={setDelete}
+            setDeletedId={setDeletedId}
           />
         </Stack>
         <Stack>
@@ -299,6 +351,9 @@ const Posts: React.FC<PostPropsInterface> = ({
             handleClose={handleCloseEditModal}
             description={description}
             postId={_id}
+            setIsEdited={setIsEdited}
+            setEditedId={setEditedId}
+            setEditedText={setEditedText}
           />
         </Stack>
 
@@ -320,7 +375,7 @@ const Posts: React.FC<PostPropsInterface> = ({
               <FavoriteRoundedIcon
                 color={"info"}
                 className={classes.bottomIcon}
-                sx={{ fontSize: 28,color:'info'}}
+                sx={{ fontSize: 28, color: "info" }}
                 onClick={() => {
                   likeHandler();
                   setisLiked(false);
@@ -343,26 +398,24 @@ const Posts: React.FC<PostPropsInterface> = ({
               sx={{ fontSize: 28 }}
               onClick={commentHandler}
             />
-            <SendOutlinedIcon
-              className={classes.bottomIcon}
-              sx={{ fontSize: 28 }}
-            />
           </Stack>
-          <Stack sx={{ cursor: "pointer" }}>
-            {isSaved ? (
-              <BookmarkIcon
-                sx={{ marginRight: 2, fontSize: 28 }}
-                className={classes.color}
-                onClick={handlePostSave}
-              />
-            ) : (
-              <TurnedInNotRoundedIcon
-                sx={{ marginRight: 2, fontSize: 28 }}
-                className={classes.color}
-                onClick={handlePostSave}
-              />
-            )}
-          </Stack>
+          {userId !== postUserId && postUserId && (
+            <Stack sx={{ cursor: "pointer" }}>
+              {isSaved ? (
+                <BookmarkIcon
+                  sx={{ marginRight: 2, fontSize: 28 }}
+                  className={classes.iconColor}
+                  onClick={handlePostSave}
+                />
+              ) : (
+                <TurnedInNotRoundedIcon
+                  sx={{ marginRight: 2, fontSize: 28 }}
+                  className={classes.iconColor}
+                  onClick={handlePostSave}
+                />
+              )}
+            </Stack>
+          )}
         </Stack>
 
         <Stack p={2} pl={3}>
@@ -377,20 +430,31 @@ const Posts: React.FC<PostPropsInterface> = ({
               </span>{" "}
               {description}
             </Typography>
-            <Typography
-              variant="body2"
-              sx={{ fontWeight: "medium", cursor: "pointer" }}
-            >
-              {comments?.length != 0 ? (
-                <span onClick={commentContainerHandler}>
-                  view {comments?.length} comments....
-                </span>
-              ) : (
-                <span>no comments....</span>
-              )}
-            </Typography>
+
+            {comment?.length != 0 ? (
+              <Typography
+                variant="body2"
+                onClick={commentContainerHandler}
+                sx={{ cursor: "pointer" }}
+              >
+                View {comment?.length} comments...
+              </Typography>
+            ) : (
+              <Typography variant="body2">no comments....</Typography>
+            )}
             <Stack>
-              {isCommentOpen && <Comment comments={comments} postId={_id} />}
+              {isCommentOpen && (
+                <Comment
+                  comments={comment}
+                  postId={_id}
+                  profilePicture={profilePicture}
+                  setIsDelete={setIsDelete}
+                  setDeleteCmntId={setDeleteCmntId}
+                  isDelete={isDelete}
+                  isCommentUpdated={isCommentUpdated}
+                  setCommentUpdated={setCommentUpdated}
+                />
+              )}
             </Stack>
             <Stack>
               {isCommentVisible && (

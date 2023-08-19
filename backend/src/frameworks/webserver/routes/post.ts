@@ -28,7 +28,8 @@ const postRouter = () => {
   router.patch("/report/:postId", controller.postReport);
   router.patch("/edit/:postId", controller.postEdit);
   router.delete("/delete/:postId", controller.postDelete);
-
+  router.get('/:postId',controller.singlePost)
+  router.put('/:postId/delete/:commentId',controller.deleteRootComment)
   return router;
 };
 export default postRouter;

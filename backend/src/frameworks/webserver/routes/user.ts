@@ -4,6 +4,8 @@ import { userRepoImpl } from '@frameworks/database/mongoDb/repositories/userRepo
 import { userRepoInterface } from '@application/repositories/userRepoInterface';
 import { s3ServiceImpl } from '@frameworks/services/s3BucketServie';
 import { s3serviceInterface } from '@application/services/s3ServiceInterface';
+import { authServices } from '@frameworks/services/authServices';
+import { authServiceInterface } from '@application/services/authServiceInterface';
 import upload from '../middlewares/multer'
 
 
@@ -14,7 +16,9 @@ const userRouter = () => {
         userRepoImpl,
         userRepoInterface,
         s3ServiceImpl,
-        s3serviceInterface
+        s3serviceInterface,
+        authServices,
+        authServiceInterface
     )
 
    router.post('/search',controller.searchUser)
@@ -26,6 +30,8 @@ const userRouter = () => {
    router.patch('/update-profile',upload.single('profilePic'),controller.UpdateUserProfile)
    router.patch('/remove-profile-pic',controller.removeProfilePic)
    router.get('/followers-followings-list',controller.followersDetails)
+   router.post('/verify-password',controller.comparePassword)
+   router.put('/update-password',controller.updatePassword)
    return router
 }
 

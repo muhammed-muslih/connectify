@@ -13,6 +13,7 @@ import { useState } from "react";
 import PostAddIcon from "@mui/icons-material/PostAdd";
 import { useCreatePostMutation } from "../../../redux/Features/api/postApiSlice";
 import toast, { Toaster } from "react-hot-toast";
+import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
 const style = {
   position: "absolute" as "absolute",
   top: "50%",
@@ -29,6 +30,7 @@ const style = {
 
 const CreateModal = (props: {
   openModal: boolean;
+  setNewPostAdded?: React.Dispatch<React.SetStateAction<boolean>>
   handleModalClose: () => void;
 }) => {
   const theme = useTheme();
@@ -72,6 +74,7 @@ const CreateModal = (props: {
         try {
           const res = await cretatePost({ postData }).unwrap();
           if (res.status === "success") {
+            props.setNewPostAdded&&props.setNewPostAdded(true)
             props.handleModalClose();
             toast.success("posted successfully");
           }
@@ -148,6 +151,7 @@ const CreateModal = (props: {
                   select your post
                 </Button>
               </label>
+              <Box>
               {imagePreview && (
                 <img
                   src={imagePreview}
@@ -155,6 +159,7 @@ const CreateModal = (props: {
                   style={{ maxWidth: "50%", maxHeight: "350px" }}
                 />
               )}
+              </Box>
               <TextField
                 sx={{ color: theme.palette.primary.light }}
                 multiline

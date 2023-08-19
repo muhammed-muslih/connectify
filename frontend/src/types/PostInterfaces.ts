@@ -5,11 +5,12 @@ export interface GetAllPostInterface {
     imageUrl:string,
     description?:string,
     likes?:[],
-    delete: boolean,
+    delete?: boolean,
     _id:string,
     date:string,
-    userId?:UserInerface
+    userId:UserInerface
     comments?:[]
+    report?:[]
    }
   
    export interface AllPostResInterface {
@@ -41,7 +42,8 @@ export interface GetAllPostInterface {
    }
 
    export interface commentProps {
-    postId?:string
+    postId?:string,
+    profilePicture?: string | undefined
     comments?:{
       _id:string,
       created?:string,
@@ -54,13 +56,50 @@ export interface GetAllPostInterface {
        postedBy?:UserInerface,
       }[]
 
-    }[]
+    }[],
+    setDeleteCmntId:React.Dispatch<React.SetStateAction<string | undefined>>
+    setIsDelete: React.Dispatch<React.SetStateAction<boolean>>,
+    isDelete: boolean,
+    isCommentUpdated: boolean,
+    setCommentUpdated: React.Dispatch<React.SetStateAction<boolean>>
    }
 
    export interface CommetAddInterface {
     readonly status:string,
     readonly message:string,
+    result?:{
+      _id:string,
+    created?:string,
+    text:string
+    postedBy:UserInerface
+    replies:{
+      _id:string,
+      created?:string,
+      text:string
+     postedBy:UserInerface,
+    }[]
+  }[]
+}
+
+export interface ReplyInterface {
+  _id:string,
+  text:string,
+  postedBy?:UserInerface
+  created?:string
+
+}
+
+export interface ReplyCommentInterface {
+   status:string,
+   message:string,
+    result?:{
+      _id:string,
+      text:string,
+      postedBy:UserInerface|string,
+      created:string
   }
+
+}
 
   export interface GetAllSavedPostInterface {
     imageName:string,
@@ -73,4 +112,12 @@ export interface GetAllPostInterface {
     userId?:string
     comments?:[],
     posts:UserInerface[]
+   }
+
+   export interface GetSinglePostInterface {
+    status:string,
+    message:string,
+    post:GetAllPostInterface
+    
+
    }

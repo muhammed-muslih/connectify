@@ -68,6 +68,24 @@ export const userApiSlice = apiSlice.injectEndpoints({
         getFollowersAndFollowingsList : builder.query<FollowersAndFollowingsListInterface,void>({
             query : () =>'/user/followers-followings-list',
             providesTags:['user']
+        }),
+
+        verifyUserPassword : builder.mutation<BasicReponse,{password:string}>({
+            query: ({password}) => ({
+                url: '/user/verify-password',
+                method:'POST',
+                body:{password}
+            
+            })
+        }),
+
+        changePassword : builder.mutation<BasicReponse,{password:string}>({
+            query: ({password}) => ({
+                url: '/user/update-password',
+                method:'PUT',
+                body:{password}
+            })
+
         })
 
     })
@@ -82,5 +100,7 @@ export const {
     useGetSavedPostDetailsQuery,
     useUpdateUserProfileMutation,
     useRemoveProfilePicMutation,
-    useGetFollowersAndFollowingsListQuery
+    useGetFollowersAndFollowingsListQuery,
+    useVerifyUserPasswordMutation,
+    useChangePasswordMutation
 } = userApiSlice

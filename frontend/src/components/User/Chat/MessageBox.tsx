@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import MessageBar from "./TopBar";
 import { useTheme } from "@mui/material/styles";
 import BottomBar from "./BottomBar";
@@ -12,6 +12,9 @@ import { selectSelectedChatId } from "../../../redux/Features/reducers/userAuthS
 import { selectUserId } from "../../../redux/Features/reducers/userAuthSlice";
 import { useRef } from "react";
 import { Users } from "../../../types/chatInterface";
+import { Link } from "react-router-dom";
+
+
 
 const MessageBox = ({
   selectedUserPic,
@@ -27,7 +30,7 @@ const MessageBox = ({
   setOnlineUsers: React.Dispatch<
     React.SetStateAction<{ userId: string; socketId: string }[]>
   >;
-  isOnline:boolean | undefined,
+  isOnline: boolean | undefined;
   setMessageReceived: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   const theme = useTheme();
@@ -38,11 +41,15 @@ const MessageBox = ({
   const chatId = useSelector(selectSelectedChatId);
   const user = useSelector(selectUserId);
   const socket = useRef<Socket>();
-  const { data, isLoading, isFetching, refetch } = useGetMessagesQuery({chatId,});
-
+  const { data, isLoading, isFetching, refetch } = useGetMessagesQuery({
+    chatId,
+  });
+  
 
   useEffect(() => {
+    if(chatId){
     refetch();
+    }
   }, [receivedMessage, chatId]);
 
   useEffect(() => {
@@ -58,7 +65,7 @@ const MessageBox = ({
 
     socket.current.on("receive-message", (data) => {
       setReceivedMessage(data);
-      setMessageReceived(data?.content)
+      setMessageReceived(data?.content);
     });
 
     return () => {
@@ -73,7 +80,7 @@ const MessageBox = ({
   useEffect(() => {
     if (sendMessage !== null) {
       socket.current && socket.current.emit("send-message", sendMessage);
-      setMessageReceived('')
+      setMessageReceived("");
     }
   }, [sendMessage]);
 
@@ -92,7 +99,6 @@ const MessageBox = ({
     }
   }, [receivedMessage, chatId]);
 
- 
   return (
     <Box
       sx={{
@@ -126,6 +132,32 @@ const MessageBox = ({
               users={users}
             />
           </>
+        )}
+
+        {!chatId && messages.length <= 0 && (
+          <Box
+            sx={{
+              justifyContent: "center",
+              alignItems: "center",
+              display: "flex",
+              height: "90vh",
+              flexDirection: "column",
+              color: theme.palette.primary.main,
+            }}
+          >
+            <img src='/Online world-pana.svg' alt="" width={"50%"} />
+            <Typography variant="body1" sx={{fontWeight:'bold'}}>
+              Start your chatting journey today. Connect with friends and make
+              new ones.
+            </Typography>
+            <Typography variant="body1" sx={{fontWeight:'bold'}}>
+              Go to <Link to={'/'}>home</Link> &gt; search your friends and make chat
+            </Typography>
+            <Typography variant="body1" sx={{fontWeight:'bold'}}>
+              Experience the joy of meaningful conversations and connections.
+            </Typography>
+            <Typography variant="body1" sx={{fontWeight:'bold'}}>Let's chat away!</Typography>
+          </Box>
         )}
       </Box>
     </Box>

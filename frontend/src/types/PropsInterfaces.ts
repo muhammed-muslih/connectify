@@ -1,3 +1,4 @@
+import { UserInerface } from "./UserInterfaces";
 export interface ProfileProps {
     isUserPost: boolean;
     setUserPost: React.Dispatch<React.SetStateAction<boolean>>;
@@ -8,7 +9,6 @@ export interface ProfileProps {
   }
 
   
-
   export interface PostPropsInterface {
     _id?:string
     userName?:string | undefined
@@ -18,9 +18,26 @@ export interface ProfileProps {
     profilePicture?: string | undefined,
     likes?:[],
     date?:Date | string|undefined
-    comments?:[],
+    comments?:{
+      _id: string;
+      created?: string;
+      text: string;
+      postedBy?: UserInerface;
+      replies: {
+          _id: string;
+          created?: string;
+          text: string;
+          postedBy?: UserInerface;
+      }[];
+    }[],
     saved?:string[],
     postUserId:string |undefined
+    singlePost?:boolean,
+    setDelete: React.Dispatch<React.SetStateAction<boolean>>,
+    setDeletedId: React.Dispatch<React.SetStateAction<string | undefined>>,
+    setIsEdited: React.Dispatch<React.SetStateAction<boolean>>,
+    setEditedId: React.Dispatch<React.SetStateAction<string | undefined>>,
+    setEditedText: React.Dispatch<React.SetStateAction<string | undefined>>
    }
 
     interface PostInterface {
@@ -45,6 +62,21 @@ export interface UserTableProps {
     isBlocked?: boolean | undefined,
     joiningDate: string | undefined
     id: string
+  }[] 
+  tableHead : string[] 
+} 
+
+export interface PostTableProps {
+  tableRow : {
+    UserName: string,
+    id: string,
+    date: string,
+    imageName:string,
+    imageUrl:string,
+    description?:string,
+    likes?:[],
+    report?:[],
+    userProfilePicture?: string
   }[] 
   tableHead : string[] 
 } 

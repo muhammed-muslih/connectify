@@ -128,7 +128,6 @@ export default function EditProfileModal({
     values: UpdateUserInterface,
     actions: FormikHelpers<UpdateUserInterface>
   ) => {
-    console.log(values, "fromik values");
     setProfileUpdateError("");
     const updateData = new FormData();
     if (values.userName) {

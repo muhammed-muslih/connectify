@@ -30,7 +30,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
                 method:'POST',
                 body :data,
             }),
-            invalidatesTags : ['admin','post','user']
+            invalidatesTags : ['admin','post','user','adminpost']
         }),
         
         googleLogin : builder.mutation<GoogleResponseInt,{credential: string}>({

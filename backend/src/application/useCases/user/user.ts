@@ -1,4 +1,5 @@
 import { UserRepoInterface } from "@application/repositories/userRepoInterface";
+import { AuthServicesInterface } from "@application/services/authServiceInterface";
 import { HttpStatus } from "@interfaces/httpStatus";
 import { S3ServiceInterface } from "@application/services/s3ServiceInterface";
 import AppError from "@utils/appError";
@@ -164,7 +165,7 @@ export const editUserProfile = async (
   updateFields.bio = bio;
   await userRepository.editUserProfile(userId, updateFields);
   return {
-    url:result?.url
+    url:result?.url?result.url:user.profilePicture
   }
 };
 
@@ -189,4 +190,43 @@ export const getFollowersAndFollowingsDetails = async(
   userRepository: ReturnType<UserRepoInterface>,
 )=> {
   return await userRepository.getFollowLists(userId)
+}
+
+
+export const verifyPassword = async(
+  userId:string,
+  password:string,
+  userRepository:ReturnType <UserRepoInterface>,
+  authServices:ReturnType <AuthServicesInterface>
+) => {
+  if(!userId) {
+    throw new AppError('userId is not found', HttpStatus.BAD_REQUEST)
+  }
+  const user = await userRepository.getUserById(userId)
+  if(!user){
+    throw new AppError('user is not found', HttpStatus.BAD_REQUEST)
+  }
+  const isPasswordCorrect = await authServices.comparePassword(password,user.password as string)
+  console.log(isPasswordCorrect);
+  if(!isPasswordCorrect){
+    throw new AppError('password is incorrect', HttpStatus.BAD_REQUEST)
+  }
+ return
+}
+
+export const changePassword = async(
+  userId:string,
+  password:string,
+  userRepository:ReturnType <UserRepoInterface>,
+  authServices:ReturnType <AuthServicesInterface>
+  ) => {
+  if(!userId) {
+    throw new AppError('userId is not found', HttpStatus.BAD_REQUEST)
+  }
+  if(!password) {
+    throw new AppError('credentials not found',HttpStatus.BAD_REQUEST)
+  }
+  const hasedPassword = await authServices.encryptPassword(password)
+  await userRepository.changePassword(userId, hasedPassword)
+  return
 }

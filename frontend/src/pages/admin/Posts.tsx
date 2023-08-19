@@ -5,8 +5,9 @@ import { selectAdminToken } from "../../redux/Features/reducers/adminAuthSlice";
 import { Navigate } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 import NavBar from "../../components/User/NavBar/NavBar";
-import UserTable from "../../components/Admin/Tables/UserTable";
-import { useGetAllUsersQuery } from "../../redux/Features/api/adminApiSlice";
+import PostTable from "../../components/Admin/Tables/PostTable";
+import { useGetPostsQuery } from "../../redux/Features/api/adminApiSlice";
+import { useEffect } from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
   displayManager: {
@@ -26,43 +27,61 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const Users = () => {
+const Posts = () => {
   const classes = useStyles();
   const token = useSelector(selectAdminToken);
-  const { data: users, isLoading } = useGetAllUsersQuery();
+  const { data, isLoading,refetch } = useGetPostsQuery();
+  useEffect(()=>{
+    refetch()
+  },[])
 
   function createData(
     UserName: string,
-    name: string,
-    email: string,
-    joiningDate: string,
-    status: string,
-    isBlocked: boolean | undefined,
-    id: string
+    imageUrl: string,
+    imageName: string,
+    description: string,
+    date: string,
+    id: string,
+    likes?: [],
+    report?: [],
+    userProfilePicture?: string
   ) {
-    return { UserName, name, email, joiningDate, status, isBlocked, id };
+    return {
+      UserName,
+      imageUrl,
+      imageName,
+      description,
+      date,
+      id,
+      likes,
+      report,
+      userProfilePicture
+    };
   }
 
-  const userDetails =
-    users?.users.map((user) =>
+  const postDetails =
+    data?.posts.map((post) =>
       createData(
-        user.userName,
-        user.name,
-        user.email,
-        user.createdAt.toString(),
-        user.isBlocked ? "blocked" : "active",
-        user.isBlocked,
-        user._id
+        post.userId.userName,
+        post.imageUrl,
+        post.imageName,
+        post.description ?? "",
+        post.date.toString(),
+        post._id,
+        post?.likes,
+        post?.report,
+        post?.userId.profilePicture
       )
     ) || [];
 
   const tableHead = [
-    "userName",
-    "name",
-    "email",
-    "joiningDate",
-    "staus",
-    "block/unblock",
+    "UserName",
+    "Post",
+    "Description",
+    "Posted Date",
+    "Total Likes",
+    "Total Reports",
+    "Delete",
   ];
 
   if (token) {
@@ -74,7 +93,7 @@ const Users = () => {
             <LeftBar />
           </Grid>
           <Grid item md={9} xs={12}>
-            <UserTable tableRow={userDetails} tableHead={tableHead} />
+            <PostTable tableRow={postDetails} tableHead={tableHead} />
           </Grid>
         </Grid>
         <Box className={classes.bottomDisplay}></Box>
@@ -85,4 +104,4 @@ const Users = () => {
   }
 };
 
-export default Users;
+export default Posts;

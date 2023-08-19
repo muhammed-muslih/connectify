@@ -38,7 +38,7 @@ export const s3ServiceImpl = () =>{
     const uploadAndGetUrl = async (file: Express.Multer.File,postPic:boolean) => {
         let buffer
         if(postPic){
-            buffer = await sharp(file.buffer).resize({width:600,height:750,fit:'fill'}).toBuffer()
+            buffer = await sharp(file.buffer).resize({width:300,height:450,fit:'fill'}).toBuffer()
         }else{
             buffer = await sharp(file.buffer).resize({width:250,height:300}).toBuffer()
         }
@@ -46,7 +46,7 @@ export const s3ServiceImpl = () =>{
         const params = {
           Bucket: configKeys.S3_BUCKET_NAME,
           Key: imageName,
-          Body:buffer,
+          Body:file.buffer,
           ContentType: file.mimetype,
           ACL: 'public-read', 
         }

@@ -61,6 +61,7 @@ const userRepoImpl = () => {
             followings: user?.followings
         };
     };
+    const changePassword = async (userId, password) => await userModel_1.default.findByIdAndUpdate(userId, { $set: { password: password } });
     return {
         registerUser,
         getUserByEmail,
@@ -79,7 +80,8 @@ const userRepoImpl = () => {
         getSavedPostDetails,
         editUserProfile,
         removeUserProfilePic,
-        getFollowLists
+        getFollowLists,
+        changePassword
     };
 };
 exports.userRepoImpl = userRepoImpl;

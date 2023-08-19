@@ -74,7 +74,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
           </TableRow>
         </TableHead>
         <TableBody>
-          {tableRow?.map((row) => (
+          {tableRow&&tableRow?.map((row) => (
             <StyledTableRow key={row?.UserName}>
               <StyledTableCell >{row.name}</StyledTableCell>
               <StyledTableCell >{row.UserName}</StyledTableCell> 

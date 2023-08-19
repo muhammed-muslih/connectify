@@ -6,7 +6,7 @@ export const postRepoInterface = (repository : ReturnType <PostRepoImp>) =>{
 
     const createPost = async (userId:string,newPost :NewPostInterface) => await repository.createPost(userId,newPost)
 
-    const getAllPosts = async () => await repository.getAllPosts()
+    const getAllPosts = async (skip:number,limit:number) => await repository.getAllPosts(skip,limit)
 
     const getUserPosts = async (userId : string) => await repository.getuserPosts(userId)
 
@@ -16,6 +16,8 @@ export const postRepoInterface = (repository : ReturnType <PostRepoImp>) =>{
 
     const createRootComment = async (comment:CommentInterface,postId:string) => await repository.createRootComment(comment,postId)
 
+    const deleteRootComment = async(postId:string,commentId:string) => await repository.deleteRootComment(postId,commentId)
+
     const replayComment = async(replay:CommentInterface,postId:string,commentId : string) => 
     await repository.replayComment(replay,postId,commentId)
     
@@ -24,6 +26,10 @@ export const postRepoInterface = (repository : ReturnType <PostRepoImp>) =>{
     const editPost = async(postId:string,description:string) => await repository.editPost(postId,description)
 
     const deletePost = async (postId:string) => await repository.deletePost(postId)
+    
+    const getSinglePostDetails = async (postId:string) => await repository.getSinglePostDetails(postId)
+
+    const getPosts = async () => await repository.getPosts()
 
     return {
         createPost,
@@ -35,7 +41,10 @@ export const postRepoInterface = (repository : ReturnType <PostRepoImp>) =>{
         replayComment ,
         reportPost,
         editPost,
-        deletePost
+        deletePost,
+        getSinglePostDetails,
+        deleteRootComment,
+        getPosts
     }
 
 }

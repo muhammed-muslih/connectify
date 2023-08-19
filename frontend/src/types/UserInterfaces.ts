@@ -1,8 +1,8 @@
 export interface UserInerface {
     _id: string,
-    name: string,
+    name?: string,
     userName: string,
-    email: string,
+    email?: string,
     isGoogleUser?: false,
     profilePicture?: string
     followers?: [],

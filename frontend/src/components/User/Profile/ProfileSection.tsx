@@ -6,6 +6,7 @@ import {
   Theme,
   Button,
   Divider,
+  Tooltip
 } from "@mui/material";
 import AppsOutlinedIcon from "@mui/icons-material/AppsOutlined";
 import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
@@ -28,6 +29,8 @@ import EditProfileModal from "../Modal/EditProfile";
 import ListModal from "../Modal/ListModal";
 import { useCreateChatsMutation } from "../../../redux/Features/api/chatApiSlice";
 import { useNavigate } from "react-router-dom";
+import ChangePasswordModal from "../Modal/ChangePassword";
+
 
 const useStyles = makeStyles((theme: Theme) => ({
   profileContentBoxs: {
@@ -86,6 +89,7 @@ const ProfileSection: React.FC<ProfileProps> = ({
   const [openProfileEditModal, setOpenProfileEditModal] = useState(false);
   const [openFollowersListModal, setOpenFollowersListModal] = useState(false);
   const [openFollowingsListModal, setOpenFollowingsListModal] = useState(false);
+  const [openSettingsModal, setOpenSettingsModal] = useState(false);
   const [bio, setBio] = useState<string>();
   const { id: userId } = useParams();
   const { data: user, isLoading, isFetching } = useGetUserQuery({ id: userId });
@@ -136,13 +140,14 @@ const ProfileSection: React.FC<ProfileProps> = ({
     setOpenFollowingsListModal(!openFollowingsListModal);
   const handleCloseFollowingListModal = () => setOpenFollowingsListModal(false);
 
-  const [createChat, { isLoading: createChatLoading }] = useCreateChatsMutation();
+  const [createChat, { isLoading: createChatLoading }] =
+    useCreateChatsMutation();
   const handleMessage = async () => {
     try {
       if (!createChatLoading) {
-        const res = await createChat({userId}).unwrap();
+        const res = await createChat({ userId }).unwrap();
         console.log(res);
-        
+
         if (res.status === "success") {
           navigate("/message");
         }
@@ -229,7 +234,12 @@ const ProfileSection: React.FC<ProfileProps> = ({
                 {profileName}
               </Typography>
               {profileName && isCurrentUser ? (
-                <Stack direction={"row"} spacing={2} alignItems={"center"}>
+                <Stack
+                  direction={"row"}
+                  spacing={2}
+                  alignItems={"center"}
+                  position={"relative"}
+                >
                   <Button
                     variant="contained"
                     size="large"
@@ -240,13 +250,33 @@ const ProfileSection: React.FC<ProfileProps> = ({
                   >
                     edit profile
                   </Button>
-                  <SettingsIcon
-                    sx={{
-                      color: colorTheme.palette.primary.main,
-                      width: 35,
-                      height: 35,
-                    }}
-                  />
+                  <Box sx={{ position: "relative" }}>
+                  <Tooltip title="click here"  sx={{color:theme.palette.primary.light}}>
+                    <SettingsIcon
+                      sx={{
+                        color: colorTheme.palette.primary.main,
+                        width: 35,
+                        height: 35,
+                        cursor: "pointer",
+                      }}
+                      onClick={()=>setOpenSettingsModal(!openSettingsModal)}
+                    />
+                    </Tooltip>
+                    {openSettingsModal && (
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          backgroundColor: "white",
+                          boxShadow: 10,
+                          p: 2,
+                          borderRadius: 4,
+                        }}
+                        top={60}
+                      >
+                       <ChangePasswordModal setOpenSettingsModal={setOpenSettingsModal} />
+                      </Box>
+                    )}
+                  </Box>
                 </Stack>
               ) : (
                 <Stack spacing={3} direction={"row"}>

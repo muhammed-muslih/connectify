@@ -2,11 +2,14 @@ import { Request,Response } from "express"
 import asyncHandler from 'express-async-handler'
 import { S3ServiceImpl } from "@frameworks/services/s3BucketServie"
 import { S3ServiceInterface } from "@application/services/s3ServiceInterface"
-import { addPostAndGetUrl,getAllPosts,userPosts,postLikeOrDislike,editPost,
-createComment,setReplayComment,reportPost,deletePost} from "@application/useCases/post/userPost"
+import { addPostAndGetUrl,getAllPosts,
+userPosts,postLikeOrDislike,editPost,
+getSinglePost,createComment,setReplayComment,deleteComment,
+reportPost,deletePost} from "@application/useCases/post/posts"
 import { CustomRequest } from "@interfaces/customRequestInterface"
 import { PostRepoImp } from "@frameworks/database/mongoDb/repositories/postRepoImpl"
 import { PostRepoInterface } from "@application/repositories/postRepoInterface"
+
 
 export const postController = (
     s3ServiceImpl :S3ServiceImpl,
@@ -33,7 +36,11 @@ export const postController = (
     })
 
     const findAllPosts = asyncHandler(async(req:CustomRequest,res:Response)=>{
-        const posts = await getAllPosts(postRepo)
+        const {p,l} = req.query
+        console.log(req.query);
+        const page = Number(p)
+        const limit = Number(l)
+        const posts = await getAllPosts(page??1,limit??10,postRepo)
         res.json({
             status:'success',
             posts
@@ -65,10 +72,11 @@ export const postController = (
         const userId = req.userId as string
         const {postId} = req.params
         const {text} = req.body
-        await createComment(userId,postId,text,postRepo)
+        const result = await createComment(userId,postId,text,postRepo)
         res.json({
             status:'success',
-            message:'comment addedd successfully'
+            message:'comment addedd successfully',
+            result:result?.comments
         })
     })
 
@@ -76,10 +84,11 @@ export const postController = (
         const userId = req.userId as string
         const {postId,commentId} = req.params   
         const {text} = req.body
-        await setReplayComment(userId,postId,commentId,text,postRepo)
+        const result = await setReplayComment(userId,postId,commentId,text,postRepo)
         res.json({
             status:'success',
-            message:'replay comment addedd successfully '
+            message:'replay comment addedd successfully ',
+            result 
         })
     })
 
@@ -113,9 +122,28 @@ export const postController = (
             status:"success",
             message:'post deleted successfully'
         })
-        
+    })
+
+    const singlePost = asyncHandler(async(req:CustomRequest,res:Response) =>{
+        const {postId}=req.params
+        const post = await getSinglePost(postId,postRepo)
+        res.json({
+            status:"success",
+            message:'post fetched successfully',
+            post
+        })
+    })
+
+    const deleteRootComment = asyncHandler(async(req:CustomRequest,res:Response) =>{
+        const {postId,commentId}=req.params 
+        await deleteComment(postId,commentId,postRepo)
+        res.json({
+            status:"success",
+            message:'comment deleted successfully'
+        })
 
     })
+
 
     return {
         uploadPostAndGetUrl,
@@ -126,6 +154,8 @@ export const postController = (
         replayComment,
         postReport,
         postEdit,
-        postDelete
+        postDelete,
+        singlePost,
+        deleteRootComment
     }
 }

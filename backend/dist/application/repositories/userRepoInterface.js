@@ -20,6 +20,7 @@ const userRepoInterface = (repository) => {
     const editUserProfile = async (userId, updateFields) => await repository.editUserProfile(userId, updateFields);
     const removeUserProfilePic = async (userId) => await repository.removeUserProfilePic(userId);
     const getFollowLists = async (userId) => await repository.getFollowLists(userId);
+    const changePassword = async (userId, password) => await repository.changePassword(userId, password);
     return {
         registerUser,
         getUserByEmail,
@@ -38,7 +39,8 @@ const userRepoInterface = (repository) => {
         getSavedPostDetails,
         editUserProfile,
         removeUserProfilePic,
-        getFollowLists
+        getFollowLists,
+        changePassword
     };
 };
 exports.userRepoInterface = userRepoInterface;

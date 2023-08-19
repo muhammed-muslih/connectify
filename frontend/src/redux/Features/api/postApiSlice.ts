@@ -1,6 +1,7 @@
 import { apiSlice } from "./apiSlice";
-import { AllPostResInterface,PostAddResInterface ,GetPostInterface,CommetAddInterface} from "../../../types/PostInterfaces";
+import { AllPostResInterface,PostAddResInterface ,GetPostInterface,CommetAddInterface,ReplyCommentInterface} from "../../../types/PostInterfaces";
 import { BasicReponse } from "../../../types/ResponseInterface";
+import { GetSinglePostInterface } from "../../../types/PostInterfaces";
 
 
 export const postSlice = apiSlice.injectEndpoints({
@@ -11,17 +12,17 @@ export const postSlice = apiSlice.injectEndpoints({
                 method : 'POST',
                 body : postData
             }),
-            invalidatesTags : ['post']
+            invalidatesTags : ['post','adminpost']
         }),
 
-        getAllPosts : builder.query<AllPostResInterface,void>({
-            query : () => '/post',
+        getAllPosts : builder.query<AllPostResInterface,{page:number,limit:number}>({
+            query : ({page,limit}) => `/post?p=${page}&l=${limit}`,
             providesTags:['post','user']
         }),
 
         getUserPosts : builder.query<GetPostInterface,{id:string|undefined}>({
             query: ({id}) =>`/post/user-posts/${id}`,
-            providesTags:['post','user']
+            providesTags:['post','user','singlepost']
         }),
 
         likeorDislike : builder.mutation<PostAddResInterface,any>({
@@ -30,7 +31,7 @@ export const postSlice = apiSlice.injectEndpoints({
                 method: 'POST',
                 body:postId
             }),
-            invalidatesTags:['post']
+            invalidatesTags:['post','singlepost','adminpost']
 
         }),
 
@@ -40,16 +41,16 @@ export const postSlice = apiSlice.injectEndpoints({
                 method: 'POST',
                 body:{text}
             }),
-            invalidatesTags:['post','user']
+            invalidatesTags:['post','user','singlepost']
         }),
 
-        addReplyComment : builder.mutation<CommetAddInterface,{postId:string|undefined,text:string,commentId:string}>({
+        addReplyComment : builder.mutation<ReplyCommentInterface,{postId:string|undefined,text:string,commentId:string}>({
             query : ({postId,text,commentId}) => ({
                 url:`/post/comment/${postId}/reply/${commentId}`,
                 method:'POST',
                 body:{text}
             }),
-            invalidatesTags:['post','user']
+            invalidatesTags:['post','user','singlepost']
         }),
 
         reportPost : builder.mutation<BasicReponse,{postId:string|undefined,text:string}>({
@@ -58,8 +59,7 @@ export const postSlice = apiSlice.injectEndpoints({
                 method:'PATCH',
                 body:{text}
             }),
-            invalidatesTags:['post']
-          
+            invalidatesTags:['post','singlepost','adminpost']
         }),
 
         editPost : builder.mutation<BasicReponse,{postId:string|undefined,description:string|undefined}>({
@@ -69,7 +69,7 @@ export const postSlice = apiSlice.injectEndpoints({
                 body:{description}
 
             }),
-            invalidatesTags:['post']
+            invalidatesTags:['post','singlepost','adminpost']
         }),
         
         deletePost : builder.mutation<BasicReponse,{postId:string|undefined}>({
@@ -77,10 +77,27 @@ export const postSlice = apiSlice.injectEndpoints({
                 url:`/post/delete/${postId}`,
                 method:'DELETE'
             }),
-            invalidatesTags:['post']
+            invalidatesTags:['post','singlepost','adminpost']
         }),
-        
+
+        getSinglePostDetails : builder.query<GetSinglePostInterface,{postId:string}>({
+            query: ({postId}) => `/post/${postId}`,
+            providesTags:['post','singlepost']
+
+        }),
+
+        deleteComment : builder.mutation<BasicReponse,{postId:string,commentId:string}>({
+            query : ({postId,commentId}) => ({
+                url:  `/post/${postId}/delete/${commentId}`,
+                method:'PUT'
+            }),
+            invalidatesTags:['post','singlepost']
+
+        }),
+
+
     })
+
 })
 
 export const {
@@ -93,4 +110,8 @@ export const {
     useReportPostMutation,
     useEditPostMutation,
     useDeletePostMutation,
+    useGetSinglePostDetailsQuery,
+    useDeleteCommentMutation,
+    
+
 } = postSlice

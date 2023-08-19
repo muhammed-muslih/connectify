@@ -1,3 +1,4 @@
+import { UserResInerface } from "./userInterfaces"
 export interface PostResInterface {
     _id: string
     userId : string
@@ -30,4 +31,19 @@ export interface CommentInterface {
 export interface ReportPostInterface {
     text: string
     reportedBy : string
+}
+
+interface ReplyPostInterface {
+    _id: string
+    created: Date;
+    text?: string;
+    postedBy?: UserResInerface;
+}
+
+export interface CommentPostInterface {
+    _id: string;
+    created: Date;
+    replies: ReplyPostInterface[];
+    text?: string;
+    postedBy?:UserResInerface ;
 }

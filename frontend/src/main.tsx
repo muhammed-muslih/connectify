@@ -8,21 +8,21 @@ import { theme } from "./theme.ts";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { PersistGate } from "redux-persist/integration/react";
 
+
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <GoogleOAuthProvider
-        clientId={import.meta.env.VITE_GOOGLE_AUTH_CLIENT_ID}
-      >
-        <Provider store={store}>
-          <PersistGate persistor={persistor}>
-            <App />
-          </PersistGate>
-        </Provider>
-      </GoogleOAuthProvider>
-    </ThemeProvider>
+      <ThemeProvider theme={theme}>
+        <GoogleOAuthProvider
+          clientId={import.meta.env.VITE_GOOGLE_AUTH_CLIENT_ID}>
+          <Provider store={store}>
+            <PersistGate persistor={persistor}>
+              <App />
+            </PersistGate>
+          </Provider>
+        </GoogleOAuthProvider>
+      </ThemeProvider>
   </React.StrictMode>
 );

@@ -23,6 +23,7 @@ import { selectUserId } from "../../../redux/Features/reducers/userAuthSlice";
 import { useNavigate } from "react-router-dom";
 import CreateModal from "../Modal/Create";
 import toast, { Toaster } from "react-hot-toast";
+import { deleteSelectedChatId } from "../../../redux/Features/reducers/userAuthSlice";
 
 
 
@@ -35,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) => ({
       display: "none",
     },
     position: "sticky",
-    top: 0,
+    top:0,
     [theme.breakpoints.up("lg")]: {
       BorderColor: theme.palette.primary.dark,
       borderRight: "3px groove ",
@@ -93,7 +94,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }));
 
-const LeftBar = ({message}:{message?:boolean}) => {
+const LeftBar = ({message,setNewPostAdded}:{message?:boolean,setNewPostAdded?: React.Dispatch<React.SetStateAction<boolean>>}) => {
   const navigate = useNavigate();
   const id = useSelector(selectUserId);
   const profilePic = useSelector(selectUserProfilePic)
@@ -108,6 +109,7 @@ const LeftBar = ({message}:{message?:boolean}) => {
     e.preventDefault();
     dispatch(logoutUser());
     dispatch(removeProfilePicture())
+    dispatch(deleteSelectedChatId())
   };
   const handleNavigate = () => {
     if (id) {
@@ -153,12 +155,12 @@ const LeftBar = ({message}:{message?:boolean}) => {
             },
           }}
           className={message?classes.textHide:classes.text}
-
         >
           Messages
         </Typography>
       </Box>
       </Link>
+      <Link to={'/notification'} style={{textDecoration:'none'}}>
       <Box className={classes.item}>
         <Badge badgeContent={8} color="secondary" overlap="circular">
           <FavoriteBorderIcon className={classes.icon} fontSize="large" />
@@ -178,6 +180,7 @@ const LeftBar = ({message}:{message?:boolean}) => {
           Notifications
         </Typography>
       </Box>
+      </Link>
       <Box className={classes.item}>
         <Box onClick={handleModalOpen} display={"flex"}>
           <AddBoxOutlinedIcon className={classes.icon} fontSize="large" />
@@ -199,6 +202,7 @@ const LeftBar = ({message}:{message?:boolean}) => {
         <CreateModal
           openModal={openModal}
           handleModalClose={handleModalClose}
+          setNewPostAdded={setNewPostAdded}
         />
       </Box>
 

@@ -1,6 +1,8 @@
 import { ImageList, ImageListItem, Box, Theme, Divider } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { PostCardInterface } from "../../../types/PropsInterfaces";
+import SinglePost from "../Modal/SinglePost";
+import { useState } from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
   box1: {
@@ -19,6 +21,17 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const Posts: React.FC<PostCardInterface> = ({ posts }) => {
   const classes = useStyles();
+  const [postId,setPostId] = useState<string>('')
+  const [open, setOpen] = useState(false);
+  const handleClickOpen = (id:string) => {
+    setPostId(id)
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setPostId('')
+  };
 
   return (
     <Box>
@@ -33,7 +46,7 @@ const Posts: React.FC<PostCardInterface> = ({ posts }) => {
         >
           {posts
             ? posts.map((post) => (
-                <ImageListItem key={post._id} sx={{ pb: 9.5 }}>
+                <ImageListItem key={post._id} sx={{ pb: 9.5 }} onClick={()=>handleClickOpen(post._id)}>
                   <img
                     width={"100%"}
                     height={"400px"}
@@ -48,6 +61,9 @@ const Posts: React.FC<PostCardInterface> = ({ posts }) => {
       </Box>
 
       {/* small devices */}
+      {
+        open&&postId&&<SinglePost  handleClose={handleClose} open={open} setOpen={setOpen} postId={postId}/>
+      }
 
       <Box className={classes.box2}>
         <ImageList sx={{ width: "100%" }} cols={2} gap={0} rowHeight={350}>

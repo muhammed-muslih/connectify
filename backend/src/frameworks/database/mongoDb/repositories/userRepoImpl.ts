@@ -82,8 +82,10 @@ export const userRepoImpl = () =>{
             followings:user?.followings
         }
         
-
     }
+
+    const changePassword = async (userId : string,password:string) =>
+     await User.findByIdAndUpdate(userId,{$set:{password:password}})
 
     return{
         registerUser,
@@ -103,7 +105,8 @@ export const userRepoImpl = () =>{
         getSavedPostDetails,
         editUserProfile,
         removeUserProfilePic,
-        getFollowLists
+        getFollowLists,
+        changePassword
     }
 }
 

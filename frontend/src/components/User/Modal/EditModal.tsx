@@ -33,11 +33,17 @@ export default function EditModal({
   handleClose,
   description,
   postId,
+  setIsEdited,
+  setEditedId,
+  setEditedText
 }: {
   open: boolean;
   handleClose: () => void;
   description: string | undefined;
   postId: string | undefined;
+  setIsEdited: React.Dispatch<React.SetStateAction<boolean>>,
+  setEditedId: React.Dispatch<React.SetStateAction<string | undefined>>,
+  setEditedText: React.Dispatch<React.SetStateAction<string | undefined>>
 }) {
   const theme = useTheme();
   const [descriptionText, setPostDescription] = useState<string | undefined>(
@@ -53,6 +59,9 @@ export default function EditModal({
           description: descriptionText,
         }).unwrap();
         if (res.status === "success") {
+          setEditedText(descriptionText)
+          setEditedId(postId)
+          setIsEdited(true)
           toast.success(res.message);
           handleClose();
         }

@@ -1,6 +1,8 @@
 import { apiSlice } from "./apiSlice";
 import { UsersResInterface } from "../../../types/UserInterfaces";
 import { BasicReponse } from "../../../types/ResponseInterface";
+import {AllPostResInterface } from "../../../types/PostInterfaces";
+
 
 export const adminApiSlice = apiSlice.injectEndpoints({
     endpoints : builder => ({
@@ -18,11 +20,20 @@ export const adminApiSlice = apiSlice.injectEndpoints({
             }),
             invalidatesTags : ['user']
 
+        }),
+
+        getPosts : builder.query<AllPostResInterface,void>({
+            query : () =>({
+                url:'/admin/get-all-posts',
+            }),
+            providesTags:['post','adminpost']
         })
+
     })
 })
 
 export const {
     useGetAllUsersQuery,
-    useBlockAndUnblockMutation
+    useBlockAndUnblockMutation,
+    useGetPostsQuery
 } = adminApiSlice
