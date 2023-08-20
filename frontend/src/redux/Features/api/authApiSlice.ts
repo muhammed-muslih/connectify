@@ -21,7 +21,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
                 method:'POST',
                 body :data
             }),
-            invalidatesTags : ['user','post','chat','message']
+            invalidatesTags : ['user','post','chat','message','notification']
         }),
 
         adminLogin : builder.mutation<RegisterResponseInt,AdminLoginInterface>({
@@ -30,7 +30,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
                 method:'POST',
                 body :data,
             }),
-            invalidatesTags : ['admin','post','user','adminpost']
+            invalidatesTags : ['admin','post','user','adminpost','notification']
         }),
         
         googleLogin : builder.mutation<GoogleResponseInt,{credential: string}>({
@@ -39,7 +39,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
                 method:'POST',
                 body :data,
             }),
-            invalidatesTags : ['user','post','chat','message']
+            invalidatesTags : ['user','post','chat','message','notification']
         })
     })
 })

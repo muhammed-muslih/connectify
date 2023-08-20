@@ -7,6 +7,8 @@ const socketConfig = async(io:Server<DefaultEventsMap, DefaultEventsMap, Default
     let activeUsers : {userId:string,socketId:string}[] = []
     
     io.on('connection', (socket) => {
+        console.log('socket io connected');
+        
 
         //add new user
         socket.on('new-user-add',(userId)=>{
@@ -16,23 +18,30 @@ const socketConfig = async(io:Server<DefaultEventsMap, DefaultEventsMap, Default
                     socketId:socket.id
                 })
             }
+            console.log(activeUsers);
             io.emit('get-users',activeUsers)
         })
 
         //send message
         socket.on("send-message", (data) => {
             const { receiverId } = data;
-            console.log(receiverId,'receiver');
             const user = activeUsers.find((user) => user.userId === receiverId);
-            console.log("Sending from socket to:", receiverId);
-            console.log("Data:", data);
+            console.log("Sending from socket to:", receiverId)
             if (user) {
               io.to(user.socketId).emit("receive-message", data);
             }
-          });
+        });
 
-          socket.on('typing',(room)=>socket.in(room).emit('typing'))
-          socket.on('stop typing',(room)=>socket.in(room).emit('stop typing'))
+        socket.on('send-notification',(data) => {
+            const {receiver} = data;
+            const user = activeUsers.find((user) => user.userId === receiver);
+            if(user){
+                io.to(user.socketId).emit('get-notification',data)
+            }
+        })
+
+        socket.on('typing',(room)=>socket.in(room).emit('typing'))
+        socket.on('stop typing',(room)=>socket.in(room).emit('stop typing'))
 
 
 

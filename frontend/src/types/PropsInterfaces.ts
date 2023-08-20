@@ -1,4 +1,5 @@
 import { UserInerface } from "./UserInterfaces";
+import { Socket } from "socket.io-client";
 export interface ProfileProps {
     isUserPost: boolean;
     setUserPost: React.Dispatch<React.SetStateAction<boolean>>;
@@ -37,7 +38,8 @@ export interface ProfileProps {
     setDeletedId: React.Dispatch<React.SetStateAction<string | undefined>>,
     setIsEdited: React.Dispatch<React.SetStateAction<boolean>>,
     setEditedId: React.Dispatch<React.SetStateAction<string | undefined>>,
-    setEditedText: React.Dispatch<React.SetStateAction<string | undefined>>
+    setEditedText: React.Dispatch<React.SetStateAction<string | undefined>>,
+    socket: Socket
    }
 
     interface PostInterface {

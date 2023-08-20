@@ -88,7 +88,8 @@ const Posts: React.FC<PostPropsInterface> = ({
   setDeletedId,
   setIsEdited,
   setEditedId,
-  setEditedText
+  setEditedText,
+  socket
 }) => {
   const classes = useStyles();
   const [comment, setComment] = useState(comments ?? []);
@@ -126,6 +127,26 @@ const Posts: React.FC<PostPropsInterface> = ({
     if (!isLoading) {
       try {
         const res = await likeOrDislike({ postId: _id }).unwrap();
+        console.log(res);
+        if(res.status==='success' && res.message=='Post liked successfully'){
+          console.log('liked');
+         const newNotification = {
+          receiver:res.post?.userId,
+          user:{
+            _id:userId,
+            userName,
+            profilePicture
+          },
+          content:"liked your post",
+          postId:{
+            _id:_id,
+            imageUrl
+          },
+          createdAt:new Date().toString(),
+          isRead:false,
+         }
+         socket.emit('send-notification',newNotification);
+        }
       } catch (error) {
         console.log(error);
       }
@@ -191,7 +212,6 @@ const Posts: React.FC<PostPropsInterface> = ({
                 userName: currentUserName,
                 profilePicture: currentUserProfile ?? "",
               };
-
               const updatedComment = {
                 ...lastComment,
                 postedBy: newPostedBy,
@@ -199,7 +219,6 @@ const Posts: React.FC<PostPropsInterface> = ({
               setComment((prev) => [...prev, updatedComment]);
               setCommentUpdated(!isCommentUpdated)
             }
-            // toast.success("comment added successfully");
             setCommentVisible(false);
           }
         } catch (error) {

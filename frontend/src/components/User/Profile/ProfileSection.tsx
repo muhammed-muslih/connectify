@@ -15,7 +15,7 @@ import React, { useEffect, useState } from "react";
 import { ProfileProps } from "../../../types/PropsInterfaces";
 import { theme } from "../../../theme";
 import { useSelector } from "react-redux";
-import { selectUserId } from "../../../redux/Features/reducers/userAuthSlice";
+import { selectUserId,selectUserName,selectUserProfilePic } from "../../../redux/Features/reducers/userAuthSlice";
 import { useGetUserQuery } from "../../../redux/Features/api/userApiSlice";
 import { useNavigation, useParams } from "react-router-dom";
 import {
@@ -30,7 +30,7 @@ import ListModal from "../Modal/ListModal";
 import { useCreateChatsMutation } from "../../../redux/Features/api/chatApiSlice";
 import { useNavigate } from "react-router-dom";
 import ChangePasswordModal from "../Modal/ChangePassword";
-
+import socket from "../../../socket";
 
 const useStyles = makeStyles((theme: Theme) => ({
   profileContentBoxs: {
@@ -79,6 +79,8 @@ const ProfileSection: React.FC<ProfileProps> = ({
   const colorTheme = useTheme();
   const navigate = useNavigate();
   const currentUserId = useSelector(selectUserId);
+  const currentUserName = useSelector(selectUserName)
+  const currentUserProfilePic = useSelector(selectUserProfilePic)
   const [isFollow, setIsFollow] = useState<boolean | undefined>(false);
   const [isFollowing, setIsFollowing] = useState<boolean | undefined>(false);
   const [profilePicture, setProfilePicture] = useState<string>();
@@ -127,6 +129,21 @@ const ProfileSection: React.FC<ProfileProps> = ({
   const followHandler = async () => {
     try {
       const res = await followAndUnfollow({ followedUserId: userId }).unwrap();
+      if(res.status=='success' && res.message =='followed successfully'&&userId){
+        const newNotification = {
+          receiver:userId,
+          user:{
+            _id:currentUserId,
+            userName:currentUserName,
+            profilePicture:currentUserProfilePic
+          },
+          content:'followed you',
+          createdAt:new Date().toString(),
+          isRead:false,
+        }
+        socket.emit('send-notification',newNotification)
+      }
+      
     } catch (error) {
       console.log(error);
     }

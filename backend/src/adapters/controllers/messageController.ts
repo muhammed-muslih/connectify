@@ -3,7 +3,7 @@ import { MessageRepoInterface } from "@application/repositories/messageRepoInter
 import { CustomRequest } from "@interfaces/customRequestInterface"
 import { Response } from "express"
 import asyncHandler from "express-async-handler"
-import { createMessage ,getMessages} from "@application/useCases/Message/message"
+import { createMessage ,getMessages} from "@application/useCases/message/message"
 
 
 const messageController = (

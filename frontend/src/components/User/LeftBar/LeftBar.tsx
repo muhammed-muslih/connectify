@@ -23,7 +23,8 @@ import { selectUserId } from "../../../redux/Features/reducers/userAuthSlice";
 import { useNavigate } from "react-router-dom";
 import CreateModal from "../Modal/Create";
 import toast, { Toaster } from "react-hot-toast";
-import { deleteSelectedChatId } from "../../../redux/Features/reducers/userAuthSlice";
+import { deleteSelectedChatId,selectNoOfUnReadNotifications } from "../../../redux/Features/reducers/userAuthSlice";
+
 
 
 
@@ -94,9 +95,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }));
 
-const LeftBar = ({message,setNewPostAdded}:{message?:boolean,setNewPostAdded?: React.Dispatch<React.SetStateAction<boolean>>}) => {
+const LeftBar = ({message,setNewPostAdded}:
+  {message?:boolean,setNewPostAdded?: React.Dispatch<React.SetStateAction<boolean>>}) => {
   const navigate = useNavigate();
   const id = useSelector(selectUserId);
+  const noOfNotifications =useSelector(selectNoOfUnReadNotifications)
   const profilePic = useSelector(selectUserProfilePic)
   const userName = useSelector(selectUserName)
   const classes = useStyles();
@@ -162,7 +165,7 @@ const LeftBar = ({message,setNewPostAdded}:{message?:boolean,setNewPostAdded?: R
       </Link>
       <Link to={'/notification'} style={{textDecoration:'none'}}>
       <Box className={classes.item}>
-        <Badge badgeContent={8} color="secondary" overlap="circular">
+        <Badge badgeContent={noOfNotifications} color="secondary" overlap="circular">
           <FavoriteBorderIcon className={classes.icon} fontSize="large" />
         </Badge>
         <Typography

@@ -13,6 +13,7 @@ import { selectUserId } from "../../../redux/Features/reducers/userAuthSlice";
 import { useRef } from "react";
 import { Users } from "../../../types/chatInterface";
 import { Link } from "react-router-dom";
+import socket from "../../../socket";
 
 
 
@@ -40,7 +41,7 @@ const MessageBox = ({
   const [sendMessage, setSendMessage] = useState<any>(null);
   const chatId = useSelector(selectSelectedChatId);
   const user = useSelector(selectUserId);
-  const socket = useRef<Socket>();
+  // const socket = useRef<Socket>();
   const { data, isLoading, isFetching, refetch } = useGetMessagesQuery({
     chatId,
   });
@@ -57,29 +58,25 @@ const MessageBox = ({
   }, [data]);
 
   useEffect(() => {
-    socket.current = io("http://localhost:3000");
-    socket.current.emit("new-user-add", user);
-    socket.current.on("get-users", (users) => {
+    socket.emit("new-user-add", user);
+    socket.on("get-users", (users) => {
+      console.log(users,'online users');
+      
       setOnlineUsers(users);
     });
 
-    socket.current.on("receive-message", (data) => {
+    socket.on("receive-message", (data) => {
       setReceivedMessage(data);
+      console.log(data);
       setMessageReceived(data?.content);
     });
 
-    return () => {
-      if (socket.current) {
-        socket.current.disconnect();
-      }
-    };
   }, [user]);
-
-  useEffect(() => {}, []);
-
+  
+  
   useEffect(() => {
     if (sendMessage !== null) {
-      socket.current && socket.current.emit("send-message", sendMessage);
+      socket && socket.emit("send-message", sendMessage);
       setMessageReceived("");
     }
   }, [sendMessage]);

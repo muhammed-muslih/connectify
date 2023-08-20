@@ -31,7 +31,7 @@ export const postSlice = apiSlice.injectEndpoints({
                 method: 'POST',
                 body:postId
             }),
-            invalidatesTags:['post','singlepost','adminpost']
+            invalidatesTags:['post','singlepost','adminpost','notification']
 
         }),
 

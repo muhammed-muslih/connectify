@@ -2,6 +2,7 @@ import { apiSlice } from "./apiSlice";
 import { UsersResInterface,GetUserInterface,FollowersAndFollowingsListInterface } from "../../../types/UserInterfaces";
 import { BasicReponse,SavedPostResInt,UpdateProfileInterface } from "../../../types/ResponseInterface";
 import { GetAllSavedPostInterface } from "../../../types/PostInterfaces";
+import { NotificationRes } from "../../../types/ResponseInterface";
 
 
 export const userApiSlice = apiSlice.injectEndpoints({
@@ -26,7 +27,7 @@ export const userApiSlice = apiSlice.injectEndpoints({
                 url : `/user/${followedUserId}/follow`,
                 method: 'POST',
             }),
-            invalidatesTags : ['user']
+            invalidatesTags : ['user','notification']
         }),
 
         getSavedPosts :builder.query<SavedPostResInt,void> ({
@@ -86,6 +87,20 @@ export const userApiSlice = apiSlice.injectEndpoints({
                 body:{password}
             })
 
+        }),
+
+        getNotifications : builder.query<NotificationRes,void>({
+            query: () => '/notification',
+            providesTags:['notification']
+        }),
+
+        markAsRead : builder.mutation<BasicReponse,void>({
+            query: () => ({
+                url:'/notification/mark-as-read',
+                method:'POST',
+            }),
+            invalidatesTags:['notification']
+
         })
 
     })
@@ -102,5 +117,7 @@ export const {
     useRemoveProfilePicMutation,
     useGetFollowersAndFollowingsListQuery,
     useVerifyUserPasswordMutation,
-    useChangePasswordMutation
+    useChangePasswordMutation,
+    useGetNotificationsQuery,
+    useMarkAsReadMutation
 } = userApiSlice

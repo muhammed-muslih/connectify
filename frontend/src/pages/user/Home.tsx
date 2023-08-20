@@ -9,7 +9,9 @@ import { useSelector } from "react-redux";
 import { selectUserToken } from "../../redux/Features/reducers/userAuthSlice";
 import { Navigate } from "react-router-dom";
 import { useState } from "react";
-import { selectUserName } from "../../redux/Features/reducers/userAuthSlice";
+import { selectUserName,selectUserId } from "../../redux/Features/reducers/userAuthSlice";
+import socket from "../../socket";
+import { useEffect } from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
   displayManager: {
@@ -34,6 +36,20 @@ const Home = () => {
   const classes = useStyles();
   const userName = useSelector(selectUserName);
   const [isNewPostAdded,setNewPostAdded] = useState(false)
+  const [onlineUsers, setOnlineUsers] = useState< { userId: string; socketId: string }[]>([]);
+  const user = useSelector(selectUserId)
+
+  useEffect(() => {
+    if(user){
+    socket.emit("new-user-add", user);
+    }
+    socket.on("get-users", (users) => {
+      console.log(users);
+      setOnlineUsers(users);
+    });
+
+  }, [user]);
+
 
   if (token) {
     return (
@@ -44,7 +60,7 @@ const Home = () => {
             <LeftBar setNewPostAdded={setNewPostAdded}/>
           </Grid>
           <Grid item md={6} xs={12}>
-            <Feed isNewPostAdded={isNewPostAdded} setNewPostAdded={setNewPostAdded} />
+            <Feed isNewPostAdded={isNewPostAdded} setNewPostAdded={setNewPostAdded} socket={socket}/>
           </Grid>
           <Grid item md={3} className={classes.displayManager2}>
             <RightBar />

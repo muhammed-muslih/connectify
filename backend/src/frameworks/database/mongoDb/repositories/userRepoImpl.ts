@@ -1,4 +1,5 @@
 import User from "../models/userModel";
+import Notification from "../models/notificationModel";
 import {UserInterface } from "@interfaces/userInterfaces";
 import { UserRegisterInterface ,UpdateUserInterface} from "@interfaces/userInterfaces";
 
@@ -24,7 +25,14 @@ export const userRepoImpl = () =>{
     }
 
     const addUserInFollowingList = async(userId:string,followedUserId : string)  => {
-       return await User.findByIdAndUpdate(userId,{$addToSet:{followings:followedUserId}})
+        const newNotification = {
+             receiver:followedUserId,
+             user:userId,
+             content:'followed you'
+        }
+       const result = await User.findByIdAndUpdate(userId,{$addToSet:{followings:followedUserId}})
+       await Notification.create(newNotification)
+       return result
     }
 
     const addUserInFollowersList = async(userId:string,followedUserId : string) => {
@@ -32,6 +40,11 @@ export const userRepoImpl = () =>{
     }
     
     const removeUserFromFollowingList = async(userId:string,unFollowedUserId : string) => {
+          await Notification.findOneAndDelete({
+            user:userId,
+            receiver:unFollowedUserId,
+            postId: { $exists: false }
+          })
         return await User.findByIdAndUpdate(userId,{$pull:{followings:unFollowedUserId}})
     }
 

@@ -9,6 +9,7 @@ const user_1 = __importDefault(require("./user"));
 const admin_1 = __importDefault(require("./admin"));
 const chat_1 = __importDefault(require("./chat"));
 const message_1 = __importDefault(require("./message"));
+const notification_1 = __importDefault(require("./notification"));
 const userAuthMid_1 = __importDefault(require("../middlewares/userAuthMid"));
 const adminAuthMid_1 = __importDefault(require("../middlewares/adminAuthMid"));
 const routes = (app) => {
@@ -18,5 +19,6 @@ const routes = (app) => {
     app.use('/api/admin', adminAuthMid_1.default, (0, admin_1.default)());
     app.use('/api/chat', userAuthMid_1.default, (0, chat_1.default)());
     app.use('/api/message', userAuthMid_1.default, (0, message_1.default)());
+    app.use('/api/notification', userAuthMid_1.default, (0, notification_1.default)());
 };
 exports.default = routes;

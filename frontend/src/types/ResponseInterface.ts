@@ -17,8 +17,8 @@ export interface RegisterResponseInt{
  }
 
  export interface BasicReponse {
-   readonly status:string,
-   readonly message:string,
+   status:string,
+   message:string,
  }
 
  export interface SavedPostResInt {
@@ -32,6 +32,33 @@ export interface RegisterResponseInt{
   readonly message:string,
   readonly profilePiture?:string
  }
+
+
+ export interface NotificationInterface {
+  _id: string,
+    reciever: string,
+    user: {
+        _id: string,
+        userName: string,
+        profilePicture: string
+    },
+    content:string,
+    postId?: {
+      _id: string,
+      imageUrl: string
+  },
+  createdAt:string,
+  isRead:boolean
+  }
+
+
+ export interface NotificationRes {
+  readonly status:string,
+  readonly message:string,
+  notifications:NotificationInterface[]
+ }
+
+
 
 
 

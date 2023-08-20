@@ -7,6 +7,7 @@ import Shimmer from "./Shimmer";
 import { useEffect } from "react";
 import { GetAllPostInterface } from "../../../types/PostInterfaces";
 import { useState } from "react";
+import { Socket } from "socket.io-client";
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -17,9 +18,11 @@ const useStyles = makeStyles((theme: Theme) => ({
 const Feed = ({
   isNewPostAdded,
   setNewPostAdded,
+  socket
 }: {
   isNewPostAdded: boolean;
   setNewPostAdded: React.Dispatch<React.SetStateAction<boolean>>;
+  socket: Socket
 }) => {
   const classes = useStyles();
   const [page, setPage] = useState<number>(1);
@@ -95,7 +98,7 @@ const Feed = ({
   return (
     <Container className={classes.container}>
       {posts &&
-        posts.map((post) => (
+        posts.map((post,index) => (
           <Posts
             _id={post._id}
             userName={post.userId?.userName}
@@ -103,7 +106,7 @@ const Feed = ({
             imageName={post.imageName}
             description={post.description}
             profilePicture={post.userId?.profilePicture}
-            key={post._id}
+            key={post._id+index}
             likes={post.likes}
             date={post.date}
             comments={post.comments}
@@ -114,6 +117,7 @@ const Feed = ({
             setIsEdited={setIsEdited}
             setEditedId={setEditedId}
             setEditedText={setEditedText}
+            socket={socket}
           />
         ))}
       {isLoading && <Shimmer />}

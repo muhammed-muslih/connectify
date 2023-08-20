@@ -6,15 +6,21 @@ const parsedToken: string = data ? JSON.parse(data) : "";
 const userProfilePic = localStorage.getItem('userProfilePic')
 const parsedUserProfilePic: string = userProfilePic? JSON.parse(userProfilePic) : "";
 
-
-const initialState = {
+const initialState:{
+  token: string,
+  userName: string,
+  id: string,
+  userProfilePic: string,
+  chatId: string,
+  noOfUnReadNotification:number
+} = {
   token: parsedToken,
   userName: "",
   id: "",
   userProfilePic: parsedUserProfilePic??'',
-  chatId:''
-  
-};
+  chatId:'',
+  noOfUnReadNotification :0
+}
 
 const userAuthSlice = createSlice({
   name: "useAuth",
@@ -46,6 +52,9 @@ const userAuthSlice = createSlice({
     deleteSelectedChatId:(state) =>{
       state.chatId ='';
     },
+    setNoOfUnreadNotifications : (state,action:PayloadAction<{unreadNotficationNumber:number}>) =>{
+      state.noOfUnReadNotification=action.payload.unreadNotficationNumber
+    },
     logoutUser: (state) => {
       state.token = "";
       state.userName = "";
@@ -58,10 +67,11 @@ const userAuthSlice = createSlice({
 
 export default userAuthSlice.reducer;
 export type UserAuthState = typeof userAuthSlice.reducer;
-export const { setUserCredentials, logoutUser,removeProfilePicture,setProfilePicture,setSelectedChatId,deleteSelectedChatId} = userAuthSlice.actions;
+export const { setUserCredentials, logoutUser,removeProfilePicture,setProfilePicture,setSelectedChatId,deleteSelectedChatId,setNoOfUnreadNotifications} = userAuthSlice.actions;
 export const selectUserToken = (state: RootState) => state.userAuth.token;
 export const selectUserName = (state: RootState) => state.userAuth.userName;
 export const selectUserId = (state: RootState) => state.userAuth.id;
 export const selectUserProfilePic = (state : RootState) =>state.userAuth.userProfilePic
 export const selectSelectedChatId = (state : RootState) => state.userAuth.chatId
+export const selectNoOfUnReadNotifications = (state : RootState) => state.userAuth.noOfUnReadNotification
 

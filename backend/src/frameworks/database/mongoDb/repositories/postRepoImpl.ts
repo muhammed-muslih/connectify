@@ -1,4 +1,5 @@
 import Posts from "../models/postModel";
+import Notification from "../models/notificationModel";
 import {NewPostInterface} from "@interfaces/postInterface";
 import AppError from "@utils/appError";
 import { HttpStatus } from "@interfaces/httpStatus";
@@ -14,10 +15,10 @@ export const postRepoImpl  = () =>{
 
     const getAllPosts = async(skip:number,limit:number) => {
        const posts = await Posts.find({delete:false}).sort({date:-1})
-                     .skip(skip).limit(limit)
-                     .populate({path:'userId',select:'-password'})
-                     .populate({path:'comments.postedBy',select:'profilePicture userName'}) 
-                     .populate({path:'comments.replies.postedBy',select:'profilePicture userName'});
+        .skip(skip).limit(limit)
+        .populate({path:'userId',select:'-password'})
+        .populate({path:'comments.postedBy',select:'profilePicture userName'}) 
+        .populate({path:'comments.replies.postedBy',select:'profilePicture userName'});
         return posts
     }
 
@@ -36,9 +37,20 @@ export const postRepoImpl  = () =>{
             let message;
             if(!isLiked){
                 post.likes.push(validUserId)
+                if(userId !== post.userId.toString()){
+                    const newNotification = {
+                        receiver:post.userId,
+                        user:userId,
+                        content:"liked your post",
+                        postId,
+                    }
+                    Notification.create(newNotification)
+                }
                 message = 'Post liked successfully';
             }else{
                 post.likes = post.likes.filter(userId => userId.toString() !== validUserId.toString());
+                const res = await Notification.findOneAndDelete({user:userId,postId:postId})
+                console.log(res);
                 message = 'Post disliked successfully';
             }
             await post.save(); 
@@ -90,7 +102,11 @@ export const postRepoImpl  = () =>{
             )
     }
 
-    const deletePost = async(postId:string) => await Posts.findByIdAndDelete(postId)
+    const deletePost = async(postId:string) => {
+       const result = await Posts.findByIdAndDelete(postId)
+       await Notification.deleteMany({postId})
+       return result
+    }
 
     const getSinglePostDetails = async(postId:string) =>
      await Posts.findById({_id:postId})

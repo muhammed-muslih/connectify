@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userRepoImpl = void 0;
 const userModel_1 = __importDefault(require("../models/userModel"));
+const notificationModel_1 = __importDefault(require("../models/notificationModel"));
 const userRepoImpl = () => {
     const registerUser = async (user) => await userModel_1.default.create(user);
     const getUserByEmail = async (email) => {
@@ -21,12 +22,24 @@ const userRepoImpl = () => {
         return await userModel_1.default.find({ userName: regexPattern });
     };
     const addUserInFollowingList = async (userId, followedUserId) => {
-        return await userModel_1.default.findByIdAndUpdate(userId, { $addToSet: { followings: followedUserId } });
+        const newNotification = {
+            receiver: followedUserId,
+            user: userId,
+            content: 'followed you'
+        };
+        const result = await userModel_1.default.findByIdAndUpdate(userId, { $addToSet: { followings: followedUserId } });
+        await notificationModel_1.default.create(newNotification);
+        return result;
     };
     const addUserInFollowersList = async (userId, followedUserId) => {
         return await userModel_1.default.findByIdAndUpdate(followedUserId, { $addToSet: { followers: userId } });
     };
     const removeUserFromFollowingList = async (userId, unFollowedUserId) => {
+        await notificationModel_1.default.findOneAndDelete({
+            user: userId,
+            receiver: unFollowedUserId,
+            postId: { $exists: false }
+        });
         return await userModel_1.default.findByIdAndUpdate(userId, { $pull: { followings: unFollowedUserId } });
     };
     const removeUserFromFollowersList = async (userId, unFollowedUserId) => {
