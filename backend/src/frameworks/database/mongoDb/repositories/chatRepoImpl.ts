@@ -33,11 +33,18 @@ export const chatRepoImpl = () => {
     return chats
   };
 
+  const getOneChat = async(chatId:string) =>{
+    return await Chat.findById(chatId)
+          .populate({path:"users",select: "userName"})
+
+  } 
+
   return {
     isChatExist,
     createChat,
     getSingleChatById,
-    getAllChats
+    getAllChats,
+    getOneChat
   };
 };
 

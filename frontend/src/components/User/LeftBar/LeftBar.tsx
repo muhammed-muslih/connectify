@@ -1,3 +1,6 @@
+import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { Link, useLocation } from "react-router-dom";
 import {
   Container,
   Typography,
@@ -5,7 +8,6 @@ import {
   Box,
   Badge,
   Avatar,
-  Divider,
 } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import MessageIcon from "@mui/icons-material/Message";
@@ -14,20 +16,19 @@ import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
 import Brightness2OutlinedIcon from "@mui/icons-material/Brightness2Outlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import { makeStyles } from "@mui/styles";
-import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { logoutUser,selectUserName ,selectUserProfilePic,removeProfilePicture} from "../../../redux/Features/reducers/userAuthSlice";
-import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { selectUserId } from "../../../redux/Features/reducers/userAuthSlice";
-import { useNavigate } from "react-router-dom";
 import CreateModal from "../Modal/Create";
-import toast, { Toaster } from "react-hot-toast";
-import { deleteSelectedChatId,selectNoOfUnReadNotifications } from "../../../redux/Features/reducers/userAuthSlice";
-
-
-
-
+import {
+  logoutUser,
+  selectUserName,
+  selectUserProfilePic,
+  removeProfilePicture,
+  deleteSelectedChatId,
+  selectNoOfUnReadNotifications,
+  selectUserId
+} from "../../../redux/Features/reducers/userAuthSlice";
+import { useTheme } from "@mui/material/styles";
+import { useNavigate } from "react-router-dom";
+import { toast, Toaster } from "react-hot-toast";
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -47,7 +48,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   item: {
     display: "flex",
     alignItems: "center",
-    marginBottom: theme.spacing(5.5),
+    marginBottom: theme.spacing(2),
+    padding:6,
+    paddingTop:12,
+    paddingBottom:12,
+    borderRadius:6,
     marginLeft: theme.spacing(8),
     cursor: "pointer",
     [theme.breakpoints.down("md")]: {
@@ -97,7 +102,9 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const LeftBar = ({message,setNewPostAdded}:
   {message?:boolean,setNewPostAdded?: React.Dispatch<React.SetStateAction<boolean>>}) => {
+  const theme = useTheme()
   const navigate = useNavigate();
+  const location = useLocation();
   const id = useSelector(selectUserId);
   const noOfNotifications =useSelector(selectNoOfUnReadNotifications)
   const profilePic = useSelector(selectUserProfilePic)
@@ -120,15 +127,33 @@ const LeftBar = ({message,setNewPostAdded}:
     }
   };
 
+
   return (
     <Container className={classes.container}>
       <Toaster position="top-right" reverseOrder={false} />
+
+      {/* Link to Home */}
       <Link to={"/"} style={{ textDecoration: "none" }}>
-        <Box className={classes.item}>
-          <HomeIcon className={classes.icon} fontSize="large" />
+        <Box
+          className={classes.item}
+          sx={{
+            backgroundColor:
+              location.pathname === "/" ? theme.palette.primary.main : "",
+          }}
+        >
+          <HomeIcon
+            className={classes.icon}
+            fontSize="large"
+            sx={{
+              color:
+                location.pathname === "/" ? "white" : theme.palette.primary.dark,
+            }}
+          />
           <Typography
             variant={"h5"}
             sx={{
+              color:
+                location.pathname === "/" ? "white" : theme.palette.primary.dark,
               fontWeight: "bolder",
               marginLeft: {
                 xs: 1,
@@ -136,41 +161,85 @@ const LeftBar = ({message,setNewPostAdded}:
                 lg: 3,
               },
             }}
-            className={message?classes.textHide:classes.text}
+            className={message ? classes.textHide : classes.text}
           >
             Home
           </Typography>
         </Box>
       </Link>
-      <Link to={'/message'} style={{ textDecoration: "none" }}>
-      <Box className={classes.item}>
-        <Badge badgeContent={4} color="secondary" overlap="circular">
-          <MessageIcon fontSize="large" className={classes.icon} />
-        </Badge>
-        <Typography
-          variant={"h5"}
+
+      {/* Link to Messages */}
+      <Link to={"/message"} style={{ textDecoration: "none" }}>
+        <Box
+          className={classes.item}
           sx={{
-            fontWeight: "bolder",
-            marginLeft: {
-              xs: 1,
-              md: 2,
-              lg: 3,
-            },
+            backgroundColor:
+              location.pathname === "/message"
+                ? theme.palette.primary.main
+                : "",
           }}
-          className={message?classes.textHide:classes.text}
         >
-          Messages
-        </Typography>
-      </Box>
+          <Badge
+            badgeContent={4}
+            color="secondary"
+            overlap="circular"
+          >
+            <MessageIcon
+              fontSize="large"
+              className={classes.icon}
+              sx={{
+                color:
+                  location.pathname === "/message"
+                    ? "white"
+                    : theme.palette.primary.dark,
+              }}
+            />
+          </Badge>
+          <Typography
+            variant={"h5"}
+            sx={{
+              color:
+                location.pathname === "/message"
+                  ? "white"
+                  : theme.palette.primary.dark,
+              fontWeight: "bolder",
+              marginLeft: {
+                xs: 1,
+                md: 2,
+                lg: 3,
+              },
+            }}
+            className={message ? classes.textHide : classes.text}
+          >
+            Messages
+          </Typography>
+        </Box>
       </Link>
+
+
       <Link to={'/notification'} style={{textDecoration:'none'}}>
-      <Box className={classes.item}>
+      <Box
+          className={classes.item}
+          sx={{
+            backgroundColor:
+              location.pathname === "/notification" ? theme.palette.primary.main : "",
+          }}
+        >
         <Badge badgeContent={noOfNotifications} color="secondary" overlap="circular">
-          <FavoriteBorderIcon className={classes.icon} fontSize="large" />
+          <FavoriteBorderIcon className={classes.icon} fontSize="large"   sx={{
+                color:
+                  location.pathname === "/notification"
+                    ? "white"
+                    : theme.palette.primary.dark,
+              }}/>
         </Badge>
         <Typography
           variant={"h5"}
           sx={{
+            color:
+                location.pathname === "/notification"
+                  ? "white"
+                  : theme.palette.primary.dark,
             fontWeight: "bolder",
             marginLeft: {
               xs: 1,
@@ -184,6 +253,8 @@ const LeftBar = ({message,setNewPostAdded}:
         </Typography>
       </Box>
       </Link>
+
+
       <Box className={classes.item}>
         <Box onClick={handleModalOpen} display={"flex"}>
           <AddBoxOutlinedIcon className={classes.icon} fontSize="large" />
@@ -249,7 +320,11 @@ const LeftBar = ({message,setNewPostAdded}:
         </Box>
       </Box>
 
-      <Box className={classes.item} onClick={() => handleNavigate()}>
+      <Box className={classes.item} onClick={() => handleNavigate()}
+        sx={{
+          backgroundColor:
+            location.pathname.includes('profile') && "/profile/*" ? theme.palette.primary.main : "",
+        }}>
         {
           profilePic?
           <Avatar
@@ -268,6 +343,7 @@ const LeftBar = ({message,setNewPostAdded}:
         <Typography
           variant={"h5"}
           sx={{
+            color: location.pathname.includes('profile') && "/profile/*" ? 'white' : theme.palette.primary.dark,
             fontWeight: "bolder",
             marginLeft: {
               xs: 1,

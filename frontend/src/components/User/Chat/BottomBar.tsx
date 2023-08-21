@@ -35,7 +35,7 @@ const BottomBar = ({
         chatId: selectedChatId,
       };
       const receiverDtaa =
-        users && users.find((user) => user._id !== currentUserId);
+        users && users?.find((user) => user._id !== currentUserId);
       const receiverId = receiverDtaa?._id;
       setSendMessage({ ...msg, receiverId });
       try {

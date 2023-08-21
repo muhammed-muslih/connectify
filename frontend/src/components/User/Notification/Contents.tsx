@@ -9,6 +9,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: 15,
     height: 15,
     marginRight: theme.spacing(1),
+    [theme.breakpoints.down('sm')]:{
+      width:9,
+      height:9
+    }
   },
 }));
 
@@ -45,7 +49,9 @@ const Contents = ({
             {userName}
           </Typography>
           <Typography
-            sx={{ fontWeight: "bolder", color: theme.palette.primary.main }}
+            sx={{ fontWeight:{
+              md:'bolder'
+            }, color: theme.palette.primary.main }}
           >
             {message}
           </Typography>
@@ -62,10 +68,10 @@ const Contents = ({
             p: 2,
           }}
         >
-          <Typography sx={{ color: theme.palette.primary.main }}>
+          <Typography   sx={{ color: theme.palette.primary.main }}>
             {time}
           </Typography>
-          {!isRead&&<Box className={classes.onlineBadge}></Box>}
+          {!isRead&&<Box className={classes.onlineBadge} ></Box>}
         </Stack>
       </Box>
     </>

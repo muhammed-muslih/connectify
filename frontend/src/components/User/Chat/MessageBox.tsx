@@ -4,18 +4,15 @@ import { useTheme } from "@mui/material/styles";
 import BottomBar from "./BottomBar";
 import MessageTexts from "./MessageTexts";
 import { useGetMessagesQuery } from "../../../redux/Features/api/messageApiSlice";
-import { io, Socket } from "socket.io-client";
 import { useEffect, useState } from "react";
 import { SingleMessageInterface } from "../../../types/messageInterface";
 import { useSelector } from "react-redux";
 import { selectSelectedChatId } from "../../../redux/Features/reducers/userAuthSlice";
 import { selectUserId } from "../../../redux/Features/reducers/userAuthSlice";
-import { useRef } from "react";
 import { Users } from "../../../types/chatInterface";
 import { Link } from "react-router-dom";
 import socket from "../../../socket";
-
-
+import { useGetSingleChatQuery } from "../../../redux/Features/api/chatApiSlice";
 
 const MessageBox = ({
   selectedUserPic,
@@ -37,19 +34,22 @@ const MessageBox = ({
   const theme = useTheme();
   const [messages, setMessages] = useState<SingleMessageInterface[]>([]);
   const [newMessage, setNewMessage] = useState<string>();
+  const [chatUsers, setChatUsers] = useState<Users[]>([]);
   const [receivedMessage, setReceivedMessage] = useState<any>();
   const [sendMessage, setSendMessage] = useState<any>(null);
   const chatId = useSelector(selectSelectedChatId);
   const user = useSelector(selectUserId);
-  // const socket = useRef<Socket>();
+
   const { data, isLoading, isFetching, refetch } = useGetMessagesQuery({
     chatId,
   });
+  const { data: result, refetch: singelChat } = useGetSingleChatQuery({
+    chatId,
+  });
   
-
   useEffect(() => {
-    if(chatId){
-    refetch();
+    if (chatId) {
+      refetch();
     }
   }, [receivedMessage, chatId]);
 
@@ -58,22 +58,30 @@ const MessageBox = ({
   }, [data]);
 
   useEffect(() => {
+    if (result?.chat) {
+      setChatUsers(result?.chat?.users ?? []);
+    }
+  }, [result]);
+
+  useEffect(() => {
+    if (chatId) {
+      singelChat();
+    }
+  }, [chatId]);
+
+
+  useEffect(() => {
     socket.emit("new-user-add", user);
     socket.on("get-users", (users) => {
-      console.log(users,'online users');
-      
       setOnlineUsers(users);
     });
 
     socket.on("receive-message", (data) => {
       setReceivedMessage(data);
-      console.log(data);
       setMessageReceived(data?.content);
     });
-
   }, [user]);
-  
-  
+
   useEffect(() => {
     if (sendMessage !== null) {
       socket && socket.emit("send-message", sendMessage);
@@ -120,13 +128,15 @@ const MessageBox = ({
               selectedUserPic={selectedUserPic}
               selctedUserName={selctedUserName}
               isOnline={isOnline}
+              chatId={chatId} users={chatUsers}
+              
             />
             <MessageTexts messages={messages} />
             <BottomBar
               selectedChatId={chatId}
               setNewMsg={setNewMessage}
               setSendMessage={setSendMessage}
-              users={users}
+              users={chatUsers}
             />
           </>
         )}
@@ -142,18 +152,21 @@ const MessageBox = ({
               color: theme.palette.primary.main,
             }}
           >
-            <img src='/Online world-pana.svg' alt="" width={"50%"} />
-            <Typography variant="body1" sx={{fontWeight:'bold'}}>
+            <img src="/Online world-pana.svg" alt="" width={"50%"} />
+            <Typography variant="body1" sx={{ fontWeight: "bold" }}>
               Start your chatting journey today. Connect with friends and make
               new ones.
             </Typography>
-            <Typography variant="body1" sx={{fontWeight:'bold'}}>
-              Go to <Link to={'/'}>home</Link> &gt; search your friends and make chat
+            <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+              Go to <Link to={"/"}>home</Link> &gt; search your friends and make
+              chat
             </Typography>
-            <Typography variant="body1" sx={{fontWeight:'bold'}}>
+            <Typography variant="body1" sx={{ fontWeight: "bold" }}>
               Experience the joy of meaningful conversations and connections.
             </Typography>
-            <Typography variant="body1" sx={{fontWeight:'bold'}}>Let's chat away!</Typography>
+            <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+              Let's chat away!
+            </Typography>
           </Box>
         )}
       </Box>

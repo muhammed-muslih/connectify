@@ -136,6 +136,8 @@ const UserListBar = ({
   const handleSetDatas = (chat: GetSingleChatInterface) => {
     setOnline(checkUserOnlineStatus(chat));
     setUsers(chat.users);
+    console.log(chat.users,'chat.users');
+    
     dispatch(setChatId({ chatId: chat?._id }));
     setSelectedUserName(
       chat.users[0]._id.toString() === currentUserId

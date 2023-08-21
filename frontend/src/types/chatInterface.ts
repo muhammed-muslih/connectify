@@ -30,3 +30,16 @@ export interface GetSingleChatInterface {
     content: string;
   };
 }
+
+
+export interface SingleChatInterface {
+  status: string;
+  message: string;
+  chat :{
+    _id: string;
+    users: Users[];
+  }
+
+}
+
+

@@ -29,3 +29,12 @@ export const fetchChats = async(
     const chat = await chatRepo.getAllChats(currentUserId)
     return chat
 }
+
+
+export const getOneChat = async(
+    chatId: string,
+    chatRepo : ReturnType<ChatRepoInterface>
+)=> {
+    const chat = await chatRepo.getOneChat(chatId)
+    return chat
+}

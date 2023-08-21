@@ -7,8 +7,9 @@ const chatRouter = () => {
   const router = express.Router();
   const controller = chatController(chatRepoImpl, chatRepoInterface);
 
-  router.post("/", controller.acessUserChat);
-  router.get("/", controller.fetchUserChats);
+  router.post('/', controller.acessUserChat);
+  router.get('/', controller.fetchUserChats);
+  router.get('/:chatId',controller.getSingleChat)
 
   return router;
 };

@@ -3,6 +3,7 @@ import { Response,NextFunction } from "express"
 import AppError from "@utils/appError"
 import { HttpStatus } from "@interfaces/httpStatus"
 import { authServices } from "@frameworks/services/authServices"
+import { userRepoImpl } from "@frameworks/database/mongoDb/repositories/userRepoImpl"
 
 const userAuthMid = (req:CustomRequest,res:Response,next:NextFunction) => {
 
@@ -21,7 +22,7 @@ const userAuthMid = (req:CustomRequest,res:Response,next:NextFunction) => {
         
         if(payload.role !=='user'){
            throw new AppError("UnAuthorized User",HttpStatus.UNAUTHORIZED)  
-        }
+        } 
         req.userId = payload.userId
         next()
     } catch (error) {

@@ -1,10 +1,14 @@
-import { Avatar, Typography, Stack, Box,Theme } from "@mui/material";
+import { ZIM } from "zego-zim-web";
+import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
+import { Avatar, Typography, Stack, Box, Theme } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import AddIcCallSharpIcon from "@mui/icons-material/AddIcCallSharp";
 import VideoCallSharpIcon from "@mui/icons-material/VideoCallSharp";
 import "../NavBar/NavBar.css";
 import { makeStyles } from "@mui/styles";
-
+import {useRef } from "react";
+import { Users } from "../../../types/chatInterface";
+import { useSelector } from "react-redux";
+import { selectUserId } from "../../../redux/Features/reducers/userAuthSlice";
 
 const useStyles = makeStyles((theme: Theme) => ({
   onlineBadge: {
@@ -27,13 +31,67 @@ const MessageBar = ({
   selectedUserPic,
   selctedUserName,
   isOnline,
+  chatId,
+  users,
 }: {
   selectedUserPic: string | undefined;
   selctedUserName: string;
-  isOnline:boolean | undefined
+  isOnline: boolean | undefined;
+  chatId: string;
+  users: Users[];
 }) => {
   const theme = useTheme();
   const classes = useStyles();
+  const userID = useSelector(selectUserId);
+  const user = users?.find((user) => user._id === userID);
+  const callee = users?.find((user) => user._id !== userID);
+  const zeroCloudInstance = useRef<ZegoUIKitPrebuilt | null>(null);
+
+  const videoCall = async () => {
+    
+    if (user&&callee) {
+      console.log('hey');
+      
+      // generate Kit Token
+      const appID = 488358319;
+      const serverSecret = "b96996cabe0a1f6ca8184502e1fb401f";
+      const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
+        appID,
+        serverSecret,
+        chatId,
+        userID,
+        user.userName
+      );
+
+      // Create instance object from Kit Token.
+      zeroCloudInstance.current = ZegoUIKitPrebuilt.create(kitToken);
+      // add plugin
+      zeroCloudInstance.current.addPlugins({ ZIM });
+
+      const targetUser = {
+        userID: callee._id,
+        userName: callee.userName + callee._id,
+      };
+
+      try {
+        const res = await zeroCloudInstance.current.sendCallInvitation({
+          callees: [targetUser],
+          callType: ZegoUIKitPrebuilt.InvitationTypeVideoCall,
+          timeout: 30,
+        });
+        console.log(res, "video res");
+
+        if (res.errorInvitees.length) {
+          alert("The user does not exist or is offline.");
+        }
+      } catch (err) {
+        console.warn(err);
+      }
+    } else {
+      console.log("user or callee not found");
+    }
+  };
+  
 
   return (
     <Box
@@ -51,32 +109,36 @@ const MessageBar = ({
           src={selectedUserPic && selectedUserPic}
         ></Avatar>
         <Box>
-        <Typography
-          variant="h5"
-          fontWeight={"bolder"}
-          color={theme.palette.primary.main}
-        >
-          {selctedUserName && selctedUserName}
-        </Typography>
-        {
-        isOnline?
-        <Typography  variant="body2" sx={{display:'flex',alignItems:"center"}}>online
-        <span className={classes.onlineBadge}/>
-        </Typography>
-        :
-        
-        <Typography variant="body2" sx={{display:'flex',alignItems:"center"}}>offline
-        <span className={classes.offlineBadge}/>
-        </Typography>
-        }
+          <Typography
+            variant="h5"
+            fontWeight={"bolder"}
+            color={theme.palette.primary.main}
+          >
+            {selctedUserName && selctedUserName}
+          </Typography>
+          {isOnline ? (
+            <Typography
+              variant="body2"
+              sx={{ display: "flex", alignItems: "center" }}
+            >
+              online
+              <span className={classes.onlineBadge} />
+            </Typography>
+          ) : (
+            <Typography
+              variant="body2"
+              sx={{ display: "flex", alignItems: "center" }}
+            >
+              offline
+              <span className={classes.offlineBadge} />
+            </Typography>
+          )}
         </Box>
       </Stack>
       <Stack direction={"row"} spacing={4} p={1.5}>
-        <AddIcCallSharpIcon
-          sx={{ width: 45, height: 45, color: theme.palette.primary.main }}
-        />
         <VideoCallSharpIcon
-          sx={{ width: 45, height: 45, color: theme.palette.primary.main }}
+          sx={{ width: 45, height: 45, color: theme.palette.primary.main,cursor:'pointer' }}
+          onClick={videoCall}
         />
       </Stack>
     </Box>

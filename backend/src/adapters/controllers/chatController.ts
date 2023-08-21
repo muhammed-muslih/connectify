@@ -3,7 +3,7 @@ import { ChatRepoInterface } from "@application/repositories/chatRepoInterface"
 import asyncHandler from "express-async-handler"
 import { Response } from "express"
 import { CustomRequest } from "@interfaces/customRequestInterface"
-import { acessChat,fetchChats } from "@application/useCases/chat/chat"
+import { acessChat,fetchChats,getOneChat} from "@application/useCases/chat/chat"
 
 
  const chatController = (
@@ -34,9 +34,20 @@ import { acessChat,fetchChats } from "@application/useCases/chat/chat"
 
     })
 
+    const getSingleChat = asyncHandler(async(req:CustomRequest,res:Response) =>{
+        const {chatId} = req.params
+        const result = await getOneChat(chatId,chatRepo)
+        res.json({
+            status:'success',
+            message:'chat fected successfully',
+            chat:result
+        })
+    })
+
     return {
         acessUserChat,
-        fetchUserChats
+        fetchUserChats,
+        getSingleChat
     }
 
 }

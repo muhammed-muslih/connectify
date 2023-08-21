@@ -91,6 +91,7 @@ const ProfileSection: React.FC<ProfileProps> = ({
   const [openProfileEditModal, setOpenProfileEditModal] = useState(false);
   const [openFollowersListModal, setOpenFollowersListModal] = useState(false);
   const [openFollowingsListModal, setOpenFollowingsListModal] = useState(false);
+  const [isGoogleUser, setIsGoogleUser] = useState(false)
   const [openSettingsModal, setOpenSettingsModal] = useState(false);
   const [bio, setBio] = useState<string>();
   const { id: userId } = useParams();
@@ -109,6 +110,7 @@ const ProfileSection: React.FC<ProfileProps> = ({
         setFollowers(user.user.followers);
         setFollowings(user.user.followings);
         setName(user.user.name);
+        setIsGoogleUser(user.user?.isGoogleUser?true:false);
       }
     }
   }, [userId, user]);
@@ -279,7 +281,7 @@ const ProfileSection: React.FC<ProfileProps> = ({
                       onClick={()=>setOpenSettingsModal(!openSettingsModal)}
                     />
                     </Tooltip>
-                    {openSettingsModal && (
+                    {openSettingsModal &&!isGoogleUser&& (
                       <Box
                         sx={{
                           position: "absolute",

@@ -13,11 +13,14 @@ export const chatRepoInterface = (repository:ReturnType<ChatRepoImpl>) => {
 
     const getAllChats = async(curretUsserId:string) => repository.getAllChats(curretUsserId)
 
+    const getOneChat = async(chatId:string) => repository.getOneChat(chatId)
+
     return {
         isChatExist,
         createChat,
         getSingleChatById,
-        getAllChats
+        getAllChats,
+        getOneChat
     }
 
 }

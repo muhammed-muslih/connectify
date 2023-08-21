@@ -1,5 +1,5 @@
 import { apiSlice } from "./apiSlice";
-import { GetAllChatInterface } from "../../../types/chatInterface";
+import { GetAllChatInterface, SingleChatInterface } from "../../../types/chatInterface";
 
 
 export const chatApiSlice = apiSlice.injectEndpoints({
@@ -17,11 +17,16 @@ export const chatApiSlice = apiSlice.injectEndpoints({
                 body:userId 
             }),
             invalidatesTags:['chat','message']
+        }),
+
+        getSingleChat : builder.query<SingleChatInterface,{chatId:string}>({
+            query: ({chatId}) => `/chat/${chatId}`,
         })
     })
 })
 
 export const {
     useGetAllChatsQuery,
-    useCreateChatsMutation
+    useCreateChatsMutation,
+    useGetSingleChatQuery,
 } = chatApiSlice
