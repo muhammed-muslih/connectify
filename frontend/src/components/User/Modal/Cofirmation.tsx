@@ -14,6 +14,8 @@ import { useSelector } from "react-redux";
 import { useTheme ,Tooltip,IconButton} from "@mui/material";
 import { useDeleteCommentMutation } from "../../../redux/Features/api/postApiSlice";
 import { toast, Toaster } from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "../../../redux/Features/reducers/userAuthSlice";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -40,6 +42,7 @@ const ConfirmationModal = ({
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const [isCurrentUser, setCurrentUser] = useState(false);
+  const dispatch = useDispatch()
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -70,9 +73,14 @@ const ConfirmationModal = ({
           handleClose();
           // toast.success(res.message);
         }
-      } catch (error) {
-        console.log(error);
-        toast.error("something went wrong");
+      } catch (error:any) {
+        if (error.status === 403 && error .data?.message === "Blocked user"
+          ) {
+            dispatch(logoutUser());
+          }else{
+            console.log(error);
+            toast.error("something went wrong");
+          }
       }
     }
   };

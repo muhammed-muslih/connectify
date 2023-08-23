@@ -22,6 +22,9 @@ import {
 } from "../../../redux/Features/api/userApiSlice";
 import { useFormik, FormikHelpers } from "formik";
 import { toast, Toaster } from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "../../../redux/Features/reducers/userAuthSlice";
+
 
 const schema = yup.object().shape({
   newPassword: yup
@@ -84,6 +87,7 @@ const ChangePasswordModal = ({setOpenSettingsModal}:{setOpenSettingsModal:React.
   const [currentPassword, setCurrentPassword] = useState<string>("");
   const newPasswordRef = useRef<HTMLInputElement | null>(null);
   const [verifyError, setVerifyError] = useState("");
+  const dispatch = useDispatch();
   useEffect(() => {
     newPasswordRef.current?.focus();
   }, []);
@@ -132,8 +136,12 @@ const ChangePasswordModal = ({setOpenSettingsModal}:{setOpenSettingsModal:React.
             setDisabled(false);
           }
         } catch (error: any) {
-          console.log(error);
-          setVerifyError(error.data?.message);
+          if (error.status === 403 && error .data?.message === "Blocked user") {
+            dispatch(logoutUser());
+          }else{
+            console.log(error);
+            toast.error("something went wrong");
+          }
         }
       } else {
         setVerifyError("password must be at least 5 characters");
@@ -159,8 +167,12 @@ const ChangePasswordModal = ({setOpenSettingsModal}:{setOpenSettingsModal:React.
           handleClose();
         }
       } catch (error: any) {
-        console.log(error);
-        toast.error("something went wrong");
+        if (error.status === 403 && error .data?.message === "Blocked user") {
+          dispatch(logoutUser());
+        }else{
+          console.log(error);
+          toast.error("something went wrong");
+        }
       }
     }
   };

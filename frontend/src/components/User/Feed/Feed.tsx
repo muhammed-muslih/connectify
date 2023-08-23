@@ -1,4 +1,4 @@
-import { Container, Theme} from "@mui/material";
+import { Container, Theme } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import Posts from "./Posts";
 import { useGetAllPostsQuery } from "../../../redux/Features/api/postApiSlice";
@@ -8,6 +8,8 @@ import { useEffect } from "react";
 import { GetAllPostInterface } from "../../../types/PostInterfaces";
 import { useState } from "react";
 import { Socket } from "socket.io-client";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "../../../redux/Features/reducers/userAuthSlice";
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -18,26 +20,41 @@ const useStyles = makeStyles((theme: Theme) => ({
 const Feed = ({
   isNewPostAdded,
   setNewPostAdded,
-  socket
+  socket,
 }: {
   isNewPostAdded: boolean;
   setNewPostAdded: React.Dispatch<React.SetStateAction<boolean>>;
-  socket: Socket
+  socket: Socket;
 }) => {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const [page, setPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(2);
   const [isDelete, setDelete] = useState(false);
   const [deletedId, setDeletedId] = useState<string>();
   const [isEdited, setIsEdited] = useState(false);
   const [editedId, setEditedId] = useState<string>();
-  const [editedText, setEditedText] = useState<string>()
+  const [editedText, setEditedText] = useState<string>();
   const [posts, setPosts] = useState<GetAllPostInterface[]>([]);
-  const { data, isLoading, isFetching, refetch } = useGetAllPostsQuery({
-    page,
-    limit,
-  });
-  const { data: savedPosts, isLoading: savedPostLoading } = useGetSavedPostsQuery();
+  const { data, isLoading, isFetching, refetch, error, isError } =
+    useGetAllPostsQuery({
+      page,
+      limit,
+    });
+  const { data: savedPosts, isLoading: savedPostLoading} =
+    useGetSavedPostsQuery();
+
+  
+  useEffect(()=>{
+    if (isError) {
+      if (
+        (error as any).status === 403 &&
+        (error as any).data?.message === "Blocked user"
+      ) {
+        dispatch(logoutUser());
+      }
+    }
+  },[error])
 
   useEffect(() => {
     if (data && data?.posts) {
@@ -50,7 +67,7 @@ const Feed = ({
       }
     }
   }, [data]);
-  
+
   useEffect(() => {
     setPage(1);
   }, [isNewPostAdded]);
@@ -78,16 +95,16 @@ const Feed = ({
       setPosts((prev) => prev.filter((post) => post._id !== deletedId));
     }
   }, [isDelete]);
-  
+
   useEffect(() => {
     if (isEdited && editedId && editedText) {
       setPosts((prev) =>
         prev.map((post) => {
-          if(post._id.toString() === editedId){
+          if (post._id.toString() === editedId) {
             return {
               ...post,
-              description:editedText
-            }
+              description: editedText,
+            };
           }
           return post;
         })
@@ -98,7 +115,7 @@ const Feed = ({
   return (
     <Container className={classes.container}>
       {posts &&
-        posts.map((post,index) => (
+        posts.map((post, index) => (
           <Posts
             _id={post._id}
             userName={post.userId?.userName}
@@ -106,7 +123,7 @@ const Feed = ({
             imageName={post.imageName}
             description={post.description}
             profilePicture={post.userId?.profilePicture}
-            key={post._id+index}
+            key={post._id + index}
             likes={post.likes}
             date={post.date}
             comments={post.comments}

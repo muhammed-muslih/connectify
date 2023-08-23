@@ -11,6 +11,8 @@ import { setSelectedChatId as setChatId } from "../../../redux/Features/reducers
 import { GetSingleChatInterface } from "../../../types/chatInterface";
 import { selectSelectedChatId } from "../../../redux/Features/reducers/userAuthSlice";
 import { Users } from "../../../types/chatInterface";
+import { logoutUser } from "../../../redux/Features/reducers/userAuthSlice";
+
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -110,10 +112,21 @@ const UserListBar = ({
   const selectedChatId = useSelector(selectSelectedChatId);
 
   const currentUserId = useSelector(selectUserId);
-  const { data, isLoading, isFetching, refetch } = useGetAllChatsQuery();
+  const { data, isLoading, isFetching, refetch,isError,error } = useGetAllChatsQuery();
   useEffect(() => {
     refetch();
   }, []);
+
+  useEffect(()=>{
+    if (isError) {
+      if (
+        (error as any).status === 403 &&
+        (error as any).data?.message === "Blocked user"
+      ) {
+        dispatch(logoutUser());
+      }
+    }
+  },[error])
 
   useEffect(() => {
     if (data?.chats.length && data?.chats.length > 0) {

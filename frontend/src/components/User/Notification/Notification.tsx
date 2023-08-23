@@ -10,6 +10,9 @@ import { useDispatch,useSelector } from "react-redux";
 import { selectNoOfUnReadNotifications } from "../../../redux/Features/reducers/userAuthSlice";
 import { useMarkAsReadMutation } from "../../../redux/Features/api/userApiSlice";
 import { format } from "timeago.js";
+import { toast, Toaster } from "react-hot-toast";
+import { logoutUser } from "../../../redux/Features/reducers/userAuthSlice";
+
 
 const classes = {
   container: {
@@ -57,14 +60,20 @@ const Notification = ({
       try {
         const res = await markAsRead().unwrap();
         setIsReaded(true)
-      } catch (error) {
-        console.log(error);
+      } catch (error:any) {
+        if (error.status === 403 && error .data?.message === "Blocked user") {
+          dispatch(logoutUser());
+        }else{
+          console.log(error);
+          toast.error("something went wrong");
+        }
       }
     }
     
   }
   return (
     <>
+     <Toaster position={"top-right"} />
       <Header />
       <Box sx={{p:2}}>
       <Button variant="contained" 

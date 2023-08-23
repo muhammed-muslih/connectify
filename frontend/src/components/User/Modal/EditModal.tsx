@@ -12,6 +12,10 @@ import { useTheme } from "@mui/material/styles";
 import { useState } from "react";
 import { useEditPostMutation } from "../../../redux/Features/api/postApiSlice";
 import { toast, Toaster } from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "../../../redux/Features/reducers/userAuthSlice";
+
+
 
 const style = {
   position: "absolute" as "absolute",
@@ -46,6 +50,7 @@ export default function EditModal({
   setEditedText: React.Dispatch<React.SetStateAction<string | undefined>>
 }) {
   const theme = useTheme();
+  const dispatch = useDispatch();
   const [descriptionText, setPostDescription] = useState<string | undefined>(
     description
   );
@@ -66,8 +71,12 @@ export default function EditModal({
           handleClose();
         }
       } catch (error: any) {
-        console.log(error);
-        toast.error("something went wrong");
+        if (error.status === 403 && error .data?.message === "Blocked user") {
+          dispatch(logoutUser());
+        }else{
+          console.log(error);
+          toast.error("something went wrong");
+        }
       }
     }
   };

@@ -5,6 +5,9 @@ import { useTheme } from "@mui/material/styles";
 import { useDeletePostMutation} from "../../../redux/Features/api/postApiSlice";
 import { toast, Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "../../../redux/Features/reducers/userAuthSlice";
+
 
 
 const style = {
@@ -36,8 +39,9 @@ export default function DeletModal({
   setDeletedId: React.Dispatch<React.SetStateAction<string | undefined>>
 }) {
   const theme = useTheme();
+  const dispatch = useDispatch();
   const [deletePost, { isLoading }] = useDeletePostMutation();
- const navigate = useNavigate()
+  const navigate = useNavigate()
   const handlePostDelete = async () => {
     if (!isLoading) {
       try {
@@ -49,8 +53,12 @@ export default function DeletModal({
           handleClose();
         }
       } catch (error: any) {
-        console.log(error);
-        toast.error("something went wrong");
+        if (error.status === 403 && error .data?.message === "Blocked user") {
+            dispatch(logoutUser());
+          }else{
+            console.log(error);
+            toast.error("something went wrong");
+          }
       }
     }
   };

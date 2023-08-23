@@ -18,6 +18,9 @@ import { useSelector } from "react-redux";
 import { selectUserName } from "../../../redux/Features/reducers/userAuthSlice";
 import { selectUserId } from "../../../redux/Features/reducers/userAuthSlice";
 import { selectUserProfilePic } from "../../../redux/Features/reducers/userAuthSlice";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "../../../redux/Features/reducers/userAuthSlice";
+
 
 const Comment: React.FC<commentProps> = ({
   comments,
@@ -42,7 +45,7 @@ const Comment: React.FC<commentProps> = ({
   const userName = useSelector(selectUserName);
   const userId = useSelector(selectUserId);
   const userProfilePic = useSelector(selectUserProfilePic);
-  
+  const dispatch = useDispatch();
 
   const handleReplyField = (id: string) => {
     setReplyFieldOpenId(id);
@@ -68,7 +71,6 @@ const Comment: React.FC<commentProps> = ({
           text: newReplyComment,
           commentId,
         }).unwrap();
-        console.log(res);
         if (res.status === "success") {
           const newReply = {
             _id: res.result?._id,
@@ -96,8 +98,12 @@ const Comment: React.FC<commentProps> = ({
           setReplyFieldOpen(false);
           // toast.success("reply comment added successfully");
         }
-      } catch (error) {
-        console.log(error);
+      } catch (error:any) {
+        if (error.status === 403 && error.data?.message === "Blocked user") {
+          dispatch(logoutUser());
+        }else{
+          console.log(error);
+        }
       }
     }
   };

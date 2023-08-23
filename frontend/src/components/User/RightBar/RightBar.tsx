@@ -13,6 +13,9 @@ import { useUserSearchMutation } from "../../../redux/Features/api/userApiSlice"
 import { green, blue, red, orange, purple } from "@mui/material/colors";
 import { UserInerface } from "../../../types/UserInterfaces";
 import { useNavigate } from "react-router-dom";
+import { toast, Toaster } from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "../../../redux/Features/reducers/userAuthSlice";
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -38,6 +41,7 @@ const getRandomColor = () => {
 };
 
 const RightBar = () => {
+  const dispatch = useDispatch()
   const classess = useStyles();
   const theme = useTheme();
   const navigate = useNavigate();
@@ -50,8 +54,13 @@ const RightBar = () => {
       if (result.status === "success") {
         setUsers(result.users);
       }
-    } catch (error) {
-      console.log(error);
+    } catch (error:any) {
+      if (error.status === 403 && error .data?.message === "Blocked user") {
+        dispatch(logoutUser());
+      }else{
+        console.log(error);
+        toast.error("something went wrong");
+      }
     }
   };
 
@@ -70,6 +79,7 @@ const RightBar = () => {
 
   return (
     <Box className={classess.container} sx={{ borderLeft: "3px groove" }}>
+      <Toaster position={"top-right"} />
       <Box px={10} sx={{position:"fixed"}}>
         <TextField
           id="outlined-search"

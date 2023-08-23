@@ -5,10 +5,11 @@ import { useTheme } from "@mui/material/styles";
 import VideoCallSharpIcon from "@mui/icons-material/VideoCallSharp";
 import "../NavBar/NavBar.css";
 import { makeStyles } from "@mui/styles";
-import {useRef } from "react";
+import {useRef,useEffect,useState } from "react";
 import { Users } from "../../../types/chatInterface";
 import { useSelector } from "react-redux";
 import { selectUserId } from "../../../redux/Features/reducers/userAuthSlice";
+import { useLocation } from "react-router-dom";
 
 const useStyles = makeStyles((theme: Theme) => ({
   onlineBadge: {
@@ -43,55 +44,59 @@ const MessageBar = ({
   const theme = useTheme();
   const classes = useStyles();
   const userID = useSelector(selectUserId);
+  const zeroCloudInstance = useRef<ZegoUIKitPrebuilt | null>(null);
   const user = users?.find((user) => user._id === userID);
   const callee = users?.find((user) => user._id !== userID);
-  const zeroCloudInstance = useRef<ZegoUIKitPrebuilt | null>(null);
+  const location = useLocation();
+ 
 
-  const videoCall = async () => {
-    
-    if (user&&callee) {
-      console.log('hey');
-      
+  const videoInit = async () => {   
       // generate Kit Token
-      const appID = 488358319;
-      const serverSecret = "b96996cabe0a1f6ca8184502e1fb401f";
+      const appID = Number(import.meta.env.VITE_ZEGO_CLOUD_APP_ID );
+      const serverSecret = import.meta.env.VITE_ZEGO_CLOUD_SERVER_SECRET;
       const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
         appID,
         serverSecret,
         chatId,
         userID,
-        user.userName
+        user?.userName
       );
 
       // Create instance object from Kit Token.
       zeroCloudInstance.current = ZegoUIKitPrebuilt.create(kitToken);
       // add plugin
       zeroCloudInstance.current.addPlugins({ ZIM });
-
-      const targetUser = {
-        userID: callee._id,
-        userName: callee.userName + callee._id,
-      };
-
-      try {
-        const res = await zeroCloudInstance.current.sendCallInvitation({
-          callees: [targetUser],
-          callType: ZegoUIKitPrebuilt.InvitationTypeVideoCall,
-          timeout: 30,
-        });
-        console.log(res, "video res");
-
-        if (res.errorInvitees.length) {
-          alert("The user does not exist or is offline.");
-        }
-      } catch (err) {
-        console.warn(err);
-      }
-    } else {
-      console.log("user or callee not found");
-    }
   };
-  
+
+  const videoCall = async()=>{
+    if (user&&callee&&zeroCloudInstance.current) {
+    const targetUser = {
+      userID: callee._id,
+      userName: callee.userName + callee._id,
+    };
+
+    try {
+      const res = await zeroCloudInstance.current.sendCallInvitation({
+        callees: [targetUser],
+        callType: ZegoUIKitPrebuilt.InvitationTypeVideoCall,
+        timeout: 30,
+      });
+
+      if (res.errorInvitees.length) {
+        alert("The user does not exist or is offline.");
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  } else {
+    console.log("user or callee not found");
+  }
+
+  }
+
+  useEffect(()=>{
+    videoInit()
+  },[user,callee])
 
   return (
     <Box

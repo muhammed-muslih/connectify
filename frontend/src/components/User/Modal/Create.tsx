@@ -14,6 +14,10 @@ import PostAddIcon from "@mui/icons-material/PostAdd";
 import { useCreatePostMutation } from "../../../redux/Features/api/postApiSlice";
 import toast, { Toaster } from "react-hot-toast";
 import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
+import { useDispatch } from "react-redux";
+import { logoutUser } from "../../../redux/Features/reducers/userAuthSlice";
+
+
 const style = {
   position: "absolute" as "absolute",
   top: "50%",
@@ -34,6 +38,7 @@ const CreateModal = (props: {
   handleModalClose: () => void;
 }) => {
   const theme = useTheme();
+  const dispatch = useDispatch();
   const [file, setFile] = useState<File | null>();
   const [description, setDescription] = useState<string | null>();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -84,9 +89,13 @@ const CreateModal = (props: {
             toast.error("something went wrong");
           } else if (error.status === 401) {
             console.log(error.data.message);
+          }if (error.status === 403 && error .data?.message === "Blocked user"
+          ) {
+            dispatch(logoutUser());
           } else {
             setUploadError(error.data?.message);
           }
+
         }
       }
     }

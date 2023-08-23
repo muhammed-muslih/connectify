@@ -9,7 +9,7 @@ export const validationMiddleware = (schema: z.ZodObject<any>, field: 'params' |
         if (!result.success) {
           console.log(result.error.errors[0].message);
           const errorMessage = result.error.errors[0].message || "validation error";
-          throw new AppError(errorMessage, 400);
+          return next(new AppError(errorMessage, 400));
         }
         req.body = result.data;
       next();

@@ -27,6 +27,8 @@ import {
   removeProfilePicture,
 } from "../../../redux/Features/reducers/userAuthSlice";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { logoutUser } from "../../../redux/Features/reducers/userAuthSlice";
+
 
 const style = {
   position: "absolute" as "absolute",
@@ -160,7 +162,9 @@ export default function EditProfileModal({
           toast.error("something went wrong");
         } else if (error.status === 401) {
           console.log(error.data.message);
-        } else {
+        } if (error.status === 403 && error .data?.message === "Blocked user") {
+          dispatch(logoutUser());
+        }else {
           setProfileUpdateError(error.data?.message);
         }
       }

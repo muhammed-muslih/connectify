@@ -13,11 +13,11 @@ import checkUserStatus from "../middlewares/checkUserStatus"
 const routes = (app:Application)=>{
     app.use('/api/auth',authRouter())
     app.use('/api/post',userAuthMid,checkUserStatus,postRouter())
-    app.use('/api/user',userAuthMid,userRouter())
+    app.use('/api/user',userAuthMid,checkUserStatus,userRouter())
     app.use('/api/admin',adminAuthMid,adminRouter())
-    app.use('/api/chat',userAuthMid,chatRouter())
-    app.use('/api/message',userAuthMid,messageRouter())
-    app.use('/api/notification',userAuthMid,notificationRouter())
+    app.use('/api/chat',userAuthMid,checkUserStatus,chatRouter())
+    app.use('/api/message',userAuthMid,checkUserStatus,messageRouter())
+    app.use('/api/notification',userAuthMid,checkUserStatus,notificationRouter())
 }
 
 export default routes

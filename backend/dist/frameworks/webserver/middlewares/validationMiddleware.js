@@ -11,7 +11,7 @@ const validationMiddleware = (schema, field = 'body') => async (req, res, next) 
         if (!result.success) {
             console.log(result.error.errors[0].message);
             const errorMessage = result.error.errors[0].message || "validation error";
-            throw new appError_1.default(errorMessage, 400);
+            return next(new appError_1.default(errorMessage, 400));
         }
         req.body = result.data;
         next();

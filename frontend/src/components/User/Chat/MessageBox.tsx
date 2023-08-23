@@ -13,6 +13,8 @@ import { Users } from "../../../types/chatInterface";
 import { Link } from "react-router-dom";
 import socket from "../../../socket";
 import { useGetSingleChatQuery } from "../../../redux/Features/api/chatApiSlice";
+import { logoutUser } from "../../../redux/Features/reducers/userAuthSlice";
+import { useDispatch } from "react-redux";
 
 const MessageBox = ({
   selectedUserPic,
@@ -39,13 +41,25 @@ const MessageBox = ({
   const [sendMessage, setSendMessage] = useState<any>(null);
   const chatId = useSelector(selectSelectedChatId);
   const user = useSelector(selectUserId);
+  const dispatch = useDispatch();
 
-  const { data, isLoading, isFetching, refetch } = useGetMessagesQuery({
+  const { data, isLoading, isFetching, refetch ,isError,error} = useGetMessagesQuery({
     chatId,
   });
   const { data: result, refetch: singelChat } = useGetSingleChatQuery({
     chatId,
   });
+
+  useEffect(()=>{
+    if (isError) {
+      if (
+        (error as any).status === 403 &&
+        (error as any).data?.message === "Blocked user"
+      ) {
+        dispatch(logoutUser());
+      }
+    }
+  },[error])
   
   useEffect(() => {
     if (chatId) {

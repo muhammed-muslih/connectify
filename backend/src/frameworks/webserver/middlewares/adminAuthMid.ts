@@ -9,17 +9,17 @@ const adminAuthMid = (req:Request, res:Response , next:NextFunction) => {
         token = req.headers.authorization.split(' ')[1]
     }
     if(!token) {
-        throw new AppError('Token Not Found',HttpStatus.UNAUTHORIZED)
+        return next(new AppError('Token Not Found',HttpStatus.UNAUTHORIZED))
     }
 
     try {
         const {payload} : any = authServices().verifyToken(token)
         if(payload.role !=='admin'){
-            throw new AppError("UnAuthorized Admin",HttpStatus.UNAUTHORIZED)  
+            return next(new AppError("UnAuthorized Admin",HttpStatus.UNAUTHORIZED))
          }
          next()
     } catch (error) {
-        throw new AppError("UnAuthorized Admin",HttpStatus.UNAUTHORIZED)
+        return next(new AppError("UnAuthorized Admin",HttpStatus.UNAUTHORIZED))
  
     }
 }

@@ -14,19 +14,19 @@ const userAuthMid = (req:CustomRequest,res:Response,next:NextFunction) => {
      
     if(!token){
         console.log('token not found');
-        throw new AppError('token not found',HttpStatus.UNAUTHORIZED)
+        return next(new AppError('token not found',HttpStatus.UNAUTHORIZED))
     }
 
     try {
         const {payload}:any = authServices().verifyToken(token)
         
         if(payload.role !=='user'){
-           throw new AppError("UnAuthorized User",HttpStatus.UNAUTHORIZED)  
+            return next(new AppError("UnAuthorized User",HttpStatus.UNAUTHORIZED)) 
         } 
         req.userId = payload.userId
         next()
     } catch (error) {
-        throw new AppError("UnAuthorized User",HttpStatus.UNAUTHORIZED)
+        return next(new AppError("UnAuthorized User",HttpStatus.UNAUTHORIZED)) 
     }
 
 }

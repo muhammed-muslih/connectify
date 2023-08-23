@@ -7,21 +7,22 @@ import AppError from "@utils/appError";
 const checkUserStatus = async(req:CustomRequest,res:Response,next:NextFunction) => {
     const userId = req.userId as string;
     if(!userId) {
-        throw new AppError('user not found',HttpStatus.BAD_REQUEST)
+        return next(new AppError("User not found", HttpStatus.BAD_REQUEST));
     }
     try {
       const user = await userRepoImpl().getUserById(userId) 
       if(!user){
-        throw new AppError('user not found',HttpStatus.BAD_REQUEST)
+        return next(new AppError("User not found", HttpStatus.BAD_REQUEST));
       }
 
-      if(user.isBlocked){
-        throw new AppError('blocked user',HttpStatus.FORBIDDEN)
+      if(user?.isBlocked){
+        return next(new AppError("Blocked user", HttpStatus.FORBIDDEN));
       }
       next()
         
     } catch (error) {
-        throw new AppError("UnAuthorized User",HttpStatus.UNAUTHORIZED)  
+        console.log(error);
+        return next(new AppError("Unauthorized User", HttpStatus.UNAUTHORIZED));
     }
 
 }

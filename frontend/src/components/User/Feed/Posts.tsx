@@ -37,6 +37,8 @@ import DeletModal from "../Modal/DeleteModal";
 import EditModal from "../Modal/EditModal";
 import { selectUserName } from "../../../redux/Features/reducers/userAuthSlice";
 import { selectUserProfilePic } from "../../../redux/Features/reducers/userAuthSlice";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "../../../redux/Features/reducers/userAuthSlice";
 
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -117,7 +119,7 @@ const Posts: React.FC<PostPropsInterface> = ({
   const [deleteCmntId,setDeleteCmntId] = useState<string>()
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
-
+  const dispatch = useDispatch();
   const commentHandler = () => {
     commentRef.current?.focus();
     setCommentVisible(!isCommentVisible);
@@ -145,10 +147,14 @@ const Posts: React.FC<PostPropsInterface> = ({
           createdAt:new Date().toString(),
           isRead:false,
          }
-         socket.emit('send-notification',newNotification);
+         socket&&socket.emit('send-notification',newNotification);
         }
-      } catch (error) {
-        console.log(error);
+      } catch (error:any) {
+        if (error.status === 403 && error.data?.message === "Blocked user") {
+          dispatch(logoutUser());
+        }else{
+          console.log(error);
+        }
       }
     }
   };
