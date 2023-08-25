@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     top: 0,
     [theme.breakpoints.up("lg")]: {
       BorderColor: theme.palette.primary.dark,
-      border: "2px groove ",
+      border: "3px groove ",
     },
     overflowY: "hidden",
   },
@@ -99,26 +99,6 @@ const LeftBar = () => {
           </Typography>
         </Box>
       </Link>
-
-      <Box className={classes.item}>
-        <Badge badgeContent={8} color="secondary" overlap="circular">
-          <NotificationsSharpIcon className={classes.icon} fontSize="large" />
-        </Badge>
-        <Typography
-          variant={"h5"}
-          sx={{
-            fontWeight: "bolder",
-            marginLeft: {
-              xs: 1,
-              md: 2,
-              lg: 3,
-            },
-          }}
-          className={classes.text}
-        >
-          Notifications
-        </Typography>
-      </Box>
 
       <Link to={"/admin/posts"} style={{ textDecoration: "none" }}>
         <Box className={classes.item}>

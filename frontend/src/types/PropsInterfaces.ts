@@ -58,8 +58,8 @@ export interface ProfileProps {
 export interface UserTableProps {
   tableRow : {
     UserName: string,
-    name: string,
-    email: string,
+    name: string|undefined,
+    email: string|undefined,
     status: string,
     isBlocked?: boolean | undefined,
     joiningDate: string | undefined
@@ -70,6 +70,7 @@ export interface UserTableProps {
 
 export interface PostTableProps {
   tableRow : {
+    userId: string,
     UserName: string,
     id: string,
     date: string,

@@ -31,6 +31,9 @@ export const postRepoInterface = (repository : ReturnType <PostRepoImp>) =>{
 
     const getPosts = async () => await repository.getPosts()
 
+    const getPostsStatistics = async() => await repository.getPostsStatistics()
+    
+
     return {
         createPost,
         getAllPosts,
@@ -44,7 +47,8 @@ export const postRepoInterface = (repository : ReturnType <PostRepoImp>) =>{
         deletePost,
         getSinglePostDetails,
         deleteRootComment,
-        getPosts
+        getPosts,
+        getPostsStatistics
     }
 
 }

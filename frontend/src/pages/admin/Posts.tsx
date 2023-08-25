@@ -36,6 +36,7 @@ const Posts = () => {
   },[])
 
   function createData(
+    userId:string,
     UserName: string,
     imageUrl: string,
     imageName: string,
@@ -47,6 +48,7 @@ const Posts = () => {
     userProfilePicture?: string
   ) {
     return {
+      userId,
       UserName,
       imageUrl,
       imageName,
@@ -62,6 +64,7 @@ const Posts = () => {
   const postDetails =
     data?.posts.map((post) =>
       createData(
+        post.userId._id,
         post.userId.userName,
         post.imageUrl,
         post.imageName,

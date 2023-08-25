@@ -230,3 +230,16 @@ export const changePassword = async(
   await userRepository.changePassword(userId, hasedPassword)
   return
 }
+
+export const getUserSummary = async(
+  userRepository:ReturnType <UserRepoInterface>,
+) =>{
+  const usersPerMonth = await userRepository.noOfUsersPerMonth()
+  const usersStatus = await userRepository.getUsersStatistics()
+  const usersStatistics = usersStatus[0]
+  return {
+    usersPerMonth,
+    usersStatistics
+  }
+}
+

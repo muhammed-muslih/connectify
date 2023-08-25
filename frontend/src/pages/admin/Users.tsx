@@ -33,8 +33,8 @@ const Users = () => {
 
   function createData(
     UserName: string,
-    name: string,
-    email: string,
+    name: string | undefined,
+    email: string| undefined,
     joiningDate: string,
     status: string,
     isBlocked: boolean | undefined,

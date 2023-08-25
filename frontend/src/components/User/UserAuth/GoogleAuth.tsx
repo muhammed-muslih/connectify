@@ -39,9 +39,9 @@ const GoogleAuth = () => {
       variant="contained"
       size="small"
       sx={{
-        backgroundColor: theme.palette.primary.light,
+        backgroundColor: theme.palette.primary.main,
         "&:hover": {
-          backgroundColor: theme.palette.primary.main,
+          backgroundColor: theme.palette.primary.dark,
         },
       }}
       disableRipple

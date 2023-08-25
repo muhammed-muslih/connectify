@@ -75,6 +75,42 @@ const userRepoImpl = () => {
         };
     };
     const changePassword = async (userId, password) => await userModel_1.default.findByIdAndUpdate(userId, { $set: { password: password } });
+    const noOfUsersPerMonth = async () => {
+        const currentYear = new Date().getFullYear();
+        return await userModel_1.default.aggregate([
+            {
+                $match: {
+                    createdAt: {
+                        $gte: new Date(currentYear, 0, 1),
+                        $lt: new Date(currentYear + 1, 0, 1)
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: { month: { $month: '$createdAt' } },
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $sort: {
+                    '_id.month': 1
+                }
+            }
+        ]);
+    };
+    const getUsersStatistics = async () => {
+        return await userModel_1.default.aggregate([
+            {
+                $group: {
+                    _id: null,
+                    totalUsers: { $sum: 1 },
+                    activeUsres: { $sum: { $cond: [{ $eq: ['$isBlocked', false] }, 1, 0] } },
+                    blockedUsers: { $sum: { $cond: [{ $eq: ['$isBlocked', true] }, 1, 0] } }
+                }
+            }
+        ]);
+    };
     return {
         registerUser,
         getUserByEmail,
@@ -94,7 +130,9 @@ const userRepoImpl = () => {
         editUserProfile,
         removeUserProfilePic,
         getFollowLists,
-        changePassword
+        changePassword,
+        noOfUsersPerMonth,
+        getUsersStatistics
     };
 };
 exports.userRepoImpl = userRepoImpl;

@@ -98,7 +98,48 @@ export const userRepoImpl = () =>{
     }
 
     const changePassword = async (userId : string,password:string) =>
-     await User.findByIdAndUpdate(userId,{$set:{password:password}})
+    await User.findByIdAndUpdate(userId,{$set:{password:password}})
+
+    const noOfUsersPerMonth = async() => {
+        const currentYear = new Date().getFullYear();
+        return await User.aggregate([
+            {
+                $match:{
+                    createdAt:{
+                        $gte: new Date(currentYear,0,1),
+                        $lt: new Date(currentYear+1,0,1)
+                    }
+                }
+
+            },
+            {
+                $group: {
+                    _id:{month:{$month:'$createdAt'}},
+                    count:{$sum:1}
+                }
+            },
+            {
+                $sort: {
+                    '_id.month':1
+                }
+            }
+        ])
+
+    }
+    
+    const getUsersStatistics = async() => {
+        return await User.aggregate([
+            {
+                $group:{
+                    _id:null,
+                    totalUsers:{$sum:1},
+                    activeUsres:{$sum : {$cond:[{$eq:['$isBlocked',false]},1,0]}},
+                    blockedUsers:{$sum : {$cond:[{$eq:['$isBlocked',true]},1,0]}}
+                }
+            }
+        ])
+
+    }
 
     return{
         registerUser,
@@ -119,7 +160,9 @@ export const userRepoImpl = () =>{
         editUserProfile,
         removeUserProfilePic,
         getFollowLists,
-        changePassword
+        changePassword,
+        noOfUsersPerMonth,
+        getUsersStatistics
     }
 }
 

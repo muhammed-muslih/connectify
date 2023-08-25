@@ -147,7 +147,7 @@ const NavBar = ({ user, admin }: { user?: any; admin?: any }) => {
                 },
               }}
              
-            >{user ? userName.split('')[0] : ""}</Avatar>
+            >{user ? userName.split('')[0] : ''}</Avatar>
           )}
           <Typography
             sx={{

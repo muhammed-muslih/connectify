@@ -96,7 +96,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   textHide: {
     display: "none",
-    color: theme.palette.primary.dark,
   }
 }));
 
@@ -142,7 +141,6 @@ const LeftBar = ({message,setNewPostAdded}:
           }}
         >
           <HomeIcon
-            className={classes.icon}
             fontSize="large"
             sx={{
               color:
@@ -161,7 +159,7 @@ const LeftBar = ({message,setNewPostAdded}:
                 lg: 3,
               },
             }}
-            className={message ? classes.textHide : classes.text}
+            className={message ? classes.textHide :''}
           >
             Home
           </Typography>
@@ -186,7 +184,6 @@ const LeftBar = ({message,setNewPostAdded}:
           >
             <MessageIcon
               fontSize="large"
-              className={classes.icon}
               sx={{
                 color:
                   location.pathname === "/message"
@@ -209,7 +206,7 @@ const LeftBar = ({message,setNewPostAdded}:
                 lg: 3,
               },
             }}
-            className={message ? classes.textHide : classes.text}
+            className={message ? classes.textHide : ''}
           >
             Messages
           </Typography>
@@ -226,7 +223,7 @@ const LeftBar = ({message,setNewPostAdded}:
           }}
         >
         <Badge badgeContent={noOfNotifications} color="secondary" overlap="circular">
-          <FavoriteBorderIcon className={classes.icon} fontSize="large"   sx={{
+          <FavoriteBorderIcon  fontSize="large"   sx={{
                 color:
                   location.pathname === "/notification"
                     ? "white"
@@ -247,14 +244,12 @@ const LeftBar = ({message,setNewPostAdded}:
               lg: 3,
             },
           }}
-          className={message?classes.textHide:classes.text}
+          className={message?classes.textHide:''}
         >
           Notifications
         </Typography>
       </Box>
       </Link>
-
-
       <Box className={classes.item}>
         <Box onClick={handleModalOpen} display={"flex"}>
           <AddBoxOutlinedIcon className={classes.icon} fontSize="large" />
@@ -351,7 +346,7 @@ const LeftBar = ({message,setNewPostAdded}:
               lg: 3,
             },
           }}
-          className={message?classes.textHide:classes.text}
+          className={message?classes.textHide:''}
         >
           Profile
         </Typography>

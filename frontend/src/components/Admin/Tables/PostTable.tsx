@@ -19,6 +19,7 @@ import { PostTableProps } from "../../../types/PropsInterfaces";
 import toast, { Toaster } from "react-hot-toast";
 import SinglePostView from "../Modal/SinglePostView";
 import ReportDetails from "../Modal/ReportDetails";
+import DeletPost from "../Modal/DeletePost";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -47,6 +48,9 @@ const PostTable: React.FC<PostTableProps> = ({ tableRow, tableHead }) => {
   const [rowPerPage,rowPerPageChange ] = useState(6);
   const [openPost,setOpenPost] = useState(false)
   const [openReportTable,setOpenReportTable] = useState(false)
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [postId,setPostId] = useState<string>()
+  const [userId,setUserId] = useState<string>()
   const [singlePostsData,setSinglePostsData] = 
   useState<{userName:string, userProfilePicture: string,imageUrl:string}>()
   const [reportedData,setRepotedData] = useState([])
@@ -75,6 +79,14 @@ const PostTable: React.FC<PostTableProps> = ({ tableRow, tableHead }) => {
     setOpenReportTable(true)
   }
 
+  const handleOpenDeleteModal = (id:string,userId:string) => {
+    setPostId(id)
+    setUserId(userId)
+    setOpenDeleteModal(true);
+  }
+  const handleCloseDeleteModal = () => setOpenDeleteModal(false);
+
+  
   return (
     <Box sx={{ p: 2, mt: 15 }}>
       <Toaster position="top-right" />
@@ -123,7 +135,7 @@ const PostTable: React.FC<PostTableProps> = ({ tableRow, tableHead }) => {
                     </>
                 </StyledTableCell>
                 <StyledTableCell>
-                  <Button variant="contained" color="error" sx={{ ml: 2 }}>
+                  <Button variant="contained" color="error" sx={{ ml: 2 }} onClick={()=>handleOpenDeleteModal(row.id,row.userId)}>
                     delete
                   </Button>
                 </StyledTableCell>
@@ -141,7 +153,8 @@ const PostTable: React.FC<PostTableProps> = ({ tableRow, tableHead }) => {
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-      { openPost&&<SinglePostView open={openPost} setOpen={setOpenPost} singlePostsData={singlePostsData}/>}
+      {openDeleteModal&&<DeletPost open={openDeleteModal} handleClose={handleCloseDeleteModal}postId={postId} userId={userId} />}  
+      {openPost&&<SinglePostView open={openPost} setOpen={setOpenPost} singlePostsData={singlePostsData}/>}
       {openReportTable&&<ReportDetails open={openReportTable} setOpen={setOpenReportTable} tableRow={reportedData}/>}
     </Box>
   );

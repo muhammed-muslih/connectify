@@ -177,3 +177,17 @@ export const getPosts = async(
 ) =>{
     return await postRepository.getPosts()
 }
+
+export const getPostStatistics  = async(
+    postRepository:ReturnType<PostRepoInterface> ,
+) =>{
+    const post= await postRepository.getPostsStatistics()
+    const transformedResult = {
+        totalPosts: post[0].totalPosts[0]?.count || 0,
+        postsToday: post[0].postsToday[0]?.count || 0,
+        postsThisWeek: post[0].postsThisWeek[0]?.count || 0,
+        postsThisMonth: post[0].postsThisMonth[0]?.count || 0
+      };
+      
+    return transformedResult
+}

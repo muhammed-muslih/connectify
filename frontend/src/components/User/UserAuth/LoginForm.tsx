@@ -127,7 +127,7 @@ const LoginForm: React.FC = () => {
             variant="h3"
             sx={{
               fontWeight: "bold",
-              color: theme.palette.primary.light,
+              color: theme.palette.primary.main,
               mx: 6,
               paddingBottom: 2,
             }}
@@ -213,9 +213,9 @@ const LoginForm: React.FC = () => {
                 type="submit"
                 size="large"
                 sx={{
-                  backgroundColor: theme.palette.primary.light,
+                  backgroundColor: theme.palette.primary.main,
                   "&:hover": {
-                    backgroundColor: theme.palette.primary.main,
+                    backgroundColor: theme.palette.primary.dark,
                   },
                 }}
                 disableRipple

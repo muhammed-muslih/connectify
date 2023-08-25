@@ -5,6 +5,7 @@ import { selectAdminToken } from "../../redux/Features/reducers/adminAuthSlice"
 import { Navigate } from "react-router-dom"
 import { makeStyles} from '@mui/styles';
 import NavBar from "../../components/User/NavBar/NavBar"
+import AdminDashBoard  from "../../components/Admin/DashBoard/DashBoard"
 
 
 const useStyles = makeStyles((theme: Theme) =>({
@@ -37,7 +38,7 @@ const DashBoard = () =>{
             <NavBar admin/>
             <Grid container>
                 <Grid item md={3}  className={classes.displayManager}><LeftBar/></Grid>
-                <Grid item md={9} xs={12}></Grid>
+                <Grid item md={9} xs={12}><AdminDashBoard/></Grid>
             </Grid>
             <Box className={classes.bottomDisplay}>
             </Box>

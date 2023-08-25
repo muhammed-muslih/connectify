@@ -112,7 +112,7 @@ const RegisterForm = () => {
           sm: 1,
           md: 3,
           lg: 6,
-          xl: 8,
+          xl: 7,
         },
       }}
     >
@@ -140,7 +140,7 @@ const RegisterForm = () => {
             variant="h3"
             sx={{
               fontWeight: "bold",
-              color: theme.palette.primary.light,
+              color: theme.palette.primary.main,
               mx: 6,
               paddingBottom: 2,
             }}
@@ -266,9 +266,9 @@ const RegisterForm = () => {
                 type="submit"
                 size="large"
                 sx={{
-                  backgroundColor: theme.palette.primary.light,
+                  backgroundColor: theme.palette.primary.main,
                   "&:hover": {
-                    backgroundColor: theme.palette.primary.main,
+                    backgroundColor: theme.palette.primary.dark,
                   },
                 }}
                 disableRipple

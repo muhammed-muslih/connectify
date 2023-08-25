@@ -205,7 +205,7 @@ const UserListBar = ({
           </Box>
         </Stack>
         <Box>
-          {isLoading || isFetching ? (
+          {isLoading ? (
             <>
               {[1, 2, 3, 4, 5].map((item) => (
                 <div key={item}>
@@ -233,7 +233,6 @@ const UserListBar = ({
 
         <Box>
           {!isLoading &&
-            !isFetching &&
             data?.chats.map((chat) => (
               <Stack
                 direction={"row"}
