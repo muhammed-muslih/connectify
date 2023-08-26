@@ -22,7 +22,6 @@ const BarChart = ({ labels, usersPerMonth }: { labels: string[]; usersPerMonth: 
         data:usersPerMonth,
         backgroundColor: 'aqua',
         borderColor: "transparent",
-        // barThickness: 48,
         borderWidth: 1,
       },
     ],

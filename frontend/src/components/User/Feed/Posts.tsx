@@ -39,6 +39,7 @@ import { selectUserName } from "../../../redux/Features/reducers/userAuthSlice";
 import { selectUserProfilePic } from "../../../redux/Features/reducers/userAuthSlice";
 import { useDispatch } from "react-redux";
 import { logoutUser } from "../../../redux/Features/reducers/userAuthSlice";
+import { Link } from "react-router-dom";
 
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -303,6 +304,9 @@ const Posts: React.FC<PostPropsInterface> = ({
               </Avatar>
             )}
             <Stack>
+
+
+            <Link to={`/profile/${postUserId}`} style={{textDecoration:"none"}}>
               <Typography
                 sx={{
                   fontWeight: "bold",
@@ -315,6 +319,8 @@ const Posts: React.FC<PostPropsInterface> = ({
               >
                 {userName}
               </Typography>
+            </Link>
+
               <Typography
                 variant="body2"
                 sx={{ pl: 2 }}

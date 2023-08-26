@@ -7,6 +7,7 @@ import { makeStyles } from "@mui/styles";
 import NavBar from "../../components/User/NavBar/NavBar";
 import UserTable from "../../components/Admin/Tables/UserTable";
 import { useGetAllUsersQuery } from "../../redux/Features/api/adminApiSlice";
+import { useEffect } from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
   displayManager: {
@@ -29,7 +30,10 @@ const useStyles = makeStyles((theme: Theme) => ({
 const Users = () => {
   const classes = useStyles();
   const token = useSelector(selectAdminToken);
-  const { data: users, isLoading } = useGetAllUsersQuery();
+  const { data: users, isLoading ,refetch} = useGetAllUsersQuery();
+  useEffect(()=>{
+    refetch()
+  },[])
 
   function createData(
     UserName: string,

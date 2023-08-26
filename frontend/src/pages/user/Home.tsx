@@ -53,7 +53,7 @@ const Home = () => {
 
   if (token) {
     return (
-      <Box>
+      <Box sx={{position:'relative'}}>
         <NavBar user />
         <Grid container>
           <Grid item md={3} className={classes.displayManager}>

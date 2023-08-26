@@ -10,7 +10,7 @@ const DasBoardCard = ({title,count}:{title:string,count: number}) => {
                 <Box sx={{p:2,backgroundColor:theme.palette.primary.main,position:'absolute',top:0,left:6,borderRadius:4,boxShadow:6}}>
                 <DynamicFeedIcon sx={{width:50,height:50,color:'white'}}/>
                 </Box>
-                <Box sx={{display: 'flex',justifyContent: 'center',}}>
+                <Box sx={{display: 'flex',justifyContent: 'end',}}>
                 <Typography  variant="h6" sx={{color:theme.palette.primary.dark,fontWeight:"bolder"}}>{title} : {count}</Typography>
                 </Box>
             </Box>

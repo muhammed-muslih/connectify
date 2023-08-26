@@ -36,7 +36,7 @@ const BottomNav = ({setShowMessage}:{setShowMessage?:React.Dispatch<React.SetSta
         icon={<Home />}
         onClick={() => navigate("/")}
       />
-      <BottomNavigationAction label="Notifications" icon={<Favorite />} />
+      <BottomNavigationAction label="Notifications" icon={<Favorite />} onClick={() => navigate('/notification')}/>
       <BottomNavigationAction 
       label="Messages" icon={<MessageIcon />}
       onClick={() =>{

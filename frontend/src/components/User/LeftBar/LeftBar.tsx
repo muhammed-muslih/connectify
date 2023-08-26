@@ -178,7 +178,7 @@ const LeftBar = ({message,setNewPostAdded}:
           }}
         >
           <Badge
-            badgeContent={4}
+            badgeContent={0}
             color="secondary"
             overlap="circular"
           >

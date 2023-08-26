@@ -10,6 +10,7 @@ import { selectUserId } from "../../../redux/Features/reducers/userAuthSlice";
 import { useGetSavedPostDetailsQuery } from "../../../redux/Features/api/userApiSlice";
 import { useDispatch } from "react-redux";
 import { logoutUser } from "../../../redux/Features/reducers/userAuthSlice";
+import Shimmer from "./Shimmer";
 
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -67,8 +68,11 @@ const Profile = () => {
       {isUserPost ? (
         <Posts posts={posts?.posts} />
       ) : (
-        isCurrentUser && <Posts posts={saved?.posts} />
+        isCurrentUser && <Posts posts={saved?.posts}/>
       )}
+      {
+        isLoading&&<Shimmer/>
+      }
     </Container>
   );
 };
