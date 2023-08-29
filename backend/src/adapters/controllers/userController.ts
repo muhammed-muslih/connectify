@@ -19,6 +19,8 @@ import {
   getFollowersAndFollowingsDetails,
   verifyPassword,
   changePassword,
+  createVerifySubscription,
+  verifyPayment
 } from "@application/useCases/user/user";
 
 export const userController = (
@@ -181,6 +183,30 @@ export const userController = (
     })
   })
 
+  const createSubscription = asyncHandler(async(req: CustomRequest, res: Response) =>{
+    const userId = req.userId as string
+    const {plan} =req.body
+    const session = await createVerifySubscription(userId,plan,userRepository)
+    res.json({
+      status: "success",
+      session
+    })
+  })
+
+  const verifySubscription = asyncHandler(async(req: CustomRequest, res:Response) => {
+    const {sessionId} = req.body
+    const userId = req.userId as string
+    const result = await verifyPayment(userId,sessionId,userRepository)
+    res.json({
+      status:'success',
+      ...result
+    })
+    
+
+  })
+
+
+
   return {
     searchUser,
     getUser,
@@ -192,7 +218,9 @@ export const userController = (
     removeProfilePic,
     followersDetails,
     comparePassword,
-    updatePassword
+    updatePassword,
+    createSubscription,
+    verifySubscription
   };
 };
 

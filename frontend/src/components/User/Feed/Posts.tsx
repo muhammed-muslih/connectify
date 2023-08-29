@@ -3,7 +3,6 @@ import {
   CardActionArea,
   CardMedia,
   Theme,
-  CardContent,
   Stack,
   Box,
   Avatar,
@@ -18,7 +17,6 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import TurnedInNotRoundedIcon from "@mui/icons-material/TurnedInNotRounded";
 import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded";
 import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
-import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
 import SendIcon from "@mui/icons-material/Send";
 import React, { useState, useRef, useEffect } from "react";
 import { PostPropsInterface } from "../../../types/PropsInterfaces";
@@ -40,6 +38,7 @@ import { selectUserProfilePic } from "../../../redux/Features/reducers/userAuthS
 import { useDispatch } from "react-redux";
 import { logoutUser } from "../../../redux/Features/reducers/userAuthSlice";
 import { Link } from "react-router-dom";
+import VerifiedIcon from '@mui/icons-material/Verified';
 
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -92,7 +91,8 @@ const Posts: React.FC<PostPropsInterface> = ({
   setIsEdited,
   setEditedId,
   setEditedText,
-  socket
+  socket,
+  isVerified,
 }) => {
   const classes = useStyles();
   const [comment, setComment] = useState(comments ?? []);
@@ -307,6 +307,7 @@ const Posts: React.FC<PostPropsInterface> = ({
 
 
             <Link to={`/profile/${postUserId}`} style={{textDecoration:"none"}}>
+              <Box sx={{display:"flex"}}>
               <Typography
                 sx={{
                   fontWeight: "bold",
@@ -319,6 +320,8 @@ const Posts: React.FC<PostPropsInterface> = ({
               >
                 {userName}
               </Typography>
+              {isVerified&&<VerifiedIcon sx={{pl:1}}/>}
+              </Box>
             </Link>
 
               <Typography

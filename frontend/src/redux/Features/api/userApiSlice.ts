@@ -101,8 +101,24 @@ export const userApiSlice = apiSlice.injectEndpoints({
             }),
             invalidatesTags:['notification']
 
-        })
+        }),
 
+        createVerifySubscription : builder.mutation<any,{plan:number}>({
+            query: ({plan}) => ({
+                url:'/user/create-verify-subscription',
+                method:'POST',
+                body: {plan}
+            })
+        }),
+
+        verifyPayment :  builder.mutation<any,{sessionId:string}>({
+            query: ({sessionId}) => ({
+                url:'/user/verify-payment',
+                method:'POST',
+                body: {sessionId}
+            }),
+            invalidatesTags:['user','post']
+        }),
     })
 })
 
@@ -119,5 +135,7 @@ export const {
     useVerifyUserPasswordMutation,
     useChangePasswordMutation,
     useGetNotificationsQuery,
-    useMarkAsReadMutation
+    useMarkAsReadMutation,
+    useCreateVerifySubscriptionMutation,
+    useVerifyPaymentMutation,
 } = userApiSlice

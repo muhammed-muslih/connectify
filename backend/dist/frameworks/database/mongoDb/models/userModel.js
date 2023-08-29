@@ -51,6 +51,13 @@ const userSchema = new mongoose_1.Schema({
     isBlocked: {
         type: Boolean,
         default: false
+    },
+    verified: {
+        isVerified: { type: Boolean, default: false },
+        subscribe: { type: String, default: '' },
+        startDate: { type: Date },
+        endDate: { type: Date },
+        planDuration: { type: String }
     }
 }, {
     timestamps: true

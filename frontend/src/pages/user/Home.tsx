@@ -44,7 +44,6 @@ const Home = () => {
     socket.emit("new-user-add", user);
     }
     socket.on("get-users", (users) => {
-      console.log(users);
       setOnlineUsers(users);
     });
 

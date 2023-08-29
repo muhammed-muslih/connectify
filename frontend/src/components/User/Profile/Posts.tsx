@@ -4,6 +4,7 @@ import { PostCardInterface } from "../../../types/PropsInterfaces";
 import SinglePost from "../Modal/SinglePost";
 import { useState } from "react";
 
+
 const useStyles = makeStyles((theme: Theme) => ({
   box1: {
     display: "block",

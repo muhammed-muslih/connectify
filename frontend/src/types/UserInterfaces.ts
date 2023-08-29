@@ -11,6 +11,14 @@ export interface UserInerface {
     bio?: string,
     createdAt: Date,
     isBlocked?:boolean
+    verified: {
+      isVerified:boolean
+      subscribe:string
+      startDate?: string,
+      endDate?: string,
+      planDuration?: string
+    }
+
   }
 
 

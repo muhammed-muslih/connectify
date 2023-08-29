@@ -40,6 +40,7 @@ export interface ProfileProps {
     setEditedId: React.Dispatch<React.SetStateAction<string | undefined>>,
     setEditedText: React.Dispatch<React.SetStateAction<string | undefined>>,
     socket?: Socket
+    isVerified:boolean
    }
 
     interface PostInterface {

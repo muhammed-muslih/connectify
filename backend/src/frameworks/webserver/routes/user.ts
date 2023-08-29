@@ -32,6 +32,8 @@ const userRouter = () => {
    router.get('/followers-followings-list',controller.followersDetails)
    router.post('/verify-password',controller.comparePassword)
    router.put('/update-password',controller.updatePassword)
+   router.post('/create-verify-subscription',controller.createSubscription)
+   router.post('/verify-payment',controller.verifySubscription)
    return router
 }
 

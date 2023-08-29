@@ -18,7 +18,6 @@ const socketConfig = async(io:Server<DefaultEventsMap, DefaultEventsMap, Default
                     socketId:socket.id
                 })
             }
-            console.log(activeUsers);
             io.emit('get-users',activeUsers)
         })
 
@@ -26,7 +25,6 @@ const socketConfig = async(io:Server<DefaultEventsMap, DefaultEventsMap, Default
         socket.on("send-message", (data) => {
             const { receiverId } = data;
             const user = activeUsers.find((user) => user.userId === receiverId);
-            console.log("Sending from socket to:", receiverId)
             if (user) {
               io.to(user.socketId).emit("receive-message", data);
             }
@@ -44,11 +42,9 @@ const socketConfig = async(io:Server<DefaultEventsMap, DefaultEventsMap, Default
         socket.on('stop typing',(room)=>socket.in(room).emit('stop typing'))
 
 
-
         //remove disconnected users
         socket.on('disconnect',()=>{
             activeUsers = activeUsers.filter((user)=>user.socketId !== socket.id)
-            console.log('user disconnected',activeUsers)
             io.emit('get-users',activeUsers)
         })
     });

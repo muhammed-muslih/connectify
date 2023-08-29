@@ -135,6 +135,7 @@ const Feed = ({
             setEditedId={setEditedId}
             setEditedText={setEditedText}
             socket={socket}
+            isVerified={post.userId.verified.isVerified}
           />
         ))}
       {isLoading && <Shimmer />}

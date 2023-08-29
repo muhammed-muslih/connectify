@@ -6,7 +6,7 @@ import {
   Theme,
   Button,
   Divider,
-  Tooltip
+  Tooltip,
 } from "@mui/material";
 import AppsOutlinedIcon from "@mui/icons-material/AppsOutlined";
 import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
@@ -15,7 +15,11 @@ import React, { useEffect, useState } from "react";
 import { ProfileProps } from "../../../types/PropsInterfaces";
 import { theme } from "../../../theme";
 import { useSelector } from "react-redux";
-import { selectUserId,selectUserName,selectUserProfilePic } from "../../../redux/Features/reducers/userAuthSlice";
+import {
+  selectUserId,
+  selectUserName,
+  selectUserProfilePic,
+} from "../../../redux/Features/reducers/userAuthSlice";
 import { useGetUserQuery } from "../../../redux/Features/api/userApiSlice";
 import { useNavigation, useParams } from "react-router-dom";
 import {
@@ -31,6 +35,12 @@ import { useCreateChatsMutation } from "../../../redux/Features/api/chatApiSlice
 import { useNavigate } from "react-router-dom";
 import ChangePasswordModal from "../Modal/ChangePassword";
 import socket from "../../../socket";
+import PaymentModal from "../PaymentSubscription/Subscription";
+import VerifiedOutlinedIcon from '@mui/icons-material/VerifiedOutlined';
+import VerifiedIcon from '@mui/icons-material/Verified';
+
+
+
 
 const useStyles = makeStyles((theme: Theme) => ({
   profileContentBoxs: {
@@ -79,8 +89,8 @@ const ProfileSection: React.FC<ProfileProps> = ({
   const colorTheme = useTheme();
   const navigate = useNavigate();
   const currentUserId = useSelector(selectUserId);
-  const currentUserName = useSelector(selectUserName)
-  const currentUserProfilePic = useSelector(selectUserProfilePic)
+  const currentUserName = useSelector(selectUserName);
+  const currentUserProfilePic = useSelector(selectUserProfilePic);
   const [isFollow, setIsFollow] = useState<boolean | undefined>(false);
   const [isFollowing, setIsFollowing] = useState<boolean | undefined>(false);
   const [profilePicture, setProfilePicture] = useState<string>();
@@ -91,9 +101,11 @@ const ProfileSection: React.FC<ProfileProps> = ({
   const [openProfileEditModal, setOpenProfileEditModal] = useState(false);
   const [openFollowersListModal, setOpenFollowersListModal] = useState(false);
   const [openFollowingsListModal, setOpenFollowingsListModal] = useState(false);
-  const [isGoogleUser, setIsGoogleUser] = useState(false)
+  const [isGoogleUser, setIsGoogleUser] = useState(false);
   const [openSettingsModal, setOpenSettingsModal] = useState(false);
   const [bio, setBio] = useState<string>();
+  const [isUserVerified, setIsUserVerified] = useState(false);
+  const [isPaymentModalOpen, setPaymentModalOpen] = useState(false);
   const { id: userId } = useParams();
   const { data: user, isLoading, isFetching } = useGetUserQuery({ id: userId });
   const {
@@ -110,7 +122,8 @@ const ProfileSection: React.FC<ProfileProps> = ({
         setFollowers(user.user.followers);
         setFollowings(user.user.followings);
         setName(user.user.name);
-        setIsGoogleUser(user.user?.isGoogleUser?true:false);
+        setIsUserVerified(user.user.verified.isVerified)
+        setIsGoogleUser(user.user?.isGoogleUser ? true : false);
       }
     }
   }, [userId, user]);
@@ -131,21 +144,24 @@ const ProfileSection: React.FC<ProfileProps> = ({
   const followHandler = async () => {
     try {
       const res = await followAndUnfollow({ followedUserId: userId }).unwrap();
-      if(res.status=='success' && res.message =='followed successfully'&&userId){
+      if (
+        res.status == "success" &&
+        res.message == "followed successfully" &&
+        userId
+      ) {
         const newNotification = {
-          receiver:userId,
-          user:{
-            _id:currentUserId,
-            userName:currentUserName,
-            profilePicture:currentUserProfilePic
+          receiver: userId,
+          user: {
+            _id: currentUserId,
+            userName: currentUserName,
+            profilePicture: currentUserProfilePic,
           },
-          content:'followed you',
-          createdAt:new Date().toString(),
-          isRead:false,
-        }
-        socket.emit('send-notification',newNotification)
+          content: "followed you",
+          createdAt: new Date().toString(),
+          isRead: false,
+        };
+        socket.emit("send-notification", newNotification);
       }
-      
     } catch (error) {
       console.log(error);
     }
@@ -174,6 +190,10 @@ const ProfileSection: React.FC<ProfileProps> = ({
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const paymentModalClose = () => {
+    setPaymentModalOpen(false);
   };
 
   return (
@@ -245,6 +265,7 @@ const ProfileSection: React.FC<ProfileProps> = ({
               spacing={3}
               className={classes.profileContent}
             >
+              <Box sx={{display:"flex"}}>
               <Typography
                 variant="h5"
                 className={classes.text}
@@ -252,6 +273,8 @@ const ProfileSection: React.FC<ProfileProps> = ({
               >
                 {profileName}
               </Typography>
+              {isUserVerified&&<VerifiedIcon sx={{pl:1,fontSize:30,color:theme.palette.primary.main}}/>}
+              </Box>
               {profileName && isCurrentUser ? (
                 <Stack
                   direction={"row"}
@@ -270,18 +293,21 @@ const ProfileSection: React.FC<ProfileProps> = ({
                     edit profile
                   </Button>
                   <Box sx={{ position: "relative" }}>
-                  <Tooltip title="click here"  sx={{color:theme.palette.primary.light}}>
-                    <SettingsIcon
-                      sx={{
-                        color: colorTheme.palette.primary.main,
-                        width: 35,
-                        height: 35,
-                        cursor: "pointer",
-                      }}
-                      onClick={()=>setOpenSettingsModal(!openSettingsModal)}
-                    />
+                    <Tooltip
+                      title="click here"
+                      sx={{ color: theme.palette.primary.light }}
+                    >
+                      <SettingsIcon
+                        sx={{
+                          color: colorTheme.palette.primary.main,
+                          width: 35,
+                          height: 35,
+                          cursor: "pointer",
+                        }}
+                        onClick={() => setOpenSettingsModal(!openSettingsModal)}
+                      />
                     </Tooltip>
-                    {openSettingsModal &&!isGoogleUser&& (
+                    {openSettingsModal &&(
                       <Box
                         sx={{
                           position: "absolute",
@@ -292,7 +318,26 @@ const ProfileSection: React.FC<ProfileProps> = ({
                         }}
                         top={60}
                       >
-                       <ChangePasswordModal setOpenSettingsModal={setOpenSettingsModal} />
+                        {
+                          !isGoogleUser &&<ChangePasswordModal
+                          setOpenSettingsModal={setOpenSettingsModal}
+                        />
+                        }
+                        <Button
+                          variant="text"
+                          startIcon={
+                            <VerifiedOutlinedIcon sx={{ width: 30, height: 30 }} />
+                          }
+                          sx={{
+                            cursor: "pointer",
+                            textTransform: "lowercase",
+                            fontWeight: "bolder",
+                            fontSize: 18,
+                          }}
+                          onClick={()=>setPaymentModalOpen(!isPaymentModalOpen)}
+                        >
+                          verify_Tick
+                        </Button>
                       </Box>
                     )}
                   </Box>
@@ -626,6 +671,13 @@ const ProfileSection: React.FC<ProfileProps> = ({
           ""
         )}
       </Box>
+      {isPaymentModalOpen && (
+        <PaymentModal
+          handleClose={paymentModalClose}
+          open={isPaymentModalOpen}
+          setOpen={setPaymentModalOpen}
+        />
+      )}
     </Box>
   );
 };
