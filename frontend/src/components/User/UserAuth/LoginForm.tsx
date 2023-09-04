@@ -94,12 +94,13 @@ const LoginForm: React.FC = () => {
     <Stack
       sx={{
         alignItems: "center",
+        justifyContent: "center",
         my: {
           xs: 2,
-          sm: 4,
-          md: 6,
-          lg: 8,
-          xl: 12,
+          sm: 6,
+          md: 10,
+          lg: 12,
+          xl: 16,
         },
       }}
     >
@@ -115,14 +116,15 @@ const LoginForm: React.FC = () => {
           width: {
             xs: "100%",
             sm: "80%",
-            md: "70%",
-            lg: "60%",
-            xl: "40%",
+            md: "90%",
+            lg: "70%",
+            xl: "55%",
           },
         }}
         direction={"column"}
       >
-        <Box borderBottom={2} borderColor={theme.palette.primary.main} my={2}>
+        <Box borderBottom={2} borderColor={theme.palette.primary.main} my={2} 
+        sx={{display:'flex',alignItems:'center',justifyContent:"center"}}>
           <Typography
             variant="h3"
             sx={{
@@ -133,112 +135,126 @@ const LoginForm: React.FC = () => {
             }}
           >
             <IconButton size="large">
-              <Diversity2Icon sx={{ fontSize: 60, fontWeight: "bolder" ,color:theme.palette.primary.main}}  />
+              <Diversity2Icon
+                sx={{
+                  fontSize: 60,
+                  fontWeight: "bolder",
+                  color: theme.palette.primary.main,
+                }}
+              />
             </IconButton>
             Connectify
           </Typography>
         </Box>
+        <Box sx={{display:'flex',flexDirection:"row",alignItems:'center',justifyContent:'space-around'}}>
+          <Box sx={{display:{
+            xs:'none',
+            md:'flex',
+          },flex:1}}>
+            <img src="connectpic.svg" alt=""  width={'100%'} height={'100%'} />
+          </Box>
 
-        <Box
-          flexDirection="column"
-          alignItems="center"
-          p={6}
-          sx={{
-            px: {
-              lg: 12,
-              md: 10,
-              sm: 6,
-              xs: 2,
-            },
-          }}
-        >
-          <Typography
-            variant="h4"
+          <Box
+            flexDirection="column"
+            alignItems="center"
+            p={6}
             sx={{
-              fontWeight: "bold",
-              color: theme.palette.primary.main,
+              px: {
+                lg: 12,
+                md: 10,
+                sm: 6,
+                xs: 2,
+              },
             }}
           >
-            Log In
-          </Typography>
-          <form onSubmit={handleSubmit}>
-            <Stack direction={"column"} spacing={4} sx={{ my: 5 }}>
-              <TextField
-                sx={{ color: theme.palette.primary.light }}
-                value={values.userName}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={errors.userName && touched.userName ? true : false}
-                helperText={
-                  errors.userName && touched.userName ? errors.userName : ""
-                }
-                name="userName"
-                label="userName"  
-                size="medium"
-                variant="filled"
-                fullWidth
-              />
+            <Typography
+              variant="h4"
+              sx={{
+                fontWeight: "bold",
+                color: theme.palette.primary.main,
+              }}
+            >
+              Log In
+            </Typography>
+            <form onSubmit={handleSubmit}>
+              <Stack direction={"column"} spacing={4} sx={{ my: 5 }}>
+                <TextField
+                  sx={{ color: theme.palette.primary.light }}
+                  value={values.userName}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={errors.userName && touched.userName ? true : false}
+                  helperText={
+                    errors.userName && touched.userName ? errors.userName : ""
+                  }
+                  name="userName"
+                  label="userName"
+                  size="medium"
+                  variant="filled"
+                  fullWidth
+                />
 
-              <TextField
-                sx={{ color: theme.palette.primary.light }}
-                value={values.password}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={errors.password && touched.password ? true : false}
-                helperText={
-                  errors.password && touched.password ? errors.password : ""
-                }
-                name="password"
-                label="password"
-                type={showPassword ? "text" : "password"}
-                size="medium"
-                variant="filled"
-                fullWidth
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={handleClickShowPassword}
-                      >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
+                <TextField
+                  sx={{ color: theme.palette.primary.light }}
+                  value={values.password}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={errors.password && touched.password ? true : false}
+                  helperText={
+                    errors.password && touched.password ? errors.password : ""
+                  }
+                  name="password"
+                  label="password"
+                  type={showPassword ? "text" : "password"}
+                  size="medium"
+                  variant="filled"
+                  fullWidth
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
 
-              <Button
-                variant="contained"
-                type="submit"
-                size="large"
-                sx={{
-                  backgroundColor: theme.palette.primary.main,
-                  "&:hover": {
-                    backgroundColor: theme.palette.primary.dark,
-                  },
-                }}
-                disableRipple
-                disableElevation
-              >
-                Log In
-              </Button>
+                <Button
+                  variant="contained"
+                  type="submit"
+                  size="large"
+                  sx={{
+                    backgroundColor: theme.palette.primary.main,
+                    "&:hover": {
+                      backgroundColor: theme.palette.primary.dark,
+                    },
+                  }}
+                  disableRipple
+                  disableElevation
+                >
+                  Log In
+                </Button>
 
-              <Typography variant="body1" color={theme.palette.primary.light}>
-                {" "}
-                Don't have an account?
-                <Link to="/register" style={{ textDecoration: "none" }}>
-                  Sign Up
-                </Link>
-              </Typography>
-              <Typography variant="body1" color={"error"}>
-                {" "}
-                {loginError}{" "}
-              </Typography>
+                <Typography variant="body1" color={theme.palette.primary.light}>
+                  {" "}
+                  Don't have an account?
+                  <Link to="/register" style={{ textDecoration: "none" }}>
+                    Sign Up
+                  </Link>
+                </Typography>
+                <Typography variant="body1" color={"error"}>
+                  {" "}
+                  {loginError}{" "}
+                </Typography>
 
-              <GoogleAuth />
-            </Stack>
-          </form>
+                <GoogleAuth />
+              </Stack>
+            </form>
+          </Box>
         </Box>
       </Stack>
     </Stack>

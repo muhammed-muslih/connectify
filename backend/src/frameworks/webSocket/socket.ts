@@ -7,7 +7,7 @@ const socketConfig = async(io:Server<DefaultEventsMap, DefaultEventsMap, Default
     let activeUsers : {userId:string,socketId:string}[] = []
     
     io.on('connection', (socket) => {
-        console.log('socket io connected');
+        console.log('socket io connected'.bg_magenta.bold);
         
 
         //add new user

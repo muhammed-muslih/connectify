@@ -107,12 +107,13 @@ const RegisterForm = () => {
     <Stack
       sx={{
         alignItems: "center",
+        justifyContent: "center",
         my: {
           xs: 0,
-          sm: 1,
-          md: 3,
-          lg: 6,
-          xl: 7,
+          sm: 4,
+          md: 6,
+          lg: 8,
+          xl: 10,
         },
       }}
     >
@@ -127,15 +128,16 @@ const RegisterForm = () => {
           borderRadius: "16px",
           width: {
             xs: "100%",
-            sm: "80%",
-            md: "70%",
-            lg: "60%",
-            xl: "40%",
+            sm: "85%",
+            md: "95%",
+            lg: "75%",
+            xl: "60%",
           },
         }}
         direction={"column"}
       >
-        <Box borderBottom={2} borderColor={theme.palette.primary.main} my={2}>
+        <Box borderBottom={2} borderColor={theme.palette.primary.main} my={2}
+         sx={{display:'flex',alignItems:'center',justifyContent:"center"}}>
           <Typography
             variant="h3"
             sx={{
@@ -157,14 +159,23 @@ const RegisterForm = () => {
             Connectify
           </Typography>
         </Box>
+        <Box sx={{display:'flex',flexDirection:"row",alignItems:'center',justifyContent:'space-around'}}>
+          <Box sx={{display:{
+            xs:'none',
+            md:'flex',
+          },flex:1}}>
+            <img src="connectpic.svg" alt=""  width={'100%'} height={'100%'} />
+          </Box>
 
         <Box
           flexDirection="column"
           alignItems="center"
+          justifyContent={'center'}
+          flex={1}
           p={6}
           sx={{
             px: {
-              lg: 14,
+              lg: 12,
               md: 10,
               sm: 6,
               xs: 2,
@@ -289,6 +300,7 @@ const RegisterForm = () => {
               </Typography>
             </Stack>
           </form>
+        </Box>
         </Box>
       </Stack>
     </Stack>
