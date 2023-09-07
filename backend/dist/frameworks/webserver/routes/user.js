@@ -1,0 +1,33 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const userController_1 = __importDefault(require("@adapters/controllers/userController"));
+const userRepoImpl_1 = require("@frameworks/database/mongoDb/repositories/userRepoImpl");
+const userRepoInterface_1 = require("@application/repositories/userRepoInterface");
+const s3BucketServie_1 = require("@frameworks/services/s3BucketServie");
+const s3ServiceInterface_1 = require("@application/services/s3ServiceInterface");
+const authServices_1 = require("@frameworks/services/authServices");
+const authServiceInterface_1 = require("@application/services/authServiceInterface");
+const multer_1 = __importDefault(require("../middlewares/multer"));
+const userRouter = () => {
+    const router = express_1.default.Router();
+    const controller = (0, userController_1.default)(userRepoImpl_1.userRepoImpl, userRepoInterface_1.userRepoInterface, s3BucketServie_1.s3ServiceImpl, s3ServiceInterface_1.s3serviceInterface, authServices_1.authServices, authServiceInterface_1.authServiceInterface);
+    router.post('/search', controller.searchUser);
+    router.get('/get-user/:id', controller.getUser);
+    router.post('/:followedUserId/follow', controller.followAndUnfollow);
+    router.post('/save-unsave-post', controller.saveAndUnSavePosts);
+    router.get('/saved-post', controller.getSavedPosts);
+    router.get('/saved-post-details', controller.savedPostDetails);
+    router.patch('/update-profile', multer_1.default.single('profilePic'), controller.UpdateUserProfile);
+    router.patch('/remove-profile-pic', controller.removeProfilePic);
+    router.get('/followers-followings-list', controller.followersDetails);
+    router.post('/verify-password', controller.comparePassword);
+    router.put('/update-password', controller.updatePassword);
+    router.post('/create-verify-subscription', controller.createSubscription);
+    router.post('/verify-payment', controller.verifySubscription);
+    return router;
+};
+exports.default = userRouter;
