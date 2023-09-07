@@ -9,8 +9,8 @@ import NotFoundPage from "../../pages/404Page/404Page";
 
 const UserRouter = () => {
   return (
-    <>
-      <Routes>
+    <div>
+      <Routes >
         <Route path="/register" element={<UserRegister />} />
         <Route path="/login" element={<UserLogin />} />
         <Route path="/" element={<Home />} />
@@ -19,7 +19,7 @@ const UserRouter = () => {
         <Route path="/notification" element={<Notification/>}/>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
-    </>
+    </div>
   );
 };
 export default UserRouter;

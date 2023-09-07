@@ -275,26 +275,6 @@ const LeftBar = ({message,setNewPostAdded}:
         />
       </Box>
 
-      <Box className={classes.item}>
-        <Box display={"flex"}>
-          <Brightness2OutlinedIcon className={classes.icon} fontSize="large" />
-          <Typography
-            variant={"h5"}
-            sx={{
-              fontWeight: "bolder",
-              marginLeft: {
-                xs: 1,
-                md: 2,
-                lg: 3,
-              },
-            }}
-            className={message?classes.textHide:classes.text}
-          >
-            SwitchTheme
-          </Typography>
-        </Box>
-      </Box>
-
       <Box className={classes.item} onClick={(e) => logoutHandler(e)}>
         <Box display={"flex"}>
           <LogoutOutlinedIcon className={classes.icon} fontSize="large" />

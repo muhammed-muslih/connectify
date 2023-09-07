@@ -1,8 +1,8 @@
 import { createTheme } from "@mui/material/styles";
 import { Theme } from "@mui/material/styles";
-import { blueGrey ,blue,lightBlue} from "@mui/material/colors";
+import { blueGrey, lightBlue } from "@mui/material/colors";
 
-export const theme: Theme = createTheme({
+const theme: Theme = createTheme({
   palette: {
     primary: {
       main: lightBlue[900],
@@ -10,3 +10,5 @@ export const theme: Theme = createTheme({
     },
   },
 });
+
+export { theme };

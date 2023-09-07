@@ -66,7 +66,7 @@ const SinglePost = ({
   useEffect(() => {
     refetch();
   }, []);
-  console.log(data);
+ 
 
   return (
     <div>
@@ -118,6 +118,7 @@ const SinglePost = ({
               setIsEdited={setIsEdited}
               setEditedId={setEditedId}
               setEditedText={setEditedText}
+              isVerified = {data?.post.userId.verified.isVerified??false}
             />
           </Box>
         </Stack>

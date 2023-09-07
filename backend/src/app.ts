@@ -11,7 +11,7 @@ import AppError from '@utils/appError'
 import routes from '@frameworks/webserver/routes'
 import {Server} from 'socket.io'
 import socketConfig from '@frameworks/webSocket/socket'
-import cors from 'cors'
+
 
 
 const app :Application = express()
@@ -20,7 +20,7 @@ const server = http.createServer(app);
 const io = new Server(server,{
     pingTimeout:60000,
     cors: {
-        origin: "http://localhost:5000",
+        origin: "http://localhost:3000",
         methods: ["GET", "POST"]
     }
 })
