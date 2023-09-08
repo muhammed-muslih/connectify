@@ -5,8 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const config_1 = __importDefault(require("../../../config"));
-mongoose_1.default.set('strictQuery', true);
 const connectDB = async () => {
+    console.log(config_1.default.MONGO_DB_URL, process.env.MONGO_DB_URL);
     try {
         const { connection } = await mongoose_1.default.connect(config_1.default.MONGO_DB_URL);
         console.log(`database connected successfully  : ${connection.host}`.color_bg_at_256(80).bold);
