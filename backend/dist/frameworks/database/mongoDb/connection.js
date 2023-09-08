@@ -7,6 +7,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const config_1 = __importDefault(require("../../../config"));
 const connectDB = async () => {
     console.log(config_1.default.MONGO_DB_URL, process.env.MONGO_DB_URL);
+    console.log(config_1.default.PORT, process.env.PORT);
     try {
         const { connection } = await mongoose_1.default.connect(config_1.default.MONGO_DB_URL);
         console.log(`database connected successfully  : ${connection.host}`.color_bg_at_256(80).bold);

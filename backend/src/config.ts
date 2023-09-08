@@ -1,5 +1,7 @@
 import dotenv from 'dotenv'
-dotenv.config()
+dotenv.config({path:'../.env'})
+console.log("config file",process.env.MONGO_DB_URL);
+
 
 const configKeys = {
 
