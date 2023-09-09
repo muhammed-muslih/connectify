@@ -21,7 +21,7 @@ const server = http_1.default.createServer(app);
 const io = new socket_io_1.Server(server, {
     pingTimeout: 60000,
     cors: {
-        origin: "http://localhost:3000",
+        origin: ["https://connectif.online", "https://www.connectif.online"],
         methods: ["GET", "POST"]
     }
 });

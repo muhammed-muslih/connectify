@@ -11,7 +11,7 @@ const helmet_1 = __importDefault(require("helmet"));
 const express_mongo_sanitize_1 = __importDefault(require("express-mongo-sanitize"));
 const expressConfig = (app) => {
     app.use((0, cors_1.default)({
-        origin: ["http://localhost:5173"],
+        origin: ["https://connectif.online", "https://www.connectif.online"],
         credentials: true,
     }));
     app.use((0, morgan_1.default)("dev"));

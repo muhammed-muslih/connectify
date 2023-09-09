@@ -8,7 +8,7 @@ import expressMongoSanitize from "express-mongo-sanitize";
 const expressConfig = (app: Application) => {
   app.use(
     cors({
-      origin: ["http://localhost:5173"],
+      origin: ["https://connectif.online","https://www.connectif.online"],
       credentials: true,
     })
   );
