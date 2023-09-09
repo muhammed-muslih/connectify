@@ -164,7 +164,7 @@ const RegisterForm = () => {
             xs:'none',
             md:'flex',
           },flex:1}}>
-            <img src="connectpic.svg" alt=""  width={'100%'} height={'100%'} />
+            <img  src="assets/connectpic.svg" alt=""  width={'100%'} height={'100%'} />
           </Box>
 
         <Box

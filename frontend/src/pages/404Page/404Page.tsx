@@ -48,7 +48,7 @@ const NotFoundPage = () => {
 
   return (
     <Box className={classes.root}>
-      <img src="/404 error lost in space-bro.svg" alt="" className={classes.imageBox} />
+      <img src="assets/404 error lost in space-bro.svg" alt="" className={classes.imageBox} />
       <Box className={classes.contentBox}>
         <Typography variant="h5" className={classes.header}>
           Oops! The page you are looking for does not exist.

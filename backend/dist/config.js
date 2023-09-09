@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const dotenv_1 = __importDefault(require("dotenv"));
-dotenv_1.default.config({ path: '../.env' });
+dotenv_1.default.config();
 console.log("config file", process.env.MONGO_DB_URL);
 const configKeys = {
     PORT: process.env.PORT,

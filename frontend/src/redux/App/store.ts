@@ -3,7 +3,7 @@ import { apiSlice } from "../Features/api/apiSlice";
 import userAuthReducer from '.././Features/reducers/userAuthSlice'
 import adminAuthReducer from '../Features/reducers/adminAuthSlice'
 import { persistReducer, persistStore, Persistor } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
+import storage from "redux-persist/lib/storage";
 
 const persistConfig = {
     key: 'root', // Root key for the persisted state

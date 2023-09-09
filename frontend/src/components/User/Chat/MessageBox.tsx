@@ -166,7 +166,7 @@ const MessageBox = ({
               color: theme.palette.primary.main,
             }}
           >
-            <img src="/Online world-pana.svg" alt="" width={"50%"} />
+            <img src="assets/Online world-pana.svg" alt="" width={"50%"} />
             <Typography variant="body1" sx={{ fontWeight: "bold" }}>
               Start your chatting journey today. Connect with friends and make
               new ones.

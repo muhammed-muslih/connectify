@@ -1,3 +1,4 @@
+import './NavBar.css';
 import {
   AppBar,
   Toolbar,
@@ -10,7 +11,6 @@ import {
   InputAdornment
 } from "@mui/material";
 import Diversity2Icon from "@mui/icons-material/Diversity2";
-import "./NavBar.css";
 import { useSelector } from "react-redux";
 import { selectUserName } from "../../../redux/Features/reducers/userAuthSlice";
 import { selectUserProfilePic } from "../../../redux/Features/reducers/userAuthSlice";
