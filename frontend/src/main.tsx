@@ -14,7 +14,7 @@ import { PersistGate } from "redux-persist/integration/react";
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
-console.log(import.meta.env.VITE_GOOGLE_AUTH_CLIENT_ID,'VITE_GOOGLE_AUTH_CLIENT_ID');
+
 
 root.render(
   <React.StrictMode>
