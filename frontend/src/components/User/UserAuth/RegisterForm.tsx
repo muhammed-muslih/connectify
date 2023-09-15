@@ -97,8 +97,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   image: {
-    // width: "100%",
-    padding: 6
+    width: "100%",
+    padding: 6,
   },
   formBox: {
     width: "50%",
@@ -107,7 +107,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   formBox2: {
-    padding: theme.spacing(16),
+    padding: theme.spacing(5),
     [theme.breakpoints.down("lg")]: {
       padding: theme.spacing(5),
     },
