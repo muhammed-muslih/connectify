@@ -318,6 +318,7 @@ const LoginForm: React.FC = () => {
                   </Typography>
                 </Stack>
               </form>
+              <GoogleAuth />
             </Box>
           </Box>
         </Box>
