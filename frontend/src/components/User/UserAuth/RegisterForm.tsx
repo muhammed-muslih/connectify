@@ -107,7 +107,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   formBox2: {
-    padding: theme.spacing(5),
+    padding: theme.spacing(10),
     [theme.breakpoints.down("lg")]: {
       padding: theme.spacing(5),
     },
