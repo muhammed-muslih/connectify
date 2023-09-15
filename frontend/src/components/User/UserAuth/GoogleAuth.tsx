@@ -48,9 +48,9 @@ const GoogleAuth = () => {
       disableElevation
     >
       <GoogleLogin
-        width="700px"
+        width="200px"
         theme="outline"
-        size="large"
+        size="medium"
         shape="rectangular"
         onSuccess={(credentialResponse: GoogleCredentialResponse) => {
           loginHandler(credentialResponse.credential);
