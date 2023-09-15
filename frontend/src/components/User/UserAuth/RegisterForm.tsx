@@ -98,7 +98,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   image: {
     width: "100%",
-    padding: 6,
+    padding: 10,
   },
   formBox: {
     width: "50%",
@@ -111,8 +111,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     [theme.breakpoints.down("lg")]: {
       padding: theme.spacing(5),
     },
-    paddingLeft: theme.spacing(30),
-    paddingRight: theme.spacing(30),
+    paddingLeft: theme.spacing(20),
+    paddingRight: theme.spacing(20),
   },
   title: {
     fontWeight: "bold",
