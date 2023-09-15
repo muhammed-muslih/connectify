@@ -12,6 +12,7 @@ const useStyles = makeStyles((theme:Theme) => ({
     flexDirection: 'column',
     minHeight: '100vh',
     position: 'relative',
+    backgroundColor: theme.palette.primary.dark,
     [theme.breakpoints.down('md')]: {
         justifyContent: 'center',
       },
@@ -48,14 +49,14 @@ const NotFoundPage = () => {
 
   return (
     <Box className={classes.root}>
-      <img src="assets/404 error lost in space-bro.svg" alt="" className={classes.imageBox} />
+      <img src="assets/404img1.svg" alt="" className={classes.imageBox} />
       <Box className={classes.contentBox}>
-        <Typography variant="h5" className={classes.header}>
+        <Typography variant="h5" color={'white'} className={classes.header}>
           Oops! The page you are looking for does not exist.
         </Typography>
         <Link to={location.pathname.includes('admin')&&adminToken ? '/admin':'/'}>
-        <Button variant="contained" color="primary" className={classes.button}>
-          Go to Home
+        <Button variant="contained" color="primary" className={classes.button} sx={{textTransform:'initial',fontSize:22}}>
+          GoToHome
         </Button>
         </Link>
       </Box>

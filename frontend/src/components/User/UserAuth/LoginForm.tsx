@@ -8,6 +8,7 @@ import {
   Button,
   InputAdornment,
   IconButton,
+  Theme,
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -19,6 +20,7 @@ import { UserLoginInterface } from "../../../types/UserAuthInterface";
 import Diversity2Icon from "@mui/icons-material/Diversity2";
 import { useUserLoginMutation } from "../../../redux/Features/api/authApiSlice";
 import { useDispatch } from "react-redux";
+import { makeStyles } from "@mui/styles";
 import {
   setUserCredentials,
   setProfilePicture,
@@ -39,8 +41,101 @@ const schema = yup.object().shape({
     .max(15, "Password must be less than 15 characters"),
 });
 
+const useStyles = makeStyles((theme: Theme) => ({
+  root: {
+    height: "100vh",
+    width: "100%",
+  },
+  logoBox: {
+    borderBottom: `3px solid ${theme.palette.primary.main}`,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    [theme.breakpoints.down("lg")]: {
+      display: "none",
+     },
+   
+  },
+  logoBox1: {
+    borderBottom: `3px solid ${theme.palette.primary.main}`,
+    display: "none",
+    alignItems: "center",
+    justifyContent: "center",
+    [theme.breakpoints.down("lg")]: {
+     display: "flex",
+     padding:theme.spacing(1)
+    },
+  },
+  logoText: {
+    color: theme.palette.primary.main,
+    paddingBottom: theme.spacing(2),
+  },
+  logoIcon: {
+    fontWeight: "bolder",
+    color: theme.palette.primary.main,
+  },
+  contentBox: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  imageBox: {
+    backgroundColor: theme.palette.primary.dark,
+    width: "50%",
+    [theme.breakpoints.down("lg")]: {
+      display: "none",
+      width: "auto",
+    },
+  },
+  image: {
+    width: "100%",
+    padding: 6,
+  },
+  formBox: {
+    width: "50%",
+    [theme.breakpoints.down("lg")]: {
+      width: "100%",
+    },
+  },
+  formBox2: {
+    padding: theme.spacing(30),
+    [theme.breakpoints.down("lg")]: {
+      padding: theme.spacing(10),
+    },
+  },
+  title: {
+    fontWeight: "bold",
+    color: theme.palette.primary.main,
+  },
+  form: {
+    color: theme.palette.primary.light,
+    marginTop: theme.spacing(5),
+  },
+  textField: {
+    marginBottom: theme.spacing(4),
+    color: "white",
+    backgroundColor: "white",
+  },
+  button: {
+    backgroundColor: theme.palette.primary.main,
+    "&:hover": {
+      backgroundColor: theme.palette.primary.dark,
+    },
+  },
+  signUpLink: {
+    textDecoration: "none",
+    color: theme.palette.primary.dark,
+    fontWeight: "bold",
+    fontSize: 18,
+  },
+  errorText: {
+    color: theme.palette.error.main,
+  },
+}));
+
 const LoginForm: React.FC = () => {
   const theme = useTheme();
+  const classes = useStyles();
   const [loginError, setLoginError] = useState("");
   const [loginUser, { isLoading }] = useUserLoginMutation();
   const dispatch = useDispatch();
@@ -91,169 +186,139 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <Stack
-      sx={{
-        alignItems: "center",
-        justifyContent: "center",
-        my: {
-          xs: 2,
-          sm: 6,
-          md: 10,
-          lg: 12,
-          xl: 16,
-        },
-      }}
-    >
+    <Stack className={classes.root}>
       <Stack
-        display={"flex"}
+        display="flex"
         divider={<Divider orientation="vertical" flexItem />}
         sx={{
           boxShadow: {
             xs: 0,
-            sm: "5",
-          },
-          borderRadius: "16px",
-          width: {
-            xs: "100%",
-            sm: "80%",
-            md: "90%",
-            lg: "70%",
-            xl: "55%",
+            sm: "5px",
           },
         }}
-        direction={"column"}
+        direction="column"
       >
-        <Box borderBottom={2} borderColor={theme.palette.primary.main} my={2} 
-        sx={{display:'flex',alignItems:'center',justifyContent:"center"}}>
-          <Typography
-            variant="h3"
-            sx={{
-              fontWeight: "bold",
-              color: theme.palette.primary.main,
-              mx: 6,
-              paddingBottom: 2,
-            }}
-          >
-            <IconButton size="large">
-              <Diversity2Icon
-                sx={{
-                  fontSize: 60,
-                  fontWeight: "bolder",
-                  color: theme.palette.primary.main,
-                }}
-              />
-            </IconButton>
-            Connectify
-          </Typography>
-        </Box>
-        <Box sx={{display:'flex',flexDirection:"row",alignItems:'center',justifyContent:'space-around'}}>
-          <Box sx={{display:{
-            xs:'none',
-            md:'flex',
-          },flex:1}}>
-            <img src="assets/connectpic.svg" alt=""  width={'100%'} height={'100%'} />
+        <Box className={classes.contentBox}>
+          <Box className={classes.imageBox}>
+            <img
+              src="assets/authpageimg.svg"
+              alt=""
+              className={classes.image}
+              style={{ display: "block", width: "100%", height: "auto" }}
+            />
           </Box>
+          <Box className={classes.formBox}>
 
-          <Box
-            flexDirection="column"
-            alignItems="center"
-            p={6}
-            sx={{
-              px: {
-                lg: 12,
-                md: 10,
-                sm: 6,
-                xs: 2,
-              },
-            }}
-          >
-            <Typography
-              variant="h4"
-              sx={{
-                fontWeight: "bold",
-                color: theme.palette.primary.main,
-              }}
-            >
-              Log In
-            </Typography>
-            <form onSubmit={handleSubmit}>
-              <Stack direction={"column"} spacing={4} sx={{ my: 5 }}>
-                <TextField
-                  sx={{ color: theme.palette.primary.light }}
-                  value={values.userName}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  error={errors.userName && touched.userName ? true : false}
-                  helperText={
-                    errors.userName && touched.userName ? errors.userName : ""
-                  }
-                  name="userName"
-                  label="userName"
-                  size="medium"
-                  variant="filled"
-                  fullWidth
-                />
+          <Box className={classes.logoBox}>
+        <Typography variant="h2" className={classes.logoText} sx={{fontWeight:'bolder'}}>
+          <IconButton size="large">
+            <Diversity2Icon className={classes.logoIcon} sx={{fontWeight:'bold',fontSize:60}}/>
+          </IconButton>
+          Connectify
+        </Typography>
+      </Box>
 
-                <TextField
-                  sx={{ color: theme.palette.primary.light }}
-                  value={values.password}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  error={errors.password && touched.password ? true : false}
-                  helperText={
-                    errors.password && touched.password ? errors.password : ""
-                  }
-                  name="password"
-                  label="password"
-                  type={showPassword ? "text" : "password"}
-                  size="medium"
-                  variant="filled"
-                  fullWidth
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={handleClickShowPassword}
-                        >
-                          {showPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
+      <Box className={classes.logoBox1}>
+        <Typography variant="h4" className={classes.logoText} sx={{fontWeight:'bolder'}}>
+          <IconButton size="large">
+            <Diversity2Icon className={classes.logoIcon} sx={{fontWeight:'bold',fontSize:30}}/>
+          </IconButton>
+          Connectify
+        </Typography>
+      </Box>
+            <Box className={classes.formBox2}>
+              <Typography
+                variant="h3"
+                sx={{
+                  fontWeight: "bold",
+                  color: theme.palette.primary.dark,
+                  marginBottom: 6,
+                }}
+              >
+                LogIn
+              </Typography>
+              <form onSubmit={handleSubmit}>
+                <Stack direction="column" spacing={4}>
+                  <TextField
+                    className={classes.textField}
+                    value={values.userName}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={errors.userName && touched.userName ? true : false}
+                    helperText={
+                      errors.userName && touched.userName ? errors.userName : ""
+                    }
+                    name="userName"
+                    label="User Name"
+                    size="medium"
+                    variant="filled"
+                    fullWidth
+                  />
 
-                <Button
-                  variant="contained"
-                  type="submit"
-                  size="large"
-                  sx={{
-                    backgroundColor: theme.palette.primary.main,
-                    "&:hover": {
-                      backgroundColor: theme.palette.primary.dark,
-                    },
-                  }}
-                  disableRipple
-                  disableElevation
-                >
-                  Log In
-                </Button>
+                  <TextField
+                    className={classes.textField}
+                    value={values.password}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={errors.password && touched.password ? true : false}
+                    helperText={
+                      errors.password && touched.password ? errors.password : ""
+                    }
+                    name="password"
+                    label="Password"
+                    type={showPassword ? "text" : "password"}
+                    size="medium"
+                    variant="filled"
+                    // fullWidth
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={handleClickShowPassword}
+                          >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
 
-                <Typography variant="body1" color={theme.palette.primary.light}>
-                  {" "}
-                  Don't have an account?
-                  <Link to="/register" style={{ textDecoration: "none" }}>
-                    Sign Up
-                  </Link>
-                </Typography>
-                <Typography variant="body1" color={"error"}>
-                  {" "}
-                  {loginError}{" "}
-                </Typography>
+                  <Button
+                    variant="contained"
+                    type="submit"
+                    size="large"
+                    sx={{
+                      backgroundColor: theme.palette.primary.main,
+                      "&:hover": {
+                        backgroundColor: theme.palette.primary.dark,
+                      },
+                    }}
+                    disableRipple
+                    disableElevation
+                  >
+                    LogIn
+                  </Button>
 
-                <GoogleAuth />
-              </Stack>
-            </form>
+                  <Typography
+                    variant="body1"
+                    sx={{ color:theme.palette.primary.light }}
+                  >
+                    Don't have an account?
+                    <Link
+                      to="/register"
+                      style={{ textDecoration: "none" }}
+                      className={classes.signUpLink}
+                    >
+                      SignUp
+                    </Link>
+                  </Typography>
+                  <Typography variant="body1" color={"error"}>
+                    {loginError}
+                  </Typography>
+                </Stack>
+              </form>
+            </Box>
           </Box>
         </Box>
       </Stack>

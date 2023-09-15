@@ -8,6 +8,7 @@ import {
   Button,
   InputAdornment,
   IconButton,
+  Theme
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -23,6 +24,8 @@ import {
 } from "../../../redux/Features/reducers/userAuthSlice";
 import { useDispatch } from "react-redux";
 import { useTheme } from "@mui/material/styles";
+import { makeStyles } from "@mui/styles";
+
 
 const schema = yup.object().shape({
   name: yup
@@ -45,8 +48,106 @@ const schema = yup.object().shape({
     .max(15, "Password must be less than 15 characters"),
 });
 
-const RegisterForm = () => {
+
+const useStyles = makeStyles((theme: Theme) => ({
+  root: {
+    height: "100vh",
+    width: "100%",
+  },
+  logoBox: {
+    borderBottom: `3px solid ${theme.palette.primary.main}`,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    [theme.breakpoints.down("lg")]: {
+      display: "none",
+     },
+   
+  },
+  logoBox1: {
+    borderBottom: `3px solid ${theme.palette.primary.main}`,
+    display: "none",
+    alignItems: "center",
+    justifyContent: "center",
+    [theme.breakpoints.down("lg")]: {
+     display: "flex",
+     padding:theme.spacing(1)
+    },
+  },
+  logoText: {
+    color: theme.palette.primary.main,
+    paddingBottom: theme.spacing(2),
+  },
+  logoIcon: {
+    fontWeight: "bolder",
+    color: theme.palette.primary.main,
+  },
+  contentBox: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  imageBox: {
+    backgroundColor: theme.palette.primary.dark,
+    width: "50%",
+    [theme.breakpoints.down("lg")]: {
+      display: "none",
+      width: "auto",
+    },
+  },
+  image: {
+    width: "100%",
+    padding: 6,
+  },
+  formBox: {
+    width: "50%",
+    [theme.breakpoints.down("lg")]: {
+      width: "100%",
+    },
+  },
+  formBox2: {
+    padding: theme.spacing(16),
+    [theme.breakpoints.down("lg")]: {
+      padding: theme.spacing(5),
+    },
+    paddingLeft: theme.spacing(30),
+    paddingRight: theme.spacing(30),
+  },
+  title: {
+    fontWeight: "bold",
+    color: theme.palette.primary.main,
+  },
+  form: {
+    color: theme.palette.primary.light,
+    marginTop: theme.spacing(5),
+  },
+  textField: {
+    marginBottom: theme.spacing(4),
+    color: "white",
+    backgroundColor: "white",
+  },
+  button: {
+    backgroundColor: theme.palette.primary.main,
+    "&:hover": {
+      backgroundColor: theme.palette.primary.dark,
+    },
+  },
+  signUpLink: {
+    textDecoration: "none",
+    color: theme.palette.primary.dark,
+    fontWeight: "bold",
+    fontSize: 18,
+  },
+  errorText: {
+    color: theme.palette.error.main,
+  },
+}));
+
+ 
+
+const RegisterForm: React.FC = () => {
   const theme = useTheme();
+  const classes = useStyles();
   const [registerError, setRegisterError] = useState("");
   const [registerUser, { isLoading }] = useUserRegisterMutation();
   const dispatch = useDispatch();
@@ -104,101 +205,64 @@ const RegisterForm = () => {
   };
 
   return (
-    <Stack
-      sx={{
-        alignItems: "center",
-        justifyContent: "center",
-        my: {
-          xs: 0,
-          sm: 4,
-          md: 6,
-          lg: 8,
-          xl: 10,
-        },
-      }}
-    >
+    <Stack className={classes.root}>
       <Stack
-        display={"flex"}
+        display="flex"
         divider={<Divider orientation="vertical" flexItem />}
         sx={{
           boxShadow: {
             xs: 0,
-            sm: "5",
-          },
-          borderRadius: "16px",
-          width: {
-            xs: "100%",
-            sm: "85%",
-            md: "95%",
-            lg: "75%",
-            xl: "60%",
+            sm: "5px",
           },
         }}
-        direction={"column"}
+        direction="column"
       >
-        <Box borderBottom={2} borderColor={theme.palette.primary.main} my={2}
-         sx={{display:'flex',alignItems:'center',justifyContent:"center"}}>
-          <Typography
-            variant="h3"
-            sx={{
-              fontWeight: "bold",
-              color: theme.palette.primary.main,
-              mx: 6,
-              paddingBottom: 2,
-            }}
-          >
-            <IconButton size="large">
-              <Diversity2Icon
-                sx={{
-                  fontSize: 60,
-                  fontWeight: "bolder",
-                  color: theme.palette.primary.main,
-                }}
-              />
-            </IconButton>
-            Connectify
-          </Typography>
-        </Box>
-        <Box sx={{display:'flex',flexDirection:"row",alignItems:'center',justifyContent:'space-around'}}>
-          <Box sx={{display:{
-            xs:'none',
-            md:'flex',
-          },flex:1}}>
-            <img  src="assets/connectpic.svg" alt=""  width={'100%'} height={'100%'} />
+        <Box className={classes.contentBox}>
+          <Box className={classes.imageBox}>
+            <img
+              src="assets/authpageimg1.svg"
+              alt=""
+              className={classes.image}
+              style={{ display: "block", width: "100%", height: "auto" }}
+            />
           </Box>
+          <Box className={classes.formBox}>
 
-        <Box
-          flexDirection="column"
-          alignItems="center"
-          justifyContent={'center'}
-          flex={1}
-          p={6}
-          sx={{
-            px: {
-              lg: 12,
-              md: 10,
-              sm: 6,
-              xs: 2,
-            },
-          }}
-        >
-          <Typography
-            variant="h4"
-            sx={{
-              fontWeight: "bold",
-              color: theme.palette.primary.main,
-            }}
-          >
-            Sign Up
-          </Typography>
-          <form onSubmit={handleSubmit}>
+          <Box className={classes.logoBox}>
+        <Typography variant="h2" className={classes.logoText} sx={{fontWeight:'bolder'}}>
+          <IconButton size="large">
+            <Diversity2Icon className={classes.logoIcon} sx={{fontWeight:'bold',fontSize:60}}/>
+          </IconButton>
+          Connectify
+        </Typography>
+      </Box>
+
+      <Box className={classes.logoBox1}>
+        <Typography variant="h4" className={classes.logoText} sx={{fontWeight:'bolder'}}>
+          <IconButton size="large">
+            <Diversity2Icon className={classes.logoIcon} sx={{fontWeight:'bold',fontSize:30}}/>
+          </IconButton>
+          Connectify
+        </Typography>
+      </Box>
+            <Box className={classes.formBox2}>
+              <Typography
+                variant="h3"
+                sx={{
+                  fontWeight: "bold",
+                  color: theme.palette.primary.dark,
+                  marginBottom: 6,
+                }}
+              >
+                SignUp
+              </Typography>
+              <form onSubmit={handleSubmit}>
             <Stack direction={"column"} spacing={4} sx={{ my: 5 }}>
               <TextField
                 sx={{ color: theme.palette.primary.light }}
                 value={values.name}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                inputRef={inputRef}
                 error={errors.name && touched.name ? true : false}
                 helperText={errors.name && touched.name ? errors.name : ""}
                 name="name"
@@ -290,7 +354,8 @@ const RegisterForm = () => {
 
               <Typography variant="body1" color={theme.palette.primary.light}>
                 Already have an account?
-                <Link to="/login" style={{ textDecoration: "none" }}>
+                <Link to="/login" style={{ textDecoration: "none" }}
+                className={classes.signUpLink}>
                   Login
                 </Link>
               </Typography>
@@ -300,7 +365,8 @@ const RegisterForm = () => {
               </Typography>
             </Stack>
           </form>
-        </Box>
+            </Box>
+          </Box>
         </Box>
       </Stack>
     </Stack>

@@ -24,6 +24,7 @@ import { toast, Toaster } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { logoutUser } from "../../../redux/Features/reducers/userAuthSlice";
 import ClearIcon from '@mui/icons-material/Clear';
+import { Link } from 'react-router-dom';
 
 const getRandomColor = () => {
   const colors = [green[500], blue[500], red[500], orange[500], purple[500]];
@@ -101,11 +102,13 @@ const NavBar = ({ user, admin }: { user?: any; admin?: any }) => {
               },
             }}
           >
+            <Link to={'/'}>
             <IconButton size="large">
               <Diversity2Icon
                 sx={{ fontSize: 50, fontWeight: "bolder", color: "white" }}
               />
             </IconButton>
+            </Link>
             Connectify
           </Typography>
 
