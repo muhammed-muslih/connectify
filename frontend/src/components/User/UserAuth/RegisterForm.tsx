@@ -53,6 +53,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   root: {
     height: "100vh",
     width: "100%",
+    overflow:'hidden',
   },
   logoBox: {
     borderBottom: `3px solid ${theme.palette.primary.main}`,
@@ -207,7 +208,6 @@ const RegisterForm: React.FC = () => {
   return (
     <Stack className={classes.root}>
       <Stack
-        display="flex"
         divider={<Divider orientation="vertical" flexItem />}
         sx={{
           boxShadow: {
@@ -215,7 +215,6 @@ const RegisterForm: React.FC = () => {
             sm: "5px",
           },
         }}
-        direction="column"
       >
         <Box className={classes.contentBox}>
           <Box className={classes.imageBox}>
