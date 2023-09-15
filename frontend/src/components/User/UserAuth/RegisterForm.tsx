@@ -97,7 +97,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   image: {
-    width: "100%",
+    // width: "100%",
+    padding: 6
   },
   formBox: {
     width: "50%",
